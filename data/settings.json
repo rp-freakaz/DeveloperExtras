@@ -1,0 +1,94 @@
+{
+	"pool":[
+		{
+			"name":"Developer Extras",
+			"list":[
+				{
+					"spacing":10
+				},
+				{
+					"name":"Enable Scrollbar",
+					"path":"DeveloperExtras/Scrollbar/Enable",
+					"desc":"The Scrollbar will be exposed for People\nwithout a Wheelmouse!"
+				},
+				{
+					"separator":5
+				},
+				{
+					"name":"Performance Graph",
+					"path":"DeveloperExtras/Graph/Enable",
+					"desc":"Show's the Performance Graph with Frametimes and\nFrames Per Second in the Window."
+				},
+				{
+					"spacing":10
+				},
+				{
+					"name":"Background Update",
+					"path":"DeveloperExtras/Graph/BackgroundUpdate",
+					"desc":"Updates the Graph constantly and not only when\nvisible. May has some slight performance impact.",
+
+					"spacing":43
+				},
+				{
+					"spacing":10
+				},
+				{
+					"name":"Show Overlay",
+					"path":"DeveloperExtras/Graph/Overlay/Enable",
+					"desc":"Show's a permanent Overlay of the Performance Graph.\nDisables the Graph in the Main Window.",
+
+					"spacing":43
+				},
+				{
+					"spacing":10
+				},
+				{
+					"name":"Overlay Position",
+					"path":"DeveloperExtras/Graph/Overlay/Position",
+
+					"spacing":61
+				},
+				{
+					"spacing":10
+				},
+				{
+					"name":"Window Transparency",
+					"path":"DeveloperExtras/Graph/Overlay/Transparency",
+
+					"spacing":61
+				},
+				{
+					"spacing":10
+				},
+				{
+					"name":"Bar Transparency",
+					"path":"DeveloperExtras/Graph/Overlay/Transparency/Bar",
+
+					"spacing":61
+				},
+				{
+					"spacing":10
+				},
+				{
+					"name":"Bar Background Transparency",
+					"path":"DeveloperExtras/Graph/Overlay/Transparency/Bar/Background",
+
+					"spacing":61
+				},
+				{
+					"spacing":10
+				},
+				{
+					"name":"Text Transparency",
+					"path":"DeveloperExtras/Graph/Overlay/Transparency/Text",
+
+					"spacing":61
+				},
+				{
+					"spacing":10
+				}
+			]
+		}
+
+	]
+}

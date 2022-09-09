@@ -1,0 +1,507 @@
+{
+	"int":{
+		"DeveloperExtras/BoolTrue":{
+			"type":"bool"
+		},
+		"DeveloperExtras/BoolFalse":{
+			"type":"bool"
+		},
+		"DeveloperExtras/Scrollbar/Enable":{
+			"type":"bool",
+			"boot":false
+		},
+		"DeveloperExtras/Graph/Enable":{
+			"type":"bool",
+			"boot":false
+		},
+		"DeveloperExtras/Graph/BackgroundUpdate":{
+			"type":"bool",
+			"boot":false
+		},
+		"DeveloperExtras/Graph/Overlay/Enable":{
+			"type":"bool",
+			"boot":false
+		},
+		"DeveloperExtras/Graph/Overlay/Position":{
+			"type":"int",
+			"boot":1,
+
+			"any":{"def":1,"min":1,"max":9}
+		},
+		"DeveloperExtras/Graph/Overlay/Transparency":{
+			"type":"int",
+			"boot":5,
+
+			"any":{"def":5,"min":0,"max":10}
+		},
+		"DeveloperExtras/Graph/Overlay/Transparency/Bar":{
+			"type":"int",
+			"boot":8,
+
+			"any":{"def":8,"min":0,"max":10}
+		},
+		"DeveloperExtras/Graph/Overlay/Transparency/Bar/Background":{
+			"type":"int",
+			"boot":5,
+
+			"any":{"def":5,"min":0,"max":10}
+		},
+		"DeveloperExtras/Graph/Overlay/Transparency/Text":{
+			"type":"int",
+			"boot":10,
+
+			"any":{"def":10,"min":0,"max":10}
+		}
+	},
+
+	"all":{
+		"Developer/FeatureToggles/Antialiasing":{
+			"type":"bool",
+			"def":true,
+
+			"onfalse":{
+				"DLSS/Enable":false,
+				"graphics/dynamicresolution/DLSS":"Off"
+			}
+		},
+		"Developer/FeatureToggles/SSAO":{
+			"type":"bool",
+			"def":true,
+
+			"ontrue":{
+				"graphics/advanced/AmbientOcclusion":"Low"
+			}
+		},
+		"Developer/FeatureToggles/GlobalIllumination":{
+			"type":"bool",
+			"def":true
+		},
+		"Developer/FeatureToggles/DistantGI":{
+			"type":"bool",
+			"def":true
+		},
+		"Developer/FeatureToggles/ScreenSpaceReflection":{
+			"type":"bool",
+			"def":true,
+
+			"ontrue":{
+				"graphics/advanced/ScreenSpaceReflectionsQuality":"Low"
+			}
+		},
+		"Developer/FeatureToggles/ScreenSpaceRain":{
+			"type":"bool",
+			"def":true
+		},
+		"Developer/FeatureToggles/ScreenSpaceHeatHaze":{
+			"type":"bool",
+			"def":true
+		},
+		"Developer/FeatureToggles/ScreenSpaceUnderwater":{
+			"type":"bool",
+			"def":true
+		},
+		"Developer/FeatureToggles/ScreenSpacePlanarReflection":{
+			"type":"bool",
+			"def":true
+		},
+		"Developer/FeatureToggles/RainMap":{
+			"type":"bool",
+			"def":true
+		},
+		"Developer/FeatureToggles/Weather":{
+			"type":"bool",
+			"def":true
+		},
+		"Developer/FeatureToggles/VolumetricFog":{
+			"type":"bool",
+			"def":true,
+
+			"ontrue":{
+				"graphics/advanced/VolumetricFogResolution":"Low"
+			},
+			"onfalse":{
+				"Developer/FeatureToggles/DistantVolFog":false
+			}
+		},
+		"Developer/FeatureToggles/DistantVolFog":{
+			"type":"bool",
+			"def":true,
+
+			"ontrue":{
+				"graphics/advanced/VolumetricFogResolution":"Low",
+				"Developer/FeatureToggles/VolumetricFog":true
+			}
+		},
+		"Developer/FeatureToggles/DistantFog":{
+			"type":"bool",
+			"def":true
+		},
+		"Developer/FeatureToggles/VolumetricClouds":{
+			"type":"bool",
+			"def":true,
+
+			"ontrue":{
+				"graphics/advanced/VolumetricCloudsQuality":"Low"
+			}
+		},
+		"Developer/FeatureToggles/DynamicDecals":{
+			"type":"bool",
+			"def":true
+		},
+		"Developer/FeatureToggles/ConstrastAdaptiveSharpening":{
+			"type":"bool",
+			"def":true
+		},
+		"Developer/FeatureToggles/ContactShadows":{
+			"type":"bool",
+			"def":true,
+
+			"ontrue":{
+				"graphics/advanced/ContactShadows":true
+			},
+			"onfalse":{
+				"graphics/advanced/ContactShadows":false
+			}
+		},
+		"Developer/FeatureToggles/LocalShadows":{
+			"type":"bool",
+			"def":true,
+
+			"ontrue":{
+				"graphics/advanced/LocalShadowsQuality":"Low"
+			},
+			"onfalse":{
+				"graphics/advanced/LocalShadowsQuality":"Off"
+			}
+		},
+		"Developer/FeatureToggles/DistantShadows":{
+			"type":"bool",
+			"def":true
+		},
+		"Developer/FeatureToggles/Bloom":{
+			"type":"bool",
+			"def":true,
+
+			"onfalse":{
+				"graphics/basic/LensFlares":"Off",
+				"Developer/FeatureToggles/ImageBasedFlares":false
+			}
+		},
+		"Developer/FeatureToggles/ImageBasedFlares":{
+			"type":"bool",
+			"def":true,
+
+			"ontrue":{
+				"graphics/basic/LensFlares":"On",
+				"Developer/FeatureToggles/Bloom":true
+			},
+			"onfalse":{
+				"graphics/basic/LensFlares":"Off",
+				"Developer/FeatureToggles/Bloom":false
+			}
+		},
+		"Developer/FeatureToggles/MotionBlur":{
+			"type":"bool",
+			"def":true,
+
+			"ontrue":{
+				"graphics/basic/MotionBlur":"On"
+			},
+			"onfalse":{
+				"graphics/basic/MotionBlur":"Off"
+			}
+		},
+		"Developer/FeatureToggles/FilmGrain":{
+			"type":"bool",
+			"def":true,
+
+			"ontrue":{
+				"graphics/basic/FilmGrain":true
+			},
+			"onfalse":{
+				"graphics/basic/FilmGrain":false
+			}
+		},
+		"Developer/FeatureToggles/DepthOfField":{
+			"type":"bool",
+			"def":true,
+
+			"ontrue":{
+				"graphics/basic/DepthOfField":true
+			},
+			"onfalse":{
+				"graphics/basic/DepthOfField":false
+			}
+		},
+		"Developer/FeatureToggles/ChromaticAberration":{
+			"type":"bool",
+			"def":true,
+
+			"ontrue":{
+				"graphics/basic/ChromaticAberration":true
+			},
+			"onfalse":{
+				"graphics/basic/ChromaticAberration":false
+			}
+		},
+
+
+
+		"Rendering/UseExperimentalVolFog":{
+			"type":"bool",
+			"def":true,
+
+			"ontrue":{
+				"graphics/advanced/VolumetricFogResolution":"Low",
+				"Developer/FeatureToggles/VolumetricFog":true
+			}
+		},
+		"Rendering/GlobalIllumination/DistantShadowBlur":{
+			"type":"float",
+			"def":5.000000,
+			"min":0.000000,
+			"max":100.000000,
+			"res":"%.0f"
+		},
+		"Rendering/GlobalIllumination/DistantShadowForce":{
+			"type":"float",
+			"def":0.600000,
+			"min":0.400000,
+			"max":1.000000,
+			"res":"%.1f"
+		},
+
+
+
+		"Editor/VolumetricClouds/NoiseScale":{
+			"type":"float",
+			"def":1.100000,
+			"min":0.000000,
+			"max":1.500000
+		},
+		"Editor/VolumetricClouds/CoverageScale":{
+			"type":"float",
+			"def":1.300000,
+			"min":0.000000,
+			"max":1.500000
+		},
+
+
+
+		"LevelOfDetail/DecalsHideDistance":{
+			"type":"float",
+			"def":40.000000,
+			"min":0.000000,
+			"max":100.000000
+		},
+		"LevelOfDetail/DynamicDecalsHideDistance":{
+			"type":"float",
+			"def":20.000000,
+			"min":0.000000,
+			"max":100.000000
+		},
+
+
+
+		"graphics/advanced/AmbientOcclusion":{
+			"type":"StringList",
+			"draw":0,
+			"opt":["Off", "Low", "Medium", "High"]
+		},
+		"graphics/advanced/ScreenSpaceReflectionsQuality":{
+			"type":"StringList",
+			"draw":0,
+			"opt":["Off", "Low", "Medium", "High", "Ultra", "Insane"]
+		},
+		"graphics/advanced/VolumetricFogResolution":{
+			"type":"StringList",
+			"draw":0,
+			"opt":["Low", "Medium", "High", "Ultra"]
+		},
+		"graphics/advanced/VolumetricCloudsQuality":{
+			"type":"StringList",
+			"draw":0,
+			"opt":["Off", "Medium", "High", "Ultra"]
+		},
+		"graphics/advanced/LODPreset":{
+			"type":"StringList",
+			"draw":0,
+			"opt":["Low", "Medium", "High"]
+		},
+		"graphics/advanced/MaxDynamicDecals":{
+			"type":"StringList",
+			"draw":0,
+			"opt":["Low", "Medium", "High", "Ultra"]
+		},
+		"graphics/advanced/Anisotropy":{
+			"type":"IntList",
+			"draw":0,
+			"opt":[1, 4, 8, 16]
+		},
+		"graphics/advanced/ColorPrecision":{
+			"type":"StringList",
+			"draw":0,
+			"opt":["Medium", "High"]
+		},
+		"graphics/advanced/MirrorQuality":{
+			"type":"StringList",
+			"draw":0,
+			"opt":["Low", "Medium", "High"]
+		},
+		"graphics/advanced/LocalShadowsQuality":{
+			"type":"StringList",
+			"draw":0,
+			"opt":["Off", "Low", "Medium", "High"]
+		},
+		"graphics/advanced/ShadowMeshQuality":{
+			"type":"StringList",
+			"draw":0,
+			"opt":["Low", "Medium", "High"]
+		},
+		"graphics/advanced/DistantShadowsResolution":{
+			"type":"StringList",
+			"draw":0,
+			"opt":["Low", "High"]
+		},
+		"graphics/advanced/CascadedShadowsRange":{
+			"type":"StringList",
+			"draw":0,
+			"opt":["Low", "Medium", "High"]
+		},
+		"graphics/advanced/CascadedShadowsResolution":{
+			"type":"StringList",
+			"draw":0,
+			"opt":["Low", "Medium", "High"]
+		},
+		"graphics/basic/LensFlares":{
+			"type":"Bool",
+			"draw":0,
+			"opt":[true, false]
+		},
+		"graphics/basic/MotionBlur":{
+			"type":"StringList",
+			"draw":0,
+			"opt":["Off", "Low", "High"]
+		},
+		"graphics/basic/FilmGrain":{
+			"type":"Bool",
+			"draw":0,
+			"opt":[true, false]
+		},
+		"graphics/basic/DepthOfField":{
+			"type":"Bool",
+			"draw":0,
+			"opt":[true, false]
+		},
+		"graphics/basic/ChromaticAberration":{
+			"type":"Bool",
+			"draw":0,
+			"opt":[true, false]
+		},
+
+
+		"graphics/dynamicresolution/StaticResolutionScaling":{
+			"type":"Bool",
+			"draw":0,
+
+			"any":[true, false],
+			"cet":{"min":0,"max":1182}
+		},
+
+		"graphics/dynamicresolution/DLSS":{
+			"type":"StringList",
+			"draw":30,
+
+			"cet":{"min":0,"max":1182},
+
+			"ontrue":{
+				"Developer/FeatureToggles/Antialiasing":true,
+				"graphics/dynamicresolution/FSR":"Off",
+				"graphics/dynamicresolution/StaticResolutionScaling":false
+			},
+			"onfalse":{
+				"graphics/dynamicresolution/StaticResolutionScaling":false
+			},
+
+			"fallback":["Off", "Quality", "Balanced", "Performance", "Ultra Performance"]
+		},
+
+
+
+		"gameplay/performance/CrowdDensity":{
+			"type":"NameList",
+			"fallback":["Low", "Medium", "High"]
+		}
+
+	},
+
+	"11":{
+		"graphics/dynamicresolution/SRS_Resolution":{
+			"type":"Int",
+			"draw":30,
+
+			"cet":{"min":0,"max":1182},
+
+			"override":{"min":25,"max":250,"list":[25,50,75,100,125,150,175,200,225,250]}
+		}
+
+	},
+
+	"12":{
+		"graphics/dynamicresolution/SRS_Resolution":{
+			"type":"Int",
+			"draw":30,
+
+			"cet":{"min":0,"max":1182},
+
+			"override":{"min":25,"max":250,"list":[25,50,75,100,125,150,175,200,225,250]}
+		}
+
+	},
+
+	"13":{
+		"graphics/dynamicresolution/SRS_Resolution":{
+			"type":"Int",
+			"draw":30,
+
+			"cet":{"min":0,"max":1182},
+
+			"override":{"min":25,"max":250,"list":[25,50,75,100,125,150,175,200,225,250]}
+		}
+
+	},
+
+	"15":{
+		"graphics/dynamicresolution/FSR":{
+			"type":"StringList",
+			"draw":30,
+
+			"cet":{"min":0,"max":1182},
+
+			"ontrue":{
+				"graphics/dynamicresolution/DLSS":"Off",
+				"graphics/dynamicresolution/StaticResolutionScaling":true
+			},
+			"onfalse":{
+				"graphics/dynamicresolution/StaticResolutionScaling":false
+			},
+
+			"fallback":["Off", "Ultra Quality", "Quality", "Balanced", "Performance", "Ultra Performance"]
+		}
+
+	},
+
+	"16":{
+		"Developer/FeatureToggles/Distortion":{
+			"type":"bool",
+			"def":true
+		},
+
+		"Developer/FeatureToggles/CascadeShadows":{
+			"type":"bool",
+			"def":true
+		}
+
+	}
+
+}

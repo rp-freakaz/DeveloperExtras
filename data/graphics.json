@@ -1,0 +1,457 @@
+{
+	"pool":[
+		{
+			"name":"Category: Render",
+			"list":[
+				{
+					"spacing":10
+				},
+				{
+					"name":"Antialiasing",
+					"path":"Developer/FeatureToggles/Antialiasing",
+					"note":"Required for DLSS or FSR 2.0",
+					"rate":{"performance":"Low","visual":"High"}
+				},
+
+
+				{
+					"name":"Distortion",
+					"path":"Developer/FeatureToggles/Distortion"
+				},
+
+
+				{
+					"name":"Cascade Shadows",
+					"path":"Developer/FeatureToggles/CascadeShadows"
+				},
+
+
+
+				{
+					"separator":5
+				},
+				{
+					"name":"Ambient Occlusion",
+					"path":"Developer/FeatureToggles/SSAO",
+					"note":"Raytracing will disable this\nregular Version of Ambient Occlusion",
+					"rate":{"performance":"Medium","visual":"Medium"}
+				},
+				{
+					"spacing":10
+				},
+				{
+					"name":"Render Quality",
+					"path":"graphics/advanced/AmbientOcclusion"
+				},
+				{
+					"separator":5
+				},
+				{
+					"name":"Global Illumination",
+					"path":"Developer/FeatureToggles/GlobalIllumination"
+				},
+				{
+					"name":"(Distant Rendering)",
+					"path":"Developer/FeatureToggles/DistantGI",
+					"sameline":50
+				},
+				{
+					"separator":2
+				},
+				{
+					"name":"Distant Shadow (Blur)",
+					"path":"Rendering/GlobalIllumination/DistantShadowBlur"
+				},
+				{
+					"spacing":10
+				},
+				{
+					"name":"Distant Shadow (Force)",
+					"path":"Rendering/GlobalIllumination/DistantShadowForce",
+
+					"form":"%.1f"
+				},
+				{
+					"separator":5
+				},
+				{
+					"name":"Screen Space Reflection",
+					"path":"Developer/FeatureToggles/ScreenSpaceReflection"
+				},
+				{
+					"spacing":10
+				},
+				{
+					"name":"Render Quality",
+					"path":"graphics/advanced/ScreenSpaceReflectionsQuality"
+				},
+				{
+					"separator":2
+				},
+				{
+					"name":"(Rain)",
+					"path":"Developer/FeatureToggles/ScreenSpaceRain",
+
+					"spacing":43
+				},
+				{
+					"name":"(Heat Haze)",
+					"path":"Developer/FeatureToggles/ScreenSpaceHeatHaze",
+
+					"sameline":108
+				},
+				{
+					"spacing":10
+				},
+				{
+					"name":"(Rain Map)",
+					"path":"Developer/FeatureToggles/RainMap",
+
+					"spacing":43
+				},
+				{
+					"name":"(Underwater)",
+					"path":"Developer/FeatureToggles/ScreenSpaceUnderwater",
+
+					"sameline":80
+				},
+				{
+					"spacing":10
+				},
+				{
+					"name":"(Weather Effect)",
+					"path":"Developer/FeatureToggles/Weather",
+
+					"spacing":43
+				},
+				{
+					"name":"(Planar Reflection)",
+					"path":"Developer/FeatureToggles/ScreenSpacePlanarReflection",
+
+					"sameline":38
+				},
+				{
+					"separator":5
+				},
+				{
+					"name":"Volumetric Fog",
+					"path":"Developer/FeatureToggles/VolumetricFog"
+				},
+				{
+					"name":"(Distant Rendering)",
+					"path":"Developer/FeatureToggles/DistantVolFog",
+
+					"sameline":85
+				},
+				{
+					"spacing":10
+				},
+				{
+					"name":"Render Quality",
+					"path":"graphics/advanced/VolumetricFogResolution"
+				},
+				{
+					"separator":2
+				},
+				{
+					"name":"Experimental Fog",
+					"path":"Rendering/UseExperimentalVolFog",
+
+					"spacing":43
+				},
+				{
+					"name":"Simple Fog (Distant)",
+					"path":"Developer/FeatureToggles/DistantFog",
+
+					"sameline":38
+				},
+				{
+					"separator":5
+				},
+				{
+					"name":"Volumetric Clouds",
+					"path":"Developer/FeatureToggles/VolumetricClouds"
+				},
+				{
+					"spacing":10
+				},
+				{
+					"name":"Render Quality",
+					"path":"graphics/advanced/VolumetricCloudsQuality"
+				},
+				{
+					"separator":5
+				},
+				{
+					"name":"Noise Scale",
+					"path":"Editor/VolumetricClouds/NoiseScale",
+
+					"form":"%.2f"
+				},
+				{
+					"spacing":10
+				},
+				{
+					"name":"Coverage Scale",
+					"path":"Editor/VolumetricClouds/CoverageScale",
+
+					"form":"%.2f"
+				},
+				{
+					"separator":5
+				},
+				{
+					"name":"Level of Detail",
+					"path":"DeveloperExtras/BoolTrue"
+				},
+				{
+					"spacing":10
+				},
+				{
+					"name":"LOD Preset",
+					"path":"graphics/advanced/LODPreset"
+				},
+				{
+					"separator":5
+				},
+				{
+					"name":"Dynamic Decals",
+					"path":"Developer/FeatureToggles/DynamicDecals"
+				},
+				{
+					"spacing":10
+				},
+				{
+					"name":"Max Dynamic Decals",
+					"path":"graphics/advanced/MaxDynamicDecals"
+				},
+				{
+					"separator":2
+				},
+				{
+					"name":"Hide Distance",
+					"path":"LevelOfDetail/DynamicDecalsHideDistance",
+					"note":"Filters Textures on Distance",
+					"rate":{"performance":"Low","visual":"High"}
+				},
+				{
+					"spacing":10
+				},
+				{
+					"name":"Hide Distance (Statics?)",
+					"path":"LevelOfDetail/DecalsHideDistance"
+				},
+				{
+					"separator":5
+				},
+				{
+					"name":"Constrast Adaptive Sharpening",
+					"path":"Developer/FeatureToggles/ConstrastAdaptiveSharpening"
+				},
+				{
+					"separator":2
+				},
+				{
+					"name":"Anisotropy",
+					"path":"graphics/advanced/Anisotropy",
+					"note":"Filters Textures on Distance",
+					"rate":{"performance":"Low","visual":"High"},
+
+					"both":0
+				},
+				{
+					"name":"Color Precision",
+					"path":"graphics/advanced/ColorPrecision",
+
+					"both":1
+				},
+				{
+					"spacing":10
+				},
+				{
+					"name":"Mirror Quality",
+					"path":"graphics/advanced/MirrorQuality"
+				},
+				{
+					"spacing":10
+				}
+			]
+		},
+		{
+			"name":"Category: Shadows",
+			"list":[
+				{
+					"spacing":10
+				},
+				{
+					"name":"Contact Shadows",
+					"path":"Developer/FeatureToggles/ContactShadows"
+				},
+				{
+					"separator":5
+				},
+				{
+					"name":"Local Shadows",
+					"path":"Developer/FeatureToggles/LocalShadows"
+				},
+				{
+					"spacing":10
+				},
+				{
+					"name":"Render Quality",
+					"path":"graphics/advanced/LocalShadowsQuality",
+
+					"both":0
+				},
+				{
+					"name":"Mesh Quality",
+					"path":"graphics/advanced/ShadowMeshQuality",
+
+					"both":1
+				},
+				{
+					"separator":5
+				},
+				{
+					"name":"Distant Shadows",
+					"path":"Developer/FeatureToggles/DistantShadows"
+				},
+				{
+					"spacing":10
+				},
+				{
+					"name":"Shadow Resolution",
+					"path":"graphics/advanced/DistantShadowsResolution"
+				},
+				{
+					"separator":5
+				},
+				{
+					"name":"Cascade Shadows",
+					"path":"DeveloperExtras/BoolTrue"
+				},
+				{
+					"spacing":10
+				},
+				{
+					"name":"Shadow Range",
+					"path":"graphics/advanced/CascadedShadowsRange",
+
+					"both":0
+				},
+				{
+					"name":"Shadow Resolution",
+					"path":"graphics/advanced/CascadedShadowsResolution",
+
+					"both":1
+				},
+				{
+					"spacing":10
+				}
+			]
+		},
+		{
+			"name":"Category: Filters",
+			"list":[
+				{
+					"spacing":10
+				},
+				{
+					"name":"Bloom",
+					"path":"Developer/FeatureToggles/Bloom"
+				},
+				{
+					"spacing":10
+				},
+				{
+					"name":"Lens Flare",
+					"path":"Developer/FeatureToggles/ImageBasedFlares",
+
+					"spacing":43
+				},
+				{
+					"separator":5
+				},
+				{
+					"name":"Motion Blur",
+					"path":"Developer/FeatureToggles/MotionBlur"
+				},
+				{
+					"spacing":10
+				},
+				{
+					"name":"Render Quality",
+					"path":"graphics/basic/MotionBlur"
+				},
+				{
+					"separator":5
+				},
+				{
+					"name":"Film Grain",
+					"path":"Developer/FeatureToggles/FilmGrain"
+				},
+				{
+					"spacing":10
+				},
+				{
+					"name":"Depth of Field",
+					"path":"Developer/FeatureToggles/DepthOfField"
+				},
+				{
+					"spacing":10
+				},
+				{
+					"name":"Chromatic Aberration",
+					"path":"Developer/FeatureToggles/ChromaticAberration"
+				},
+				{
+					"spacing":10
+				}
+			]
+		},
+		{
+			"name":"Category: Scaling",
+			"list":[
+				{
+					"spacing":10
+				},
+				{
+					"name":"AMD FidelityFX Super Resolution (FSR)",
+					"path":"graphics/dynamicresolution/FSR",
+
+					"spacing":10
+				},
+				{
+					"separator":5
+				},
+				{
+					"name":"NVidia Deep Learning Super Sampling (DLSS)",
+					"path":"graphics/dynamicresolution/DLSS",
+
+					"spacing":10
+				},
+				{
+					"separator":5
+				},
+				{
+					"name":"Static Resolution Scaling",
+					"path":"graphics/dynamicresolution/StaticResolutionScaling",
+
+					"show":true
+				},
+				{
+					"separator":2
+				},
+				{
+					"name":"Internal Render Percentage",
+					"path":"graphics/dynamicresolution/SRS_Resolution",
+
+					"spacing":25
+				},
+				{
+					"spacing":10
+				}
+			]
+		}
+	]
+}
