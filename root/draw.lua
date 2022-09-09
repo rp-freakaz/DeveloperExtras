@@ -940,10 +940,11 @@ function DRAW:About()
 
 	-- section
 	DRAW:AboutHeader("CHANGELOG")
-	DRAW:AboutVersion("DE 3.0")
+	DRAW:AboutVersion("v3.0")
 	DRAW:AboutChange("rewrote entire core for improved option handling")
 	DRAW:AboutChange("switched description file format to JSON")
-	DRAW:AboutChange("split up Option and Render definitions")
+	DRAW:AboutChange("split up option and render definitions")
+	DRAW:AboutChange("refined user interface")
 	DRAW:Spacing(1,5)
 	DRAW:AboutAdded("added detection of cet and game versions")
 	DRAW:AboutAdded("added detection for available GameSettings", "and GameOptions at startup")
@@ -960,9 +961,14 @@ function DRAW:About()
 
 	-- section
 	DRAW:AboutHeader("MADE WITH")
-	--local _madewith = "Visual Studio Code, Notepad++ and some Brain ;)"
-	--DRAW.Spacer(CenterText(ImGui.GetWindowWidth(), _madewith),1)
-	--SELF.AboutText("grey_dark", _madewith, false)
+
+	line = "Visual Studio Code, Notepad++ and some Brain ;)"
+	DRAW:Spacer(UTIL:TextCenter(ImGui.GetWindowWidth(), line),1)
+	DRAW:PageText("Grey", "Lighter", line)
+
+
+
+
 
 
 
@@ -972,6 +978,9 @@ function DRAW:About()
 	DRAW:PageText("Grey", "Lighter", line, false)
 
 
+
+	-- restore spacing between
+	ImGui.PopStyleVar(1)
 
 end
 
@@ -1106,7 +1115,23 @@ end
 
 function DRAW:AboutVersion(which)
 	DRAW:Spacer(52,1)
-	DRAW:PageText("Grey", "Lightest", which, false)
+	DRAW:PageText("White", "Dark", which)
+	DRAW:Spacing(1,1)
+	DRAW:Spacer(52,1)
+
+	ImGui.PushStyleColor(ImGuiCol.Button, DRAW:GetColor("Orange", "Normal"))
+	ImGui.PushStyleColor(ImGuiCol.ButtonActive, DRAW:GetColor("Orange", "Normal"))
+	ImGui.PushStyleColor(ImGuiCol.ButtonHovered, DRAW:GetColor("Orange", "Normal"))
+	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, 0, 0)
+
+	ImGui.PushID("__text")
+	local _blind = ImGui.Button("", UTIL:TextWidth(which), 1)
+	ImGui.PopID()
+
+	-- drop stacks
+	ImGui.PopStyleVar(1)
+	ImGui.PopStyleColor(3)
+
 	DRAW:Spacing(1,3)
 end
 
@@ -1116,12 +1141,12 @@ function DRAW:AboutAdded(what, add)
 
 	DRAW:Spacer(52,1)
 	DRAW:PageText("Orange", "Normal", "+ ", true)
-	DRAW:PageText("Grey", "Light", what, false)
+	DRAW:PageText("Grey", "Lighter", what, false)
 
 	if add
 	then
 		DRAW:Spacer(66,1)
-		DRAW:PageText("Grey", "Light", add, false)
+		DRAW:PageText("Grey", "Lighter", add, false)
 	end
 
 	DRAW:Spacing(1,3)
@@ -1133,12 +1158,12 @@ function DRAW:AboutChange(what, add)
 
 	DRAW:Spacer(52,1)
 	DRAW:PageText("Grey", "Normal", "* ", true)
-	DRAW:PageText("Grey", "Light", what, false)
+	DRAW:PageText("Grey", "Lighter", what, false)
 
 	if add
 	then
 		DRAW:Spacer(66,1)
-		DRAW:PageText("Grey", "Light", add, false)
+		DRAW:PageText("Grey", "Lighter", add, false)
 	end
 
 	DRAW:Spacing(1,3)
