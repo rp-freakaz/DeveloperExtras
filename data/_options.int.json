@@ -1,0 +1,76 @@
+{
+	"DeveloperExtras/BoolTrue":{
+		"type":"bool"
+	},
+	"DeveloperExtras/BoolFalse":{
+		"type":"bool"
+	},
+	"DeveloperExtras/Scrollbar/Enable":{
+		"type":"bool",
+		"boot":false
+	},
+	"DeveloperExtras/Scale/Enable":{
+		"type":"bool",
+		"boot":false
+	},
+	"DeveloperExtras/Scale/Factor":{
+		"type":"int",
+		"boot":2,
+
+		"def":2,
+		"min":1,
+		"max":5
+	},
+	"DeveloperExtras/Graph/Enable":{
+		"type":"bool",
+		"boot":false
+	},
+	"DeveloperExtras/Graph/BackgroundUpdate":{
+		"type":"bool",
+		"boot":false
+	},
+	"DeveloperExtras/Graph/Overlay/Enable":{
+		"type":"bool",
+		"boot":false
+	},
+	"DeveloperExtras/Graph/Overlay/Position":{
+		"type":"int",
+		"boot":1,
+
+		"def":1,
+		"min":1,
+		"max":9
+	},
+	"DeveloperExtras/Graph/Overlay/Transparency":{
+		"type":"int",
+		"boot":5,
+
+		"def":5,
+		"min":0,
+		"max":10
+	},
+	"DeveloperExtras/Graph/Overlay/Transparency/Bar":{
+		"type":"int",
+		"boot":8,
+
+		"def":8,
+		"min":0,
+		"max":10
+	},
+	"DeveloperExtras/Graph/Overlay/Transparency/Bar/Background":{
+		"type":"int",
+		"boot":5,
+
+		"def":5,
+		"min":0,
+		"max":10
+	},
+	"DeveloperExtras/Graph/Overlay/Transparency/Text":{
+		"type":"int",
+		"boot":10,
+
+		"def":10,
+		"min":0,
+		"max":10
+	}
+}

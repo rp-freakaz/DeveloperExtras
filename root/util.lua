@@ -46,6 +46,18 @@ function UTIL:FilterNumbers(data)
 end
 
 --
+--// UTIL:RoundPixel(<FLOAT>)
+--
+function UTIL:RoundPixel(data)
+
+	--return (math.floor((data * (ImGui.GetWindowWidth() / 100)) + 0.5) / 10)
+
+--ImGui.GetWindowWidth()
+
+	return data
+end
+
+--
 --// UTIL:ShortenFloat(<FLOAT>)
 --
 function UTIL:ShortenFloat(data)
@@ -104,7 +116,8 @@ end
 --
 function UTIL:ButtonWidth(text)
 	x, y = ImGui.CalcTextSize(tostring(text))
-	return (x + 12)
+	--return (x * UTIL.Texting + (12 * UTIL.Scaling))
+	return x + 12
 end
 
 --
@@ -112,7 +125,8 @@ end
 --
 function UTIL:ButtonHeight(text)
 	x, y = ImGui.CalcTextSize(tostring(text))
-	return (y + 8)
+	--return (y * UTIL.Texting + (8 * UTIL.Scaling))
+	return y + 7
 end
 
 
@@ -184,7 +198,7 @@ end
 function UTIL:SpaceBetween(left, right, width, size)
 
 	-- base value
-	local total = width - UTIL:TextWidth(left..right) - 42
+	local total = width - UTIL:TextWidth(left..right) - (142 * UTIL.Scaling)
 	local space = ""
 
 	-- loop until
@@ -196,6 +210,95 @@ function UTIL:SpaceBetween(left, right, width, size)
 
 	-- result
 	return left..space..right
+end
+
+
+
+
+
+--
+--// UTIL:ScaleFactor()
+--   [smooth font renderin added with cet 1210)]
+--
+function UTIL:ScreenWidth(percent)
+	return UTIL.Scaling.Screen.Width * percent
+end
+
+function UTIL:ScreenHeight(percent)
+	return UTIL.Scaling.Screen.Height * percent
+end
+
+
+
+--
+--// UTIL:ScaleFactor()
+--   [smooth font renderin added with cet 1210)]
+--
+function UTIL:WindowWidth(percent)
+	return UTIL.Scaling.Window.Width * percent
+end
+
+function UTIL:WindowHeight(percent)
+	return UTIL.Scaling.Window.Height * percent
+end
+
+
+
+
+
+
+
+
+--
+--// UTIL:ScaleFactor()
+--
+function UTIL:ScaleWidth()
+
+	-- get resolution
+	local x, y = GetDisplayResolution()
+
+	-- we use the screen height to keep the aspect ratio
+	local scale = y / 9 * 16 / 100
+
+	-- result (3 times)
+	return scale, scale, scale
+end
+
+function UTIL:ScaleHeight()
+
+	-- get resolution
+	local x, y = GetDisplayResolution()
+
+	-- calculate scale
+	local scale = y / 100
+
+	-- result (3 times)
+	return scale, scale, scale
+end
+
+
+
+
+
+--
+--// UTIL:ScaleFactor()
+--
+function UTIL:CalcWindowWidth()
+
+	-- we use the screen height to keep the aspect ratio
+	local scale = ImGui.GetWindowWidth() / 100
+
+	-- result (3 times)
+	return scale, scale, scale
+end
+
+function UTIL:CalcWindowHeight()
+
+	-- calculate scale
+	local scale = ImGui.GetWindowHeight() / 100
+
+	-- result (3 times)
+	return scale, scale, scale
 end
 
 
@@ -302,6 +405,7 @@ function UTIL:Prelude(project, version, debug)
 	UTIL.Project = project
 	UTIL.Version = version
 	UTIL.isDebug = debug
+	UTIL.Scaling = {Screen={Width=1920,Height=1080},Window={Width=500,Height=500}}
 
 	return o
 end

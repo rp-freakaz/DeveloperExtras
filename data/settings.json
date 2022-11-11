@@ -15,6 +15,19 @@
 					"separator":5
 				},
 				{
+					"name":"Enable UI Scaling",
+					"path":"DeveloperExtras/Scale/Enable",
+					"desc":"Enables automatic UI Scaling depending on\nResolution. May has no effect."
+				},
+				{
+					"name":"UI Scale Override",
+					"path":"DeveloperExtras/Scale/Factor",
+					"desc":"Overrides detection and setting scale manually."
+				},
+				{
+					"separator":5
+				},
+				{
 					"name":"Performance Graph",
 					"path":"DeveloperExtras/Graph/Enable",
 					"desc":"Show's the Performance Graph with Frametimes and\nFrames Per Second in the Window."

@@ -9,8 +9,7 @@
 				{
 					"name":"Antialiasing",
 					"path":"Developer/FeatureToggles/Antialiasing",
-					"note":"Required for DLSS or FSR 2.0",
-					"rate":{"performance":"Low","visual":"High"}
+					"note":"Required for DLSS or FSR 2.0"
 				},
 
 
@@ -33,8 +32,7 @@
 				{
 					"name":"Ambient Occlusion",
 					"path":"Developer/FeatureToggles/SSAO",
-					"note":"Raytracing will disable this\nregular Version of Ambient Occlusion",
-					"rate":{"performance":"Medium","visual":"Medium"}
+					"note":"Raytracing will disable this\nregular Version of Ambient Occlusion"
 				},
 				{
 					"spacing":10

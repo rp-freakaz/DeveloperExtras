@@ -6,10 +6,6 @@
 				{
 					"name":"Antialiasing",
 					"path":"Developer/FeatureToggles/Antialiasing"
-				},
-				{
-					"type":"separator",
-					"size":"large"
 				}
 			]
 		}

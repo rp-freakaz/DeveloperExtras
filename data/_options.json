@@ -26,31 +26,41 @@
 			"type":"int",
 			"boot":1,
 
-			"any":{"def":1,"min":1,"max":9}
+			"def":1,
+			"min":1,
+			"max":9
 		},
 		"DeveloperExtras/Graph/Overlay/Transparency":{
 			"type":"int",
 			"boot":5,
 
-			"any":{"def":5,"min":0,"max":10}
+			"def":5,
+			"min":0,
+			"max":10
 		},
 		"DeveloperExtras/Graph/Overlay/Transparency/Bar":{
 			"type":"int",
 			"boot":8,
 
-			"any":{"def":8,"min":0,"max":10}
+			"def":8,
+			"min":0,
+			"max":10
 		},
 		"DeveloperExtras/Graph/Overlay/Transparency/Bar/Background":{
 			"type":"int",
 			"boot":5,
 
-			"any":{"def":5,"min":0,"max":10}
+			"def":5,
+			"min":0,
+			"max":10
 		},
 		"DeveloperExtras/Graph/Overlay/Transparency/Text":{
 			"type":"int",
 			"boot":10,
 
-			"any":{"def":10,"min":0,"max":10}
+			"def":10,
+			"min":0,
+			"max":10
 		}
 	},
 
@@ -434,6 +444,15 @@
 		}
 
 	},
+
+
+
+
+
+
+
+
+
 
 	"11":{
 		"graphics/dynamicresolution/SRS_Resolution":{

@@ -92,6 +92,28 @@ function CORE:Initialize()
 end
 
 --
+--// CORE:Cronjobs()
+--
+function CORE:Cronjobs()
+
+	-- update scale factor
+	--if CORE.isReady and CORE.isPaint
+--	then
+		--CORE.Scaling, DRAW.Scaling, UTIL.Scaling = UTIL:ScaleFactor()
+--	end
+
+	--CORE.Scaling = {Screen={Width=1920,Height=1080},Window={Width=500,Height=500}}
+
+	CORE.Scaling.Screen.Width, DRAW.Scaling.Screen.Width, UTIL.Scaling.Screen.Width = UTIL:ScaleWidth()
+	CORE.Scaling.Screen.Height, DRAW.Scaling.Screen.Height, UTIL.Scaling.Screen.Height = UTIL:ScaleHeight()
+
+	---CORE.Scaling, DRAW.Scaling, UTIL.Scaling = UTIL:ScaleFactor()
+
+--CORE:ScaleFactor()
+
+end
+
+--
 --// CORE:Interface()
 --
 function CORE:Interface()
@@ -99,20 +121,37 @@ function CORE:Interface()
 	-- debug id
 	local __func__ = "CORE:Interface"
 
+
+
+
+
 	-- run cronjobs
-	if not CORE.Extras["DeveloperExtras/Graph/BackgroundUpdate"]
-	then
+	CORE:Cronjobs()
+
+
+
+	--if not CORE.Extras["DeveloperExtras/Graph/BackgroundUpdate"]
+	--then
 		--CORE.Cronjobs()
-	end
+	--end
+
+
+
 
 	-- start window
 	local _trigger = DRAW:WindowStart()
 	if _trigger
 	then
+
+		CORE.Scaling.Window.Width, DRAW.Scaling.Window.Width, UTIL.Scaling.Window.Width = UTIL:CalcWindowWidth()
+		CORE.Scaling.Window.Height, DRAW.Scaling.Window.Height, UTIL.Scaling.Window.Height = UTIL:CalcWindowHeight()
+
 		-- start tabbar
 		local _trigger = DRAW:TabbarStart()
 		if _trigger
 		then
+			DRAW:Separator(2,0,0,"Orange")
+
 			-- tab order
 			list = CORE:TabOrder()
 
@@ -124,13 +163,13 @@ function CORE:Interface()
 				if _trigger
 				then
 					-- bottom space
-					local bottom = 116
+					local bottom = 58
 
 					-- add more then graph is enabled
 					if CORE.Extras["DeveloperExtras/Graph/Enable"]
 					and not CORE.Extras["DeveloperExtras/Graph/Overlay/Enable"]
 					then
-						bottom = bottom + 255
+						bottom = bottom + 127
 					end
 
 					-- start tabchild
@@ -174,7 +213,7 @@ function CORE:Interface()
 								-- collapsable render
 								else
 									-- begin collapse
-									local _trigger = DRAW:Collapse(loop.name)
+									local _trigger = DRAW:Collapse(loop.name, scale)
 									if _trigger
 									then
 										-- show tab notice
@@ -214,7 +253,7 @@ function CORE:Interface()
 		DRAW:TabbarEnd()
 
 
-		DRAW:Separator(1,0,0,"Orange")
+		DRAW:Separator(3,0,0,"Orange")
 
 
 	-- end window
@@ -346,7 +385,7 @@ function CORE:RenderSlider(pool, option, render, demand)
 	-- render prepare
 	if render.spacing
 	then
-		DRAW:Spacer(render.spacing,1)
+		DRAW:Spacer(render.spacing * CORE.Scaling,1)
 		DRAW:SliderTitle(render.name, option.min, option.max, demand)
 
 		-- render info
@@ -358,11 +397,11 @@ function CORE:RenderSlider(pool, option, render, demand)
 			DRAW:Spacing(1,15)
 		end
 
-		DRAW:Spacing(1,5)
-		DRAW:Spacer(render.spacing + 15,1)
-		ImGui.SetNextItemWidth(ImGui.GetWindowWidth() - render.spacing - 95)
+		DRAW:Spacing(1,3 * CORE.Scaling)
+		DRAW:Spacer((render.spacing + 8) * CORE.Scaling,1)
+		ImGui.SetNextItemWidth(ImGui.GetWindowWidth() - render.spacing - (95 * CORE.Scaling))
 	else
-		DRAW:Spacer(28,1)
+		DRAW:Spacer(14 * CORE.Scaling,1)
 		DRAW:SliderTitle(render.name, option.min, option.max, demand)
 
 		-- render info
@@ -371,18 +410,21 @@ function CORE:RenderSlider(pool, option, render, demand)
 			DRAW:ButtonNotes(render, "?", demand)
 		else
 			DRAW:Sameline()
-			DRAW:Spacing(1,15)
+			DRAW:Spacing(1,8 * CORE.Scaling)
 		end
 
-		DRAW:Spacing(1,5)
-		DRAW:Spacer(28 + 15,1)
-		ImGui.SetNextItemWidth(ImGui.GetWindowWidth() - 28 - 95)
+		DRAW:Spacing(1,3 * CORE.Scaling)
+		DRAW:Spacer((14 + 15) * CORE.Scaling,1)
+		ImGui.SetNextItemWidth(ImGui.GetWindowWidth() - (14 * CORE.Scaling) - 95)
 	end
 
 	-- create slider
 	local value, trigger = DRAW:Slider(render, option, demand, value)
 	if trigger
 	then
+
+		CORE:SetToggle(render.path, option.type, value)
+
 		-- needs to be enabled
 		--if _state == "enabled"
 		--then
@@ -398,7 +440,7 @@ function CORE:RenderSlider(pool, option, render, demand)
 	then
 		-- always
 		DRAW:Sameline()
-		DRAW:Spacer(8,1)
+		DRAW:Spacer(4 * CORE.Scaling,1)
 		DRAW:Sameline()
 
 		local trigger = DRAW:Button(render, option, demand, "Reset", "Reset")
@@ -416,7 +458,7 @@ function CORE:RenderSlider(pool, option, render, demand)
 
 		if render.spacing
 		then
-			DRAW:Spacer(render.spacing+15,1)
+			DRAW:Spacer(render.spacing + 15,1)
 		else
 			DRAW:Spacer(28+15,1)
 		end
@@ -488,7 +530,16 @@ function CORE:RenderButtons(pool, option, render, demand)
 		end
 
 		-- draw limiter child
-		ImGui.BeginChild('DE_ListChild'..tostring(render.path), (ImGui.GetWindowWidth() / 2 - 16), 42, false, ImGuiWindowFlags.NoScrollbar + ImGuiWindowFlags.NoMove + ImGuiWindowFlags.NoScrollWithMouse)
+		--ImGui.BeginChild('DE_ListChild'..tostring(render.path), (ImGui.GetWindowWidth() / 2 - 16), 42, false, ImGuiWindowFlags.NoScrollbar + ImGuiWindowFlags.NoMove + ImGuiWindowFlags.NoScrollWithMouse)
+
+		ImGui.BeginChild('DE_ListChild'..tostring(render.path), (ImGui.GetWindowWidth() / 2 - 16), 48, false, ImGuiWindowFlags.NoScrollbar + ImGuiWindowFlags.NoMove + ImGuiWindowFlags.NoScrollWithMouse)
+
+
+		-- version [smooth font renderin added with cet 1210)]
+		if DRAW.Version.Cet.Numeric >= 1210
+		then
+			ImGui.SetWindowFontScale(1.35)
+		end
 	end
 
 
@@ -590,8 +641,6 @@ function CORE:RenderCheckbox(pool, option, render, demand)
 	-- get current
 	local value = CORE:GetToggle(render.path, option.type)
 
-
-
 	-- special type of bool
 	if option.type == "Bool" and render.show == true
 	then
@@ -613,8 +662,11 @@ function CORE:RenderCheckbox(pool, option, render, demand)
 		if trigger
 		then
 			-- needs to be enabled
-			if option.is
+			if UTIL:IntToBool(demand)
 			then
+				-- apply it
+				CORE:SetToggle(render.path, option.type, value)
+
 
 				--Self.SetToggle(ePool, eType, ePath, eFlag, uValue)
 
@@ -797,36 +849,30 @@ function CORE:LoadOption()
 	-- define
 	local data = nil
 	local exit = false
+	local list = {int = "_options.int.json", any = "_options.any.json", game = "_options."..UTIL:FilterNumbers(CORE.Version.Game.String)..".json"}
 
-	-- load & convert
-	exit, data = UTIL:LoadJson("data/_options.json")
+	-- loop list
+	for _,file in pairs(list)
+	do
+		-- load & convert
+		exit, data = UTIL:LoadJson("data/"..file)
 
-	-- validate
-	if exit
-	then
-		-- loop versions
-		for vkey,vset in pairs(data)
-		do
-			-- only relevant
-			if vkey == "int" or vkey == "all" or vkey == tostring(CORE.Version.Game.Numeric)
-			then
-				-- debug msg
-				CORE:DebugConsole(__func__,"Reading Records: "..tostring(vkey))
+		-- validate
+		if exit
+		then
+			-- debug msg
+			CORE:DebugConsole(__func__,"Reading Records: "..tostring(file))
 
-				-- loop records
-				for rkey,rset in pairs(vset)
-				do
-					-- call parser
-					CORE:BootOption(rkey, rset)
-				end
-			else
-				-- debug msg
-				CORE:DebugConsole(__func__,"Skipped Version: "..tostring(vkey))
+			-- loop records
+			for rkey,rset in pairs(data)
+			do
+				-- call parser
+				CORE:BootOption(rkey, rset)
 			end
+		else
+			-- debug msg
+			CORE:DebugConsole(__func__,"failed to parse "..tostring(file))
 		end
-	else
-		-- debug msg
-		CORE:DebugConsole(__func__,"failed to parse _options.json")
 	end
 
 	-- result
@@ -1301,6 +1347,10 @@ function CORE:GetInternal(path)
 	-- ui toggles
 	if path == "DeveloperExtras/Scrollbar/Enable" then return CORE.Extras[path] end
 
+	-- ui scaling
+	if path == "DeveloperExtras/Scale/Enable" then return CORE.Extras[path] end
+	if path == "DeveloperExtras/Scale/Factor" then return CORE.Extras[path] end
+
 	-- graph toggles (flexi)
 	if path == "DeveloperExtras/Graph/Enable" then return CORE.Extras[path] end
 	if path == "DeveloperExtras/Graph/BackgroundUpdate" then return CORE.Extras[path] end
@@ -1332,6 +1382,15 @@ function CORE:SetInternal(path, set)
 
 	-- ui toggles
 	if path == "DeveloperExtras/Scrollbar/Enable" then CORE.Extras[path] = set end
+
+	-- ui scaling
+	if path == "DeveloperExtras/Scale/Enable" then CORE.Extras[path] = set end
+	if path == "DeveloperExtras/Scale/Factor" then
+		CORE.Extras[path] = set
+		CORE.Scaling = set
+		DRAW.Scaling = set
+		UTIL.Scaling = set
+	end
 
 	-- graph toggles (flexi)
 	if path == "DeveloperExtras/Graph/Enable" then
@@ -1459,6 +1518,50 @@ function CORE:TabOrder()
 	return list
 end
 
+
+
+--
+--// CORE:ScaleFactor
+--
+function CORE:ScaleFactor()
+
+	-- default
+	local factor = 2
+
+	-- needs scaling to be enabled
+	if CORE.Extras["DeveloperExtras/Scale/Enable"]
+	then
+		-- get resolution
+		local x, y = GetDisplayResolution()
+
+		-- we scale depending on height
+		if y <= 720
+		then
+			factor = 1
+		elseif y >= 2160 and y < 3072
+		then
+			factor = 3
+		elseif y >= 3072 and y < 4096
+		then
+			factor = 4
+		elseif y >= 4096
+		then
+			factor = 5
+		end
+
+		-- update internal
+		if CORE.Extras["DeveloperExtras/Scale/Factor"] ~= factor
+		then
+			CORE.Extras["DeveloperExtras/Scale/Factor"] = factor
+			CORE.Scaling = factor
+			DRAW.Scaling = factor
+			UTIL.Scaling = factor
+		end
+	end
+end
+
+
+
 --
 --// CORE:DetectVersions
 --
@@ -1565,7 +1668,8 @@ function CORE:Prelude()
 	-- identity
 	CORE.Project = "Developer Extras"
 	CORE.Authors = "FreakaZ"
-	CORE.Version = {String="3.0",Numeric=50,Cet={String=nil,Numeric=0},Game={String=nil,Numeric=0}}
+	CORE.Version = {String="3.0.161",Numeric=30161,Cet={String=nil,Numeric=0},Game={String=nil,Numeric=0}}
+	CORE.Scaling = {Screen={Width=1920,Height=1080},Window={Width=500,Height=500}}
 	CORE.Timings = {Frame=0,Second=0,Millisecond=0}
 
 	-- pooling
