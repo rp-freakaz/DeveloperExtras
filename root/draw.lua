@@ -30,7 +30,7 @@ function DRAW:GetColor(color, style, state)
 	if color == "Black" and style == "Dark"			then return ImGui.GetColorU32(0.01, 0.01, 0.03, DRAW:GetState(state, 0.9)) end
 
 	-- white
-	if color == "White" and style == "Normal"		then return ImGui.GetColorU32(1, 1, 1, DRAW:GetState(state, 1)) end
+	if color == "White" and style == "Normal"		then return ImGui.GetColorU32(0.9, 0.9, 1, DRAW:GetState(state, 0.9)) end
 	if color == "White" and style == "Light"		then return ImGui.GetColorU32(0.9, 0.9, 1, DRAW:GetState(state, 1)) end
 	if color == "White" and style == "Dark"			then return ImGui.GetColorU32(0.8, 0.8, 0.85, DRAW:GetState(state, 0.8)) end
 
@@ -90,20 +90,31 @@ end
 --
 function DRAW:WindowStart()
 
-	-- defaults
+	-- absolute position
 	ImGui.SetNextWindowPos(100, 100, ImGuiCond.FirstUseEver)
-	ImGui.SetNextWindowSizeConstraints(UTIL:ScreenWidth(25), UTIL:ScreenHeight(50), UTIL:ScreenWidth(100) - 100, UTIL:ScreenHeight(100) - 100)
+
+	-- native scaling
+	if DRAW.Scaling.Enable
+	then
+		ImGui.SetNextWindowSizeConstraints(UTIL:ScreenWidth(23.75), UTIL:ScreenHeight(50), UTIL:ScreenWidth(90), UTIL:ScreenHeight(90))
+	else
+		ImGui.SetNextWindowSizeConstraints(UTIL:ScreenWidth(23.75), UTIL:ScreenHeight(50), UTIL:ScreenWidth(23.75), UTIL:ScreenHeight(90))
+	end
 
 	-- global styles
+	ImGui.PushStyleVar(ImGuiStyleVar.ScrollbarSize, 0)
+	ImGui.PushStyleVar(ImGuiStyleVar.ScrollbarRounding, 0)
 	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, 0, 0)
 	ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, 0, 0)
 	ImGui.PushStyleVar(ImGuiStyleVar.ItemInnerSpacing, UTIL:WindowWidth(0.5), 0)
 	ImGui.PushStyleVar(ImGuiStyleVar.GrabRounding, UTIL:WindowWidth(0.5))
-	ImGui.PushStyleVar(ImGuiStyleVar.ScrollbarSize, 0)
-	ImGui.PushStyleVar(ImGuiStyleVar.ScrollbarRounding, 0)
 
-	-- add stacks
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("Orange","Light"))
+	--
+	-- window decoration
+	--
+
+	-- define colors
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("White","Light"))
 	ImGui.PushStyleColor(ImGuiCol.Border, DRAW:GetColor("Orange","Border"))
 	ImGui.PushStyleColor(ImGuiCol.WindowBg, DRAW:GetColor("Black","Dark"))
 
@@ -119,24 +130,25 @@ function DRAW:WindowStart()
 	ImGui.PushStyleColor(ImGuiCol.ResizeGripActive, DRAW:GetColor("Orange","Normal"))
 	ImGui.PushStyleColor(ImGuiCol.ResizeGripHovered, DRAW:GetColor("Orange","Light"))
 
-	--ImGui.PushStyleVar(ImGuiStyleVar.WindowTitleAlign, 0.5, 0.5)
-	--ImGui.PushStyleVar(ImGuiStyleVar.WindowMenuButtonPosition, Left)
-	--ImGui.PushStyleVar(ImGuiDir.WindowMenuButtonPosition, "Left")
-
+	-- define styles
 	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, 0)
-	ImGui.PushStyleVar(ImGuiStyleVar.WindowRounding, 3)
+	ImGui.PushStyleVar(ImGuiStyleVar.WindowRounding, 5)
 	ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, 0, 0)
-	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:WindowWidth(1), UTIL:WindowWidth(1.5))
-	ImGui.PushStyleVar(ImGuiStyleVar.ItemInnerSpacing, UTIL:WindowWidth(0.5), 0)
+	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:WindowWidth(2), UTIL:WindowWidth(3))
+	ImGui.PushStyleVar(ImGuiStyleVar.ItemInnerSpacing, UTIL:WindowWidth(1.5), 0)
 
-	-- create window
-	--local _trigger = ImGui.Begin(UTIL:SpaceBetween(DRAW.Project.." v"..DRAW.Version.String, "CET "..DRAW.Version.Cet.String.." // PATCH "..DRAW.Version.Game.String, width, UTIL:TextWidth(" ")), ImGuiWindowFlags.NoScrollbar)
-	local _trigger = ImGui.Begin("~ "..string.upper(DRAW.Project).." ~", ImGuiWindowFlags.NoScrollbar)
+	-- trigger
+	local _trigger
 
-	-- version [smooth font renderin added with cet 1210)]
-	if DRAW.Version.Cet.Numeric >= 1210
+	-- native scaling
+	if DRAW.Scaling.Enable
 	then
+		-- create window
+		_trigger = ImGui.Begin("~ "..string.upper(DRAW.Project).." ~", ImGuiWindowFlags.NoScrollbar)
 		ImGui.SetWindowFontScale(1.35)
+	else
+		-- create window
+		_trigger = ImGui.Begin(UTIL:SpaceBetween(DRAW.Project.." v"..DRAW.Version.String, "CET "..DRAW.Version.Cet.String.." // PATCH "..DRAW.Version.Game.String, UTIL:ScreenWidth(23.75), UTIL:TextWidth(" ")), ImGuiWindowFlags.NoScrollbar)
 	end
 
 	-- drop stacks
@@ -168,7 +180,7 @@ function DRAW:TabbarStart()
 	ImGui.PushStyleColor(ImGuiCol.TabActive, DRAW:GetColor("Orange","Normal"))
 	ImGui.PushStyleColor(ImGuiCol.TabHovered, DRAW:GetColor("Orange","Light"))
 
-	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:WindowWidth(1), UTIL:WindowWidth(1.2))
+	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:WindowWidth(1.5), UTIL:WindowWidth(2))
 
 	-- fix left align
 	DRAW:Spacer(1,1)
@@ -203,7 +215,7 @@ function DRAW:TabitemStart(title)
 	ImGui.PushStyleColor(ImGuiCol.Tab, DRAW:GetColor("Grey","Darker"))
 	ImGui.PushStyleColor(ImGuiCol.TabActive, DRAW:GetColor("Orange","Normal"))
 	ImGui.PushStyleColor(ImGuiCol.TabHovered, DRAW:GetColor("Orange","Light"))
-	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:WindowWidth(1.55), UTIL:WindowWidth(1.2))
+	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:WindowWidth(1.75), UTIL:WindowWidth(2))
 
 	-- create tabitem
 	local _trigger = ImGui.BeginTabItem("¨"..title)
@@ -236,7 +248,7 @@ function DRAW:TabchildStart(width, height, scroll)
 	-- add scrollbar
 	if scroll
 	then
-		ImGui.PushStyleVar(ImGuiStyleVar.ScrollbarSize, 6)
+		ImGui.PushStyleVar(ImGuiStyleVar.ScrollbarSize, UTIL:WindowWidth(2))
 	end
 
 	-- child flags
@@ -276,7 +288,7 @@ function DRAW:Collapse(title, scale)
 	ImGui.PushStyleColor(ImGuiCol.HeaderHovered, DRAW:GetColor("Orange","Light"))
 
 	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, 0)
-	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, 4, 6)
+	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:WindowWidth(1.5), UTIL:WindowWidth(3))
 
 	-- space before
 	DRAW:Spacing(1,2)
@@ -1388,7 +1400,7 @@ end
 --
 -- constructor
 --
-function DRAW:Prelude(project, version, debug)
+function DRAW:Prelude(project, version, debug, scale)
 	local o = {}
 	setmetatable(o, self)
 	self.__index = self
@@ -1397,7 +1409,7 @@ function DRAW:Prelude(project, version, debug)
 	DRAW.Project = project
 	DRAW.Version = version
 	DRAW.isDebug = debug
-	DRAW.Scaling = {Screen={Width=1920,Height=1080},Window={Width=500,Height=500}}
+	DRAW.Scaling = scale
 
 	-- messages
 	DRAW.Warning = "Toggle's are disabled, because you are not in Night City yet."

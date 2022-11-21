@@ -31,9 +31,22 @@ function CORE:Initialize()
 		CORE:DebugConsole(__func__,"Detected: Cyberpunk 2077: "..CORE.Version.Game.String.." ("..CORE.Version.Game.Numeric..")")
 		CORE:DebugConsole(__func__,"Detected: Cyber Engine Tweaks: "..CORE.Version.Cet.String.." ("..CORE.Version.Cet.Numeric..")")
 
+		-- native scaling
+		if CORE.Version.Cet.Numeric >= 1210
+		then
+			-- enable scaling
+			CORE.Scaling.Enable = true
+
+			-- debug msg
+			CORE:DebugConsole(__func__,"Native Scaling: Enabled")
+		else
+			-- debug msg
+			CORE:DebugConsole(__func__,"Native Scaling: Not Supported")
+		end
+
 		-- libraries
-		UTIL:Prelude(CORE.Project, CORE.Version, CORE.isDebug)
-		DRAW:Prelude(CORE.Project, CORE.Version, CORE.isDebug)
+		UTIL:Prelude(CORE.Project, CORE.Version, CORE.isDebug, CORE.Scaling)
+		DRAW:Prelude(CORE.Project, CORE.Version, CORE.isDebug, CORE.Scaling)
 
 		-- debug msg
 		CORE:DebugConsole(__func__,"Loading Options ..")
@@ -96,20 +109,7 @@ end
 --
 function CORE:Cronjobs()
 
-	-- update scale factor
-	--if CORE.isReady and CORE.isPaint
---	then
-		--CORE.Scaling, DRAW.Scaling, UTIL.Scaling = UTIL:ScaleFactor()
---	end
 
-	--CORE.Scaling = {Screen={Width=1920,Height=1080},Window={Width=500,Height=500}}
-
-	CORE.Scaling.Screen.Width, DRAW.Scaling.Screen.Width, UTIL.Scaling.Screen.Width = UTIL:ScaleWidth()
-	CORE.Scaling.Screen.Height, DRAW.Scaling.Screen.Height, UTIL.Scaling.Screen.Height = UTIL:ScaleHeight()
-
-	---CORE.Scaling, DRAW.Scaling, UTIL.Scaling = UTIL:ScaleFactor()
-
---CORE:ScaleFactor()
 
 end
 
@@ -121,37 +121,23 @@ function CORE:Interface()
 	-- debug id
 	local __func__ = "CORE:Interface"
 
-
-
-
+	-- update screen
+	CORE:ScreenScale()
 
 	-- run cronjobs
 	CORE:Cronjobs()
-
-
-
-	--if not CORE.Extras["DeveloperExtras/Graph/BackgroundUpdate"]
-	--then
-		--CORE.Cronjobs()
-	--end
-
-
-
 
 	-- start window
 	local _trigger = DRAW:WindowStart()
 	if _trigger
 	then
-
-		CORE.Scaling.Window.Width, DRAW.Scaling.Window.Width, UTIL.Scaling.Window.Width = UTIL:CalcWindowWidth()
-		CORE.Scaling.Window.Height, DRAW.Scaling.Window.Height, UTIL.Scaling.Window.Height = UTIL:CalcWindowHeight()
+		-- update window
+		CORE:WindowScale()
 
 		-- start tabbar
 		local _trigger = DRAW:TabbarStart()
 		if _trigger
 		then
-			DRAW:Separator(2,0,0,"Orange")
-
 			-- tab order
 			list = CORE:TabOrder()
 
@@ -163,7 +149,7 @@ function CORE:Interface()
 				if _trigger
 				then
 					-- bottom space
-					local bottom = 58
+					local bottom = UTIL:WindowWidth(30)
 
 					-- add more then graph is enabled
 					if CORE.Extras["DeveloperExtras/Graph/Enable"]
@@ -173,7 +159,7 @@ function CORE:Interface()
 					end
 
 					-- start tabchild
-					local _trigger = DRAW:TabchildStart(ImGui.GetWindowWidth(), ImGui.GetWindowHeight() - bottom, CORE.Extras["DeveloperExtras/Scrollbar/Enable"])
+					local _trigger = DRAW:TabchildStart(CORE.Scaling.Window.Width, CORE.Scaling.Window.Height - bottom, CORE.Extras["DeveloperExtras/Scrollbar/Enable"])
 					if _trigger
 					then
 						-- page render
@@ -385,7 +371,7 @@ function CORE:RenderSlider(pool, option, render, demand)
 	-- render prepare
 	if render.spacing
 	then
-		DRAW:Spacer(render.spacing * CORE.Scaling,1)
+		DRAW:Spacer(render.spacing * CORE.Scaling.Window.Factor.Width,1)
 		DRAW:SliderTitle(render.name, option.min, option.max, demand)
 
 		-- render info
@@ -398,10 +384,10 @@ function CORE:RenderSlider(pool, option, render, demand)
 		end
 
 		DRAW:Spacing(1,3 * CORE.Scaling)
-		DRAW:Spacer((render.spacing + 8) * CORE.Scaling,1)
-		ImGui.SetNextItemWidth(ImGui.GetWindowWidth() - render.spacing - (95 * CORE.Scaling))
+		DRAW:Spacer((render.spacing + 8) * CORE.Scaling.Window.Factor.Width,1)
+		ImGui.SetNextItemWidth(ImGui.GetWindowWidth() - render.spacing - (95 * CORE.Scaling.Window.Factor.Width))
 	else
-		DRAW:Spacer(14 * CORE.Scaling,1)
+		DRAW:Spacer(14 * CORE.Scaling.Window.Factor.Width,1)
 		DRAW:SliderTitle(render.name, option.min, option.max, demand)
 
 		-- render info
@@ -410,12 +396,12 @@ function CORE:RenderSlider(pool, option, render, demand)
 			DRAW:ButtonNotes(render, "?", demand)
 		else
 			DRAW:Sameline()
-			DRAW:Spacing(1,8 * CORE.Scaling)
+			DRAW:Spacing(1,8 * CORE.Scaling.Window.Factor.Width)
 		end
 
-		DRAW:Spacing(1,3 * CORE.Scaling)
-		DRAW:Spacer((14 + 15) * CORE.Scaling,1)
-		ImGui.SetNextItemWidth(ImGui.GetWindowWidth() - (14 * CORE.Scaling) - 95)
+		DRAW:Spacing(1,3 * CORE.Scaling.Window.Factor.Width)
+		DRAW:Spacer((14 + 15) * CORE.Scaling.Window.Factor.Width,1)
+		ImGui.SetNextItemWidth(ImGui.GetWindowWidth() - (14 * CORE.Scaling.Window.Factor.Width) - 95)
 	end
 
 	-- create slider
@@ -440,7 +426,7 @@ function CORE:RenderSlider(pool, option, render, demand)
 	then
 		-- always
 		DRAW:Sameline()
-		DRAW:Spacer(4 * CORE.Scaling,1)
+		DRAW:Spacer(4 * CORE.Scaling.Window.Factor.Width,1)
 		DRAW:Sameline()
 
 		local trigger = DRAW:Button(render, option, demand, "Reset", "Reset")
@@ -1518,49 +1504,44 @@ function CORE:TabOrder()
 	return list
 end
 
-
-
 --
---// CORE:ScaleFactor
+--// CORE:ScreenScale
 --
-function CORE:ScaleFactor()
+function CORE:ScreenScale()
 
-	-- default
-	local factor = 2
+	-- update resolution
+	CORE.Scaling.Screen.Width, CORE.Scaling.Screen.Height = GetDisplayResolution()
 
-	-- needs scaling to be enabled
-	if CORE.Extras["DeveloperExtras/Scale/Enable"]
+	-- update scaling factor
+	if CORE.Scaling.Enable
 	then
-		-- get resolution
-		local x, y = GetDisplayResolution()
-
-		-- we scale depending on height
-		if y <= 720
-		then
-			factor = 1
-		elseif y >= 2160 and y < 3072
-		then
-			factor = 3
-		elseif y >= 3072 and y < 4096
-		then
-			factor = 4
-		elseif y >= 4096
-		then
-			factor = 5
-		end
-
-		-- update internal
-		if CORE.Extras["DeveloperExtras/Scale/Factor"] ~= factor
-		then
-			CORE.Extras["DeveloperExtras/Scale/Factor"] = factor
-			CORE.Scaling = factor
-			DRAW.Scaling = factor
-			UTIL.Scaling = factor
-		end
+		-- we use the screen height to keep the aspect ratio
+		CORE.Scaling.Screen.Factor.Width = CORE.Scaling.Screen.Height / 9 * 16 / 100
+		CORE.Scaling.Screen.Factor.Height = CORE.Scaling.Screen.Height / 100
 	end
+
+	-- distribute to all
+	DRAW.Scaling = CORE.Scaling
+	UTIL.Scaling = CORE.Scaling
 end
 
+--
+--// CORE:WindowScale
+--
+function CORE:WindowScale()
 
+	-- update window dimensions
+	CORE.Scaling.Window.Width = ImGui.GetWindowWidth()
+	CORE.Scaling.Window.Height = ImGui.GetWindowHeight()
+
+	-- update scaling factor
+	CORE.Scaling.Window.Factor.Width = CORE.Scaling.Window.Width / 100
+	CORE.Scaling.Window.Factor.Height = CORE.Scaling.Window.Height / 100
+
+	-- distribute to all
+	DRAW.Scaling = CORE.Scaling
+	UTIL.Scaling = CORE.Scaling
+end
 
 --
 --// CORE:DetectVersions
@@ -1602,7 +1583,7 @@ function CORE:DetectVersions()
 		CORE.Version.Game.String = "1.2"
 		CORE.Version.Game.Numeric = 12
 
-		-- sub versions
+		-- patch versions
 		if CORE.Version.Cet.Numeric >= 1122 then CORE.Version.Game.String = "1.21" end
 		if CORE.Version.Cet.Numeric >= 1130 then CORE.Version.Game.String = "1.22" end
 		if CORE.Version.Cet.Numeric >= 1140 then CORE.Version.Game.String = "1.23" end
@@ -1614,7 +1595,7 @@ function CORE:DetectVersions()
 		CORE.Version.Game.String = "1.1"
 		CORE.Version.Game.Numeric = 11
 
-		-- sub versions
+		-- patch versions
 		if CORE.Version.Cet.Numeric >= 195 then CORE.Version.Game.String = "1.11" end
 		if CORE.Version.Cet.Numeric >= 1100 then CORE.Version.Game.String = "1.12" end
 	end
@@ -1630,14 +1611,6 @@ end
 
 
 
-
-
-
-
-
-
-
-
 --
 --// CORE:isPreGame()
 --
@@ -1645,12 +1618,16 @@ function CORE:isPreGame()
 	return GetSingleton("inkMenuScenario"):GetSystemRequestsHandler():IsPreGame()
 end
 
--- regular
+--
+--// CORE:PrintConsole(<STRING>)
+--
 function CORE:PrintConsole(msg)
 	print('*** '..CORE.Project..' (v'..CORE.Version.String..') '..tostring(msg))
 end
 
--- debugging
+--
+--// CORE:DebugConsole(<STRING>, <STRING>)
+--
 function CORE:DebugConsole(id, msg)
 	if CORE.isDebug	then
 		CORE:PrintConsole('- ['..tostring(id)..'] '..tostring(msg))
@@ -1658,7 +1635,7 @@ function CORE:DebugConsole(id, msg)
 end
 
 --
--- constructor
+-- CONSTRUCTOR
 --
 function CORE:Prelude()
 	local o = {}
@@ -1669,8 +1646,11 @@ function CORE:Prelude()
 	CORE.Project = "Developer Extras"
 	CORE.Authors = "FreakaZ"
 	CORE.Version = {String="3.0.161",Numeric=30161,Cet={String=nil,Numeric=0},Game={String=nil,Numeric=0}}
-	CORE.Scaling = {Screen={Width=1920,Height=1080},Window={Width=500,Height=500}}
+	CORE.Scaling = {Enable=false,Screen={Width=1920,Height=1080,Factor={Width=19.2,Height=10.8}},Window={Width=456,Height=600,Factor={Width=4.56,Height=6.0}}}
 	CORE.Timings = {Frame=0,Second=0,Millisecond=0}
+
+	-- new form
+	CORE.Trigger = {Saving=0,Export=0,Redraw=0}
 
 	-- pooling
 	CORE.Render = {}

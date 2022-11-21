@@ -198,7 +198,10 @@ end
 function UTIL:SpaceBetween(left, right, width, size)
 
 	-- base value
-	local total = width - UTIL:TextWidth(left..right) - (142 * UTIL.Scaling)
+	--local total = width - UTIL:TextWidth(left..right) - (142 * CORE.Scaling.Window.Factor.Width)
+
+	local total = width - UTIL:TextWidth(left..right) - (10 * UTIL.Scaling.Window.Factor.Width)
+
 	local space = ""
 
 	-- loop until
@@ -217,29 +220,25 @@ end
 
 
 --
---// UTIL:ScaleFactor()
---   [smooth font renderin added with cet 1210)]
+--// UTIL:ScreenWidth(<FLOAT>), UTIL:ScreenHeight(<FLOAT>)
 --
 function UTIL:ScreenWidth(percent)
-	return UTIL.Scaling.Screen.Width * percent
+	return UTIL.Scaling.Screen.Factor.Width * percent
 end
 
 function UTIL:ScreenHeight(percent)
-	return UTIL.Scaling.Screen.Height * percent
+	return UTIL.Scaling.Screen.Factor.Height * percent
 end
 
-
-
 --
---// UTIL:ScaleFactor()
---   [smooth font renderin added with cet 1210)]
+--// UTIL:WindowWidth(<FLOAT>), UTIL:WindowHeight(<FLOAT>)
 --
 function UTIL:WindowWidth(percent)
-	return UTIL.Scaling.Window.Width * percent
+	return UTIL.Scaling.Window.Factor.Width * percent
 end
 
 function UTIL:WindowHeight(percent)
-	return UTIL.Scaling.Window.Height * percent
+	return UTIL.Scaling.Window.Factor.Height * percent
 end
 
 
@@ -249,57 +248,8 @@ end
 
 
 
---
---// UTIL:ScaleFactor()
---
-function UTIL:ScaleWidth()
-
-	-- get resolution
-	local x, y = GetDisplayResolution()
-
-	-- we use the screen height to keep the aspect ratio
-	local scale = y / 9 * 16 / 100
-
-	-- result (3 times)
-	return scale, scale, scale
-end
-
-function UTIL:ScaleHeight()
-
-	-- get resolution
-	local x, y = GetDisplayResolution()
-
-	-- calculate scale
-	local scale = y / 100
-
-	-- result (3 times)
-	return scale, scale, scale
-end
 
 
-
-
-
---
---// UTIL:ScaleFactor()
---
-function UTIL:CalcWindowWidth()
-
-	-- we use the screen height to keep the aspect ratio
-	local scale = ImGui.GetWindowWidth() / 100
-
-	-- result (3 times)
-	return scale, scale, scale
-end
-
-function UTIL:CalcWindowHeight()
-
-	-- calculate scale
-	local scale = ImGui.GetWindowHeight() / 100
-
-	-- result (3 times)
-	return scale, scale, scale
-end
 
 
 
@@ -396,7 +346,7 @@ end
 --
 -- constructor
 --
-function UTIL:Prelude(project, version, debug)
+function UTIL:Prelude(project, version, debug, scale)
 	local o = {}
 	setmetatable(o, self)
 	self.__index = self
@@ -405,7 +355,7 @@ function UTIL:Prelude(project, version, debug)
 	UTIL.Project = project
 	UTIL.Version = version
 	UTIL.isDebug = debug
-	UTIL.Scaling = {Screen={Width=1920,Height=1080},Window={Width=500,Height=500}}
+	UTIL.Scaling = scale
 
 	return o
 end
