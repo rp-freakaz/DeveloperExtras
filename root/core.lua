@@ -45,8 +45,8 @@ function CORE:Initialize()
 		end
 
 		-- libraries
-		UTIL:Prelude(CORE.Project, CORE.Version, CORE.isDebug, CORE.Scaling)
-		DRAW:Prelude(CORE.Project, CORE.Version, CORE.isDebug, CORE.Scaling)
+		UTIL:Prelude(CORE.Project, CORE.Version, CORE.Scaling, CORE.isDebug)
+		DRAW:Prelude(CORE.Project, CORE.Version, CORE.Scaling, CORE.isDebug)
 
 		-- debug msg
 		CORE:DebugConsole(__func__,"Loading Options ..")
@@ -263,6 +263,8 @@ function CORE:RenderSwitch(pool, render)
 
 			-- check option requirements
 			local demand = CORE:RenderRequire(pool, option, render)
+
+			--local require = CORE:RenderRequire(pool, option, render)
 
 			--demand = 0
 			--cause = ""
@@ -835,35 +837,73 @@ function CORE:LoadOption()
 	-- define
 	local data = nil
 	local exit = false
-	local list = {int = "_options.int.json", any = "_options.any.json", game = "_options."..UTIL:FilterNumbers(CORE.Version.Game.String)..".json"}
 
-	-- loop list
-	for _,file in pairs(list)
-	do
-		-- load & convert
-		exit, data = UTIL:LoadJson("data/"..file)
+	-- load & convert
+	exit, data = UTIL:LoadJson("data/_options.json")
 
-		-- validate
-		if exit
+	-- validate
+	if exit
+	then
+		-- common
+		CORE:LoadSorted("int", data)
+		CORE:LoadSorted("any", data)
+
+		-- specific
+		if string.len(UTIL:FilterNumbers(CORE.Version.Game.String)) == 3
 		then
-			-- debug msg
-			CORE:DebugConsole(__func__,"Reading Records: "..tostring(file))
-
-			-- loop records
-			for rkey,rset in pairs(data)
-			do
-				-- call parser
-				CORE:BootOption(rkey, rset)
-			end
-		else
-			-- debug msg
-			CORE:DebugConsole(__func__,"failed to parse "..tostring(file))
+			-- get major version
+			CORE:LoadSorted(string.sub(UTIL:FilterNumbers(CORE.Version.Game.String), 1, 2), data)
 		end
+
+		-- get minor version
+		CORE:LoadSorted(UTIL:FilterNumbers(CORE.Version.Game.String), data)
+	else
+		-- debug msg
+		CORE:DebugConsole(__func__,"failed to parse "..tostring(file))
 	end
 
 	-- result
 	return exit
 end
+
+
+--
+--// CORE:LoadSorted()
+--
+function CORE:LoadSorted(want, data)
+
+	-- debug id
+	local __func__ = "CORE:LoadSorted"
+
+	-- debug msg
+	if want == "int" or want == "any"
+	then
+		CORE:DebugConsole(__func__,"Requesting: "..UTIL:FirstToUpper(want))
+	else
+		CORE:DebugConsole(__func__,"Requesting: Patch "..want)
+	end
+
+	-- loop classes
+	for ck,cc in pairs(data)
+	do
+		-- only relevant
+		if ck == want
+		then
+			-- debug msg
+			CORE:DebugConsole(__func__,"Reading Records: "..tostring(UTIL:TableLength(cc)))
+
+			-- loop records
+			for rk,rc in pairs(cc)
+			do
+				-- call parser
+				CORE:BootOption(rk, rc)
+			end
+		end
+	end
+end
+
+
+
 
 --
 --// CORE:BootOption(<STRING>,<TABLE>)

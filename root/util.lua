@@ -218,6 +218,17 @@ end
 
 
 
+--
+--// UTIL:FirstToUpper(<STRING>)
+--
+function UTIL:FirstToUpper(text)
+	return (text:gsub("^%l", string.upper))
+end
+
+
+
+
+
 
 --
 --// UTIL:ScreenWidth(<FLOAT>), UTIL:ScreenHeight(<FLOAT>)
@@ -346,7 +357,7 @@ end
 --
 -- constructor
 --
-function UTIL:Prelude(project, version, debug, scale)
+function UTIL:Prelude(project, version, scale, debug)
 	local o = {}
 	setmetatable(o, self)
 	self.__index = self
@@ -354,8 +365,9 @@ function UTIL:Prelude(project, version, debug, scale)
 	-- identity
 	UTIL.Project = project
 	UTIL.Version = version
-	UTIL.isDebug = debug
 	UTIL.Scaling = scale
+	UTIL.isDebug = debug
+
 
 	return o
 end

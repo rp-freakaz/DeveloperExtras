@@ -64,7 +64,7 @@
 		}
 	},
 
-	"all":{
+	"any":{
 		"Developer/FeatureToggles/Antialiasing":{
 			"type":"bool",
 			"def":true,
@@ -507,8 +507,14 @@
 
 			"fallback":["Off", "Ultra Quality", "Quality", "Balanced", "Performance", "Ultra Performance"]
 		}
-
 	},
+
+
+
+
+
+
+
 
 	"16":{
 		"Developer/FeatureToggles/Distortion":{
@@ -520,7 +526,26 @@
 			"type":"bool",
 			"def":true
 		}
+	},
 
+	"161":{
+		"graphics/dynamicresolution/FSR2":{
+			"type":"StringList",
+			"draw":30,
+
+			"ontrue":{
+				"graphics/dynamicresolution/DLSS":"Off",
+				"graphics/dynamicresolution/DynamicResolutionScaling":false
+			},
+
+			"fallback":["Off", "Quality", "Balanced", "Performance", "Ultra Performance"]
+		}
 	}
+
+
+
+
+
+
 
 }

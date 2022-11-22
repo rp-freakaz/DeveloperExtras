@@ -1400,7 +1400,7 @@ end
 --
 -- constructor
 --
-function DRAW:Prelude(project, version, debug, scale)
+function DRAW:Prelude(project, version, scale, debug)
 	local o = {}
 	setmetatable(o, self)
 	self.__index = self
@@ -1408,8 +1408,8 @@ function DRAW:Prelude(project, version, debug, scale)
 	-- identity
 	DRAW.Project = project
 	DRAW.Version = version
-	DRAW.isDebug = debug
 	DRAW.Scaling = scale
+	DRAW.isDebug = debug
 
 	-- messages
 	DRAW.Warning = "Toggle's are disabled, because you are not in Night City yet."
