@@ -256,7 +256,9 @@ end
 
 
 
-
+function UTIL:GetWindowWidth(percent)
+	return ImGui.GetWindowWidth() / 100 * percent
+end
 
 
 

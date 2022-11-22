@@ -8,6 +8,17 @@
 					"path":"Developer/FeatureToggles/Antialiasing"
 				}
 			]
+		},
+		{
+			"name":"Game: Enviroment",
+			"list":[
+				{
+					"name":"Antialiasing",
+					"path":"Developer/FeatureToggles/Antialiasing"
+				}
+			]
 		}
+
+
 	]
 }

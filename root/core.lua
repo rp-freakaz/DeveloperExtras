@@ -199,13 +199,13 @@ function CORE:Interface()
 								-- collapsable render
 								else
 									-- begin collapse
-									local _trigger = DRAW:Collapse(loop.name, scale)
+									local _trigger = DRAW:Collapse(loop.name.." ("..UTIL:TableLength(loop.list)..")", scale)
 									if _trigger
 									then
 										-- show tab notice
 										if CORE:isPreGame()
 										then
-											DRAW:CollapseNotice(ImGui.GetWindowWidth(), "Toggle's are disabled, because you are not in Night City yet.")
+											DRAW:CollapseNotice("Toggle's are disabled, because you are not in Night City yet.")
 										end
 
 										-- start option loop
@@ -275,7 +275,7 @@ function CORE:RenderSwitch(pool, render)
 			or option.type == "float"
 			or option.type == "Float"
 			then
-				CORE:RenderSlider(pool, option, render, demand)
+				--CORE:RenderSlider(pool, option, render, demand)
 			end
 
 			-- button types
@@ -283,7 +283,7 @@ function CORE:RenderSwitch(pool, render)
 			or option.type == "NameList"
 			or option.type == "StringList"
 			then
-				CORE:RenderButtons(pool, option, render, demand)
+				--CORE:RenderButtons(pool, option, render, demand)
 			end
 
 			-- checkbox types

@@ -105,6 +105,7 @@ function DRAW:WindowStart()
 	ImGui.PushStyleVar(ImGuiStyleVar.ScrollbarSize, 0)
 	ImGui.PushStyleVar(ImGuiStyleVar.ScrollbarRounding, 0)
 	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, 0, 0)
+	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, 0)
 	ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, 0, 0)
 	ImGui.PushStyleVar(ImGuiStyleVar.ItemInnerSpacing, UTIL:WindowWidth(0.5), 0)
 	ImGui.PushStyleVar(ImGuiStyleVar.GrabRounding, UTIL:WindowWidth(0.5))
@@ -131,10 +132,10 @@ function DRAW:WindowStart()
 	ImGui.PushStyleColor(ImGuiCol.ResizeGripHovered, DRAW:GetColor("Orange","Light"))
 
 	-- define styles
-	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, 0)
+	--ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, 0)
 	ImGui.PushStyleVar(ImGuiStyleVar.WindowRounding, 5)
 	ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, 0, 0)
-	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:WindowWidth(2), UTIL:WindowWidth(3))
+	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:WindowWidth(1), UTIL:WindowWidth(2))
 	ImGui.PushStyleVar(ImGuiStyleVar.ItemInnerSpacing, UTIL:WindowWidth(1.5), 0)
 
 	-- trigger
@@ -152,7 +153,7 @@ function DRAW:WindowStart()
 	end
 
 	-- drop stacks
-	ImGui.PopStyleVar(5)
+	ImGui.PopStyleVar(4)
 	ImGui.PopStyleColor(12)
 
 	return _trigger
@@ -164,7 +165,7 @@ end
 function DRAW:WindowEnd()
 
 	-- global styles
-	ImGui.PopStyleVar(6)
+	ImGui.PopStyleVar(7)
 
 	-- end window
 	ImGui.End()
@@ -180,7 +181,7 @@ function DRAW:TabbarStart()
 	ImGui.PushStyleColor(ImGuiCol.TabActive, DRAW:GetColor("Orange","Normal"))
 	ImGui.PushStyleColor(ImGuiCol.TabHovered, DRAW:GetColor("Orange","Light"))
 
-	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:WindowWidth(1.5), UTIL:WindowWidth(2))
+	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:WindowWidth(1), UTIL:WindowWidth(1.5))
 
 	-- fix left align
 	DRAW:Spacer(1,1)
@@ -215,7 +216,7 @@ function DRAW:TabitemStart(title)
 	ImGui.PushStyleColor(ImGuiCol.Tab, DRAW:GetColor("Grey","Darker"))
 	ImGui.PushStyleColor(ImGuiCol.TabActive, DRAW:GetColor("Orange","Normal"))
 	ImGui.PushStyleColor(ImGuiCol.TabHovered, DRAW:GetColor("Orange","Light"))
-	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:WindowWidth(1.75), UTIL:WindowWidth(2))
+	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:WindowWidth(1.55), UTIL:WindowWidth(1.44))
 
 	-- create tabitem
 	local _trigger = ImGui.BeginTabItem("¨"..title)
@@ -288,10 +289,12 @@ function DRAW:Collapse(title, scale)
 	ImGui.PushStyleColor(ImGuiCol.HeaderHovered, DRAW:GetColor("Orange","Light"))
 
 	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, 0)
-	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:WindowWidth(1.5), UTIL:WindowWidth(3))
+	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:WindowWidth(1.5), UTIL:WindowWidth(2.5))
+
+
 
 	-- space before
-	DRAW:Spacing(1,2)
+	DRAW:Spacing(1,1)
 
 	-- create collapse
 	local _trigger = ImGui.CollapsingHeader(title)
@@ -306,15 +309,15 @@ end
 --
 --// DRAW:CollapseNotice()
 --
-function DRAW:CollapseNotice(width, text)
+function DRAW:CollapseNotice(text)
 
 	-- add stacks
 	ImGui.PushStyleColor(ImGuiCol.Button, DRAW:GetColor("Orange","Normal"))
 	ImGui.PushStyleColor(ImGuiCol.ButtonActive, DRAW:GetColor("Orange","Normal"))
 	ImGui.PushStyleColor(ImGuiCol.ButtonHovered, DRAW:GetColor("Orange","Normal"))
 
-	ImGui.PushID("Button"..tostring("CollapseNoticePre"))
-	local _blind = ImGui.Button("", 2, 14)
+	ImGui.PushID("Button"..tostring("CollapseNoticeSign"))
+	local _blind = ImGui.Button("", UTIL:GetWindowWidth(1), UTIL:GetWindowWidth(6))
 	ImGui.PopID()
 
 	-- drop stacks
@@ -329,11 +332,11 @@ function DRAW:CollapseNotice(width, text)
 	ImGui.PushStyleColor(ImGuiCol.ButtonActive, DRAW:GetColor("Grey","Darkest"))
 	ImGui.PushStyleColor(ImGuiCol.ButtonHovered, DRAW:GetColor("Grey","Darkest"))
 
-	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, 5, 4)
+	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:GetWindowWidth(1), UTIL:GetWindowWidth(1))
 	ImGui.PushStyleVar(ImGuiStyleVar.ButtonTextAlign, 0, 0)
 
 	ImGui.PushID("Button"..tostring("CollapseNoticeText"))
-	local _blind = ImGui.Button(tostring(text), width, 14)
+	local _blind = ImGui.Button(tostring(text), UTIL:GetWindowWidth(99), UTIL:GetWindowWidth(6))
 	ImGui.PopID()
 
 	-- drop stacks
@@ -812,9 +815,9 @@ function DRAW:Checkbox(render, option, demand, value)
 		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("White","Normal", demand))
 	end
 
-	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, 2)
-	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, 1, 1)
-	ImGui.PushStyleVar(ImGuiStyleVar.ItemInnerSpacing, 5, 0)
+	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, UTIL:WindowWidth(0.5))
+	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:WindowWidth(0.75), UTIL:WindowWidth(0.75))
+	ImGui.PushStyleVar(ImGuiStyleVar.ItemInnerSpacing, UTIL:WindowWidth(1.5), 0)
 
 
 	ImGui.PushID('DE_Checkbox'..tostring(render.path))
