@@ -860,6 +860,116 @@ end
 
 
 
+
+
+
+
+
+
+
+--
+--// DRAW:Quickswitch()
+--
+function DRAW:Quickswitch(render, option, demand, value)
+
+	-- render prepare
+	if render.spacing
+	then
+		DRAW:Spacer(render.spacing * DRAW.Scaling.Window.Factor.Width,1)
+		DRAW:SliderTitle(render.name, "On", "Off", demand)
+
+		-- render info
+		if render.note or render.rate
+		then
+			DRAW:ButtonNotes(render, "?", demand)
+		else
+			DRAW:Sameline()
+			DRAW:Spacing(1,15)
+		end
+
+		DRAW:Spacing(1,3 * DRAW.Scaling.Window.Factor.Width)
+		DRAW:Spacer((render.spacing + 8) * DRAW.Scaling.Window.Factor.Width,1)
+	else
+		DRAW:Spacer(14 * DRAW.Scaling.Window.Factor.Width,1)
+		DRAW:SliderTitle(render.name, option.min, option.max, demand)
+
+		-- render info
+		if render.note or render.rate
+		then
+			DRAW:ButtonNotes(render, "?", demand)
+		else
+			DRAW:Sameline()
+			DRAW:Spacing(1,8 * DRAW.Scaling.Window.Factor.Width)
+		end
+
+		DRAW:Spacing(1,3 * DRAW.Scaling.Window.Factor.Width)
+		DRAW:Spacer((14 + 15) * DRAW.Scaling.Window.Factor.Width,1)
+
+	end
+
+	-- quickswitches has a fixed width
+	ImGui.SetNextItemWidth(5 * (DRAW.Scaling.Window.Factor.Width * 2))
+
+
+
+	-- add stacks
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor())
+	ImGui.PushStyleColor(ImGuiCol.SliderGrab, DRAW:GetColor("Orange","Normal",demand))
+	ImGui.PushStyleColor(ImGuiCol.SliderGrabActive, DRAW:GetColor("Orange","Light",demand))
+	ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColor("Grey","Darker",demand))
+	ImGui.PushStyleColor(ImGuiCol.FrameBgActive, DRAW:GetColor("Grey","Darker",demand))
+	ImGui.PushStyleColor(ImGuiCol.FrameBgHovered, DRAW:GetColor("Grey","Darker",demand))
+
+	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, 0.5 * DRAW.Scaling.Window.Factor.Width)
+	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, 1, 1 * (DRAW.Scaling.Window.Factor.Width * 5))
+
+	-- make them local before
+	local _return, _trigger
+
+	ImGui.PushID('DE_Quickswitch'..tostring(render.path))
+	_return, _trigger = ImGui.SliderInt("", value, 0, 1)
+	ImGui.PopID()
+
+	-- drop stacks
+	ImGui.PopStyleVar(2)
+	ImGui.PopStyleColor(6)
+
+	-- result
+	return _return, _trigger
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --
 --// DRAW:About()
 --

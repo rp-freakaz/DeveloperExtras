@@ -25,14 +25,43 @@ end
 --
 --// UTIL:IntToBool(<INT>)
 --
+--function UTIL:IntToBool(data)
+--
+--	if data > 0 then
+--		return false
+--	else
+--		return true
+--	end
+--end
+
+--
+--// UTIL:IntToBool(<INT>)
+--
 function UTIL:IntToBool(data)
 
-	if data > 0 then
-		return false
-	else
+	if data == 1 then
 		return true
+	else
+		return false
 	end
 end
+
+--
+--// UTIL:BoolToInt(<BOOL>)
+--
+function UTIL:BoolToInt(data)
+
+	if data == true then
+		return 1
+	else
+		return 0
+	end
+end
+
+
+
+
+
 
 --
 --// UTIL:FilterNumbers(<STRING>)

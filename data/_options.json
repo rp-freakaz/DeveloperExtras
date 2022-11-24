@@ -491,6 +491,30 @@
 	},
 
 	"15":{
+
+		"graphics/dynamicresolution/FSR22":{
+			"cet":{"min":0,"max":1182},
+
+			"type":"StringList",
+			"draw":30,
+
+
+
+			"ontrue":{
+				"graphics/dynamicresolution/DLSS":"Off",
+				"graphics/dynamicresolution/StaticResolutionScaling":true
+			},
+			"onfalse":{
+				"graphics/dynamicresolution/StaticResolutionScaling":false
+			},
+
+			"fallback":["Off", "Ultra Quality", "Quality", "Balanced", "Performance", "Ultra Performance"]
+		},
+
+
+
+
+
 		"graphics/dynamicresolution/FSR":{
 			"type":"StringList",
 			"draw":30,

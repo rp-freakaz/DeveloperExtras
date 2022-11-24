@@ -264,7 +264,7 @@ function CORE:RenderSwitch(pool, render)
 			-- check option requirements
 			local demand = CORE:RenderRequire(pool, option, render)
 
-			--local require = CORE:RenderRequire(pool, option, render)
+			--local need = CORE:RenderRequire(pool, option, render)
 
 			--demand = 0
 			--cause = ""
@@ -290,7 +290,12 @@ function CORE:RenderSwitch(pool, render)
 			if option.type == "bool"
 			or option.type == "Bool"
 			then
-				CORE:RenderCheckbox(pool, option, render, demand)
+				if pool == "Settings"
+				then
+					CORE:RenderQuickswitch(pool, option, render, demand)
+				else
+					CORE:RenderCheckbox(pool, option, render, demand)
+				end
 			end
 		else
 			-- something is wrong
@@ -804,6 +809,34 @@ end
 
 
 
+--
+--// CORE:RenderQuickswitch()
+--
+function CORE:RenderQuickswitch(pool, option, render, demand)
+
+	-- debug id
+	local __func__ = "CORE:RenderQuickswitch"
+
+	-- get current
+	local value = UTIL:BoolToInt(CORE:GetToggle(render.path, option.type))
+
+	-- create minified slider
+	local value, trigger = DRAW:Quickswitch(render, option, demand, value)
+	if trigger
+	then
+
+		CORE:SetToggle(render.path, option.type, UTIL:IntToBool(value))
+	end
+end
+
+
+
+
+
+
+
+
+
 
 
 
@@ -848,14 +881,13 @@ function CORE:LoadOption()
 		CORE:LoadSorted("int", data)
 		CORE:LoadSorted("any", data)
 
-		-- specific
+		-- get major if no minor present
 		if string.len(UTIL:FilterNumbers(CORE.Version.Game.String)) == 3
 		then
-			-- get major version
 			CORE:LoadSorted(string.sub(UTIL:FilterNumbers(CORE.Version.Game.String), 1, 2), data)
 		end
 
-		-- get minor version
+		-- get major or minor version
 		CORE:LoadSorted(UTIL:FilterNumbers(CORE.Version.Game.String), data)
 	else
 		-- debug msg
