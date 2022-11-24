@@ -92,14 +92,7 @@ function DRAW:WindowStart()
 
 	-- absolute position
 	ImGui.SetNextWindowPos(100, 100, ImGuiCond.FirstUseEver)
-
-	-- native scaling
-	if DRAW.Scaling.Enable
-	then
-		ImGui.SetNextWindowSizeConstraints(UTIL:ScreenWidth(23.75), UTIL:ScreenHeight(50), UTIL:ScreenWidth(90), UTIL:ScreenHeight(90))
-	else
-		ImGui.SetNextWindowSizeConstraints(UTIL:ScreenWidth(23.75), UTIL:ScreenHeight(50), UTIL:ScreenWidth(23.75), UTIL:ScreenHeight(90))
-	end
+	ImGui.SetNextWindowSizeConstraints(UTIL:ScaleSwitch(456, 23.75, true), UTIL:ScaleSwitch(600, 31.25, true), UTIL:ScaleSwitch(456, 90, true), DRAW.Scaling.Window.Height - 100)
 
 	-- global styles
 	ImGui.PushStyleVar(ImGuiStyleVar.ScrollbarSize, 0)
@@ -107,8 +100,8 @@ function DRAW:WindowStart()
 	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, 0, 0)
 	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, 0)
 	ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, 0, 0)
-	ImGui.PushStyleVar(ImGuiStyleVar.ItemInnerSpacing, UTIL:WindowWidth(0.5), 0)
-	ImGui.PushStyleVar(ImGuiStyleVar.GrabRounding, UTIL:WindowWidth(0.5))
+	ImGui.PushStyleVar(ImGuiStyleVar.ItemInnerSpacing, UTIL:ScaleSwitch(2, 0.5), 0)
+	ImGui.PushStyleVar(ImGuiStyleVar.GrabRounding, UTIL:ScaleSwitch(2, 0.5))
 
 	--
 	-- window decoration
@@ -132,11 +125,10 @@ function DRAW:WindowStart()
 	ImGui.PushStyleColor(ImGuiCol.ResizeGripHovered, DRAW:GetColor("Orange","Light"))
 
 	-- define styles
-	--ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, 0)
-	ImGui.PushStyleVar(ImGuiStyleVar.WindowRounding, 5)
+	ImGui.PushStyleVar(ImGuiStyleVar.WindowRounding, UTIL:ScaleSwitch(4, 1))
 	ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, 0, 0)
-	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:WindowWidth(1), UTIL:WindowWidth(2))
-	ImGui.PushStyleVar(ImGuiStyleVar.ItemInnerSpacing, UTIL:WindowWidth(1.5), 0)
+	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:ScaleSwitch(8, 2), UTIL:ScaleSwitch(12, 3))
+	ImGui.PushStyleVar(ImGuiStyleVar.ItemInnerSpacing, UTIL:ScaleSwitch(7, 1.5), 0)
 
 	-- trigger
 	local _trigger
@@ -146,7 +138,7 @@ function DRAW:WindowStart()
 	then
 		-- create window
 		_trigger = ImGui.Begin("~ "..string.upper(DRAW.Project).." ~", ImGuiWindowFlags.NoScrollbar)
-		ImGui.SetWindowFontScale(1.35)
+		ImGui.SetWindowFontScale(DRAW.Scaling.Font)
 	else
 		-- create window
 		_trigger = ImGui.Begin(UTIL:SpaceBetween(DRAW.Project.." v"..DRAW.Version.String, "CET "..DRAW.Version.Cet.String.." // PATCH "..DRAW.Version.Game.String, UTIL:ScreenWidth(23.75), UTIL:TextWidth(" ")), ImGuiWindowFlags.NoScrollbar)

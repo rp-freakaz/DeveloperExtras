@@ -109,6 +109,9 @@ end
 --
 function CORE:Cronjobs()
 
+	-- always update
+	CORE:UpdateScale()
+
 
 
 end
@@ -120,9 +123,6 @@ function CORE:Interface()
 
 	-- debug id
 	local __func__ = "CORE:Interface"
-
-	-- update screen
-	CORE:ScreenScale()
 
 	-- run cronjobs
 	CORE:Cronjobs()
@@ -1576,39 +1576,30 @@ function CORE:TabOrder()
 	return list
 end
 
---
---// CORE:ScreenScale
---
-function CORE:ScreenScale()
 
-	-- update resolution
+--
+--// CORE:UpdateScale()
+--
+function CORE:UpdateScale()
+
+	-- update screen
 	CORE.Scaling.Screen.Width, CORE.Scaling.Screen.Height = GetDisplayResolution()
 
-	-- update scaling factor
+	-- update screen factor
 	if CORE.Scaling.Enable
 	then
 		-- we use the screen height to keep the aspect ratio
-		CORE.Scaling.Screen.Factor.Width = CORE.Scaling.Screen.Height / 9 * 16 / 100
-		CORE.Scaling.Screen.Factor.Height = CORE.Scaling.Screen.Height / 100
+		CORE.Scaling.Screen.Factor = UTIL:ShortenFloat(CORE.Scaling.Screen / 9 * 16 / 100)
+		CORE.Scaling.Screen.Pixels = UTIL:ShortenFloat(1 / CORE.Scaling.Screen.Factor)
 	end
 
-	-- distribute to all
-	DRAW.Scaling = CORE.Scaling
-	UTIL.Scaling = CORE.Scaling
-end
-
---
---// CORE:WindowScale
---
-function CORE:WindowScale()
-
-	-- update window dimensions
+	-- update window
 	CORE.Scaling.Window.Width = ImGui.GetWindowWidth()
 	CORE.Scaling.Window.Height = ImGui.GetWindowHeight()
 
-	-- update scaling factor
-	CORE.Scaling.Window.Factor.Width = CORE.Scaling.Window.Width / 100
-	CORE.Scaling.Window.Factor.Height = CORE.Scaling.Window.Height / 100
+	-- update window factor
+	CORE.Scaling.Window.Factor = UTIL:ShortenFloat(CORE.Scaling.Window.Width / 100)
+	CORE.Scaling.Window.Pixels = UTIL:ShortenFloat(1 / CORE.Scaling.Window.Factor)
 
 	-- distribute to all
 	DRAW.Scaling = CORE.Scaling
@@ -1718,7 +1709,7 @@ function CORE:Prelude()
 	CORE.Project = "Developer Extras"
 	CORE.Authors = "FreakaZ"
 	CORE.Version = {String="3.0.161",Numeric=30161,Cet={String=nil,Numeric=0},Game={String=nil,Numeric=0}}
-	CORE.Scaling = {Enable=false,Screen={Width=1920,Height=1080,Factor={Width=19.2,Height=10.8}},Window={Width=456,Height=600,Factor={Width=4.56,Height=6.0}}}
+	CORE.Scaling = {Enable=false,Screen={Width=1920,Height=1080,Factor=19.2,Pixels=0.052},Window={Width=456,Height=600,Factor=4.56,Pixels=0.219},Font=1.35}
 	CORE.Timings = {Frame=0,Second=0,Millisecond=0}
 
 	-- new form

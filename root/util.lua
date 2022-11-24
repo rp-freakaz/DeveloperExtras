@@ -331,6 +331,29 @@ end
 
 
 
+--
+--// UTIL:ScaleSwitch(<INT>,<FLOAT>)
+--
+function UTIL:ScaleSwitch(pixel, percent, screen)
+
+	-- catch non set
+	local pixel = pixel or 0
+	local percent = percent or 0
+	local screen = screen or false
+
+	if DRAW.Scaling.Enable and percent > 0
+	then
+		if screen
+		then
+			return UTIL:ShortenFloat(UTIL.Scaling.Screen.Factor * percent)
+		else
+			return UTIL:ShortenFloat(UTIL.Scaling.Window.Factor * percent)
+		end
+	else
+		return pixel
+	end
+end
+
 
 
 
