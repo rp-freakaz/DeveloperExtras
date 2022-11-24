@@ -59,6 +59,46 @@ function UTIL:BoolToInt(data)
 end
 
 
+--
+--// UTIL:IntToText(<INT>)
+--
+function UTIL:IntToText(data)
+
+	if data == 1 then
+		return "ON"
+	else
+		return "OFF"
+	end
+end
+
+--
+--// UTIL:TextToInt(<STRING>)
+--
+function UTIL:TextToInt(data)
+
+	if data == "On" then
+		return 1
+	else
+		return 0
+	end
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

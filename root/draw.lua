@@ -872,43 +872,29 @@ end
 --
 function DRAW:Quickswitch(render, option, demand, value)
 
-	-- render prepare
+	-- element spacing
+	local _spacing = 3 * DRAW.Scaling.Window.Factor.Width
+
+	-- update element spacing
 	if render.spacing
 	then
-		DRAW:Spacer(render.spacing * DRAW.Scaling.Window.Factor.Width,1)
-		DRAW:SliderTitle(render.name, "On", "Off", demand)
-
-		-- render info
-		if render.note or render.rate
-		then
-			DRAW:ButtonNotes(render, "?", demand)
-		else
-			DRAW:Sameline()
-			DRAW:Spacing(1,15)
-		end
-
-		DRAW:Spacing(1,3 * DRAW.Scaling.Window.Factor.Width)
-		DRAW:Spacer((render.spacing + 8) * DRAW.Scaling.Window.Factor.Width,1)
-	else
-		DRAW:Spacer(14 * DRAW.Scaling.Window.Factor.Width,1)
-		DRAW:SliderTitle(render.name, option.min, option.max, demand)
-
-		-- render info
-		if render.note or render.rate
-		then
-			DRAW:ButtonNotes(render, "?", demand)
-		else
-			DRAW:Sameline()
-			DRAW:Spacing(1,8 * DRAW.Scaling.Window.Factor.Width)
-		end
-
-		DRAW:Spacing(1,3 * DRAW.Scaling.Window.Factor.Width)
-		DRAW:Spacer((14 + 15) * DRAW.Scaling.Window.Factor.Width,1)
-
+		_spacing = render.spacing * DRAW.Scaling.Window.Factor.Width
 	end
 
+	-- paint leading spacing
+	DRAW:Spacer(_spacing,1)
+
+	ImGui.Text(render.name)
+	DRAW:Sameline()
+
+	DRAW:Spacer(ImGui.GetWindowWidth() - ((_spacing * DRAW.Scaling.Window.Factor.Width) + UTIL:TextWidth(render.name.." OFF")),1)
+
+
+
+
+
 	-- quickswitches has a fixed width
-	ImGui.SetNextItemWidth(5 * (DRAW.Scaling.Window.Factor.Width * 2))
+	ImGui.SetNextItemWidth(7.5 * DRAW.Scaling.Window.Factor.Width)
 
 
 
@@ -916,12 +902,15 @@ function DRAW:Quickswitch(render, option, demand, value)
 	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor())
 	ImGui.PushStyleColor(ImGuiCol.SliderGrab, DRAW:GetColor("Orange","Normal",demand))
 	ImGui.PushStyleColor(ImGuiCol.SliderGrabActive, DRAW:GetColor("Orange","Light",demand))
+	ImGui.PushStyleColor(ImGuiCol.Border, DRAW:GetColor("Grey","Dark",demand))
 	ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColor("Grey","Darker",demand))
 	ImGui.PushStyleColor(ImGuiCol.FrameBgActive, DRAW:GetColor("Grey","Darker",demand))
 	ImGui.PushStyleColor(ImGuiCol.FrameBgHovered, DRAW:GetColor("Grey","Darker",demand))
 
-	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, 0.5 * DRAW.Scaling.Window.Factor.Width)
-	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, 1, 1 * (DRAW.Scaling.Window.Factor.Width * 5))
+	ImGui.PushStyleVar(ImGuiStyleVar.GrabRounding, 5 * DRAW.Scaling.Window.Factor.Width)
+	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, 5 * DRAW.Scaling.Window.Factor.Width)
+	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, 0, 0)
+	ImGui.PushStyleVar(ImGuiStyleVar.FrameBorderSize, 1 * (DRAW.Scaling.Window.Factor.Width / 2))
 
 	-- make them local before
 	local _return, _trigger
@@ -930,9 +919,22 @@ function DRAW:Quickswitch(render, option, demand, value)
 	_return, _trigger = ImGui.SliderInt("", value, 0, 1)
 	ImGui.PopID()
 
+
+
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("White","Normal",demand))
+
+	DRAW:Sameline()
+	DRAW:Spacer(10,1)
+	ImGui.Text(UTIL:IntToText(value))
+
+	ImGui.PopStyleColor(1)
+
+
 	-- drop stacks
-	ImGui.PopStyleVar(2)
-	ImGui.PopStyleColor(6)
+	ImGui.PopStyleVar(4)
+	ImGui.PopStyleColor(7)
+
+
 
 	-- result
 	return _return, _trigger
