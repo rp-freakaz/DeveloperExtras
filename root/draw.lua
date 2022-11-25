@@ -972,52 +972,52 @@ function DRAW:About()
 	if DRAW.isDebug
 	then
 		-- some top room
-		DRAW:Spacing(1, 10)
+		DRAW:Spacer(1, 10)
 
-		DRAW:Spacer(10, 1)
+		DRAW:Spacing(10, 1)
 		ImGui.Text("Scaling is: "..UTIL:FirstToUpper(tostring(DRAW.Scaling.Enable)))
-		DRAW:Spacing(1, 5)
+		DRAW:Spacer(1, 5)
 
-		DRAW:Spacer(10, 1)
+		DRAW:Spacing(10, 1)
 		ImGui.Text("Screen Width: "..tostring(DRAW.Scaling.Screen.Width))
 		DRAW:Sameline()
-		DRAW:Spacer(20, 1)
+		DRAW:Spacing(20, 1)
 		ImGui.Text("Screen Height: "..tostring(DRAW.Scaling.Screen.Height))
 		DRAW:Sameline()
-		DRAW:Spacer(20, 1)
+		DRAW:Spacing(20, 1)
 		ImGui.Text("Screen Factor: "..tostring(DRAW.Scaling.Screen.Factor))
-		DRAW:Spacing(1, 5)
+		DRAW:Spacer(1, 5)
 
-		DRAW:Spacer(10, 1)
+		DRAW:Spacing(10, 1)
 		ImGui.Text("Window Width: "..tostring(DRAW.Scaling.Window.Width))
 		DRAW:Sameline()
-		DRAW:Spacer(20, 1)
+		DRAW:Spacing(20, 1)
 		ImGui.Text("Window Height: "..tostring(DRAW.Scaling.Window.Height))
 		DRAW:Sameline()
-		DRAW:Spacer(20, 1)
+		DRAW:Spacing(20, 1)
 		ImGui.Text("Window Factor: "..tostring(DRAW.Scaling.Window.Factor))
-		DRAW:Spacing(1, 5)
+		DRAW:Spacer(1, 5)
 
 
-		DRAW:Spacer(10, 1)
+		DRAW:Spacing(10, 1)
 		ImGui.Text("Logo Painter Size: "..tostring(UTIL:ScaleSwitch(6)))
 		DRAW:Sameline()
-		DRAW:Spacer(20, 1)
+		DRAW:Spacing(20, 1)
 		ImGui.Text("Logo Painter Round: "..tostring(math.floor(UTIL:ScaleSwitch(6))))
 		DRAW:Sameline()
-		DRAW:Spacer(20, 1)
+		DRAW:Spacing(20, 1)
 		ImGui.Text("Logo Center Filler: "..tostring(DRAW.Logo.Center))
-		DRAW:Spacing(1, 5)
+		DRAW:Spacer(1, 5)
 	end
 
 	-- some top room
-	DRAW:Spacing(1, UTIL:ScaleSwitch(44))
+	DRAW:Spacer(1, UTIL:ScaleSwitch(44))
 
 	-- draw animation
 	DRAW:LogoAnimation()
 
 	-- more room
-	DRAW:Spacing(1,12)
+	DRAW:Spacer(1,12)
 
 	-- remove spacing between
 	ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, 0, 0)
@@ -1029,54 +1029,54 @@ function DRAW:About()
 	-- print who
 	line = "2022 BY FREAKAZ"
 	part = UTIL:TextSplit(line)
-	DRAW:Spacer(UTIL:TextCenter(ImGui.GetWindowWidth(), line),1)
+	DRAW:Spacing(UTIL:TextCenter(ImGui.GetWindowWidth(), line),1)
 	DRAW:PageText("White", "Normal", part[1], true)
 	DRAW:PageText("Orange", "Normal", " "..part[2].." ", true)
 	DRAW:PageText("White", "Normal", part[3], false)
 
 	-- some room
-	DRAW:Spacing(1,7)
+	DRAW:Spacer(1,7)
 
 	-- print website
 	line = "https://rootpunk.com/mod/"
-	DRAW:Spacer(UTIL:TextCenter(ImGui.GetWindowWidth(), line),1)
+	DRAW:Spacing(UTIL:TextCenter(ImGui.GetWindowWidth(), line),1)
 	DRAW:PageText("White", "Dark", line, false)
 
 	-- some room
-	DRAW:Spacing(1,7)
+	DRAW:Spacer(1,7)
 
 	-- print email
 	line = "hello @ rootpunk.com"
 	part = UTIL:TextSplit(line)
-	DRAW:Spacer(UTIL:TextCenter(ImGui.GetWindowWidth(), line),1)
+	DRAW:Spacing(UTIL:TextCenter(ImGui.GetWindowWidth(), line),1)
 	DRAW:PageText("Orange", "Dark", part[1], true)
 	DRAW:PageText("Grey", "Light", " "..part[2].." ", true)
 	DRAW:PageText("Orange", "Dark", part[3], false)
 
 	-- some room
-	DRAW:Spacing(1,25)
+	DRAW:Spacer(1,25)
 
 	-- print random
 	line = "made in endless hours at day and night"
-	DRAW:Spacer(UTIL:TextCenter(ImGui.GetWindowWidth(), line),1)
+	DRAW:Spacing(UTIL:TextCenter(ImGui.GetWindowWidth(), line),1)
 	DRAW:PageText("Grey", "Lighter", line)
 	line = "while struggling with LUA, CET and 2077"
-	DRAW:Spacer(UTIL:TextCenter(ImGui.GetWindowWidth(), line),1)
+	DRAW:Spacing(UTIL:TextCenter(ImGui.GetWindowWidth(), line),1)
 	DRAW:PageText("Grey", "Lighter", line)
 
 	-- some room
-	DRAW:Spacing(1,3)
+	DRAW:Spacer(1,3)
 
 	-- print judy
 	line = "~ FOR JUDY ~"
 	part = UTIL:TextSplit(line)
-	DRAW:Spacer(UTIL:TextCenter(ImGui.GetWindowWidth(), line),1)
+	DRAW:Spacing(UTIL:TextCenter(ImGui.GetWindowWidth(), line),1)
 	DRAW:PageText("Grey", "Lighter", part[1].." ", true)
 	local unlock = DRAW:PageButton("Orange", "Normal", part[2].." "..part[3], true)
 	DRAW:PageText("Grey", "Lighter", " "..part[4], false)
 
 	-- some room
-	DRAW:Spacing(1,10)
+	DRAW:Spacer(1,10)
 
 
 	-- special thanks
@@ -1111,16 +1111,16 @@ function DRAW:About()
 	DRAW:AboutChange("switched description file format to JSON")
 	DRAW:AboutChange("split up option and render definitions")
 	DRAW:AboutChange("refined user interface")
-	DRAW:Spacing(1,5)
+	DRAW:Spacer(1,5)
 	DRAW:AboutAdded("added detection of cet and game versions")
 	DRAW:AboutAdded("added detection for available GameSettings", "and GameOptions at startup")
-	DRAW:Spacing(1,5)
+	DRAW:Spacer(1,5)
 	DRAW:AboutChange("all settings are disabled when not in the world")
 	DRAW:AboutChange("settings are also disabled when not supported", "by the game or cet, with a small info")
-	DRAW:Spacing(1,5)
+	DRAW:Spacer(1,5)
 	DRAW:AboutAdded("added fps and frametime graph with several", "settings like position and transparency")
 	DRAW:AboutChange("the graph can be bound to a hotkey")
-	DRAW:Spacing(1,5)
+	DRAW:Spacer(1,5)
 	DRAW:AboutAdded("added simple fps display to the main windows","with the current city and session time")
 	DRAW:AboutChange("the main window can now be vertically scaled","depending on resolution")
 
@@ -1129,7 +1129,7 @@ function DRAW:About()
 	DRAW:AboutHeader("MADE WITH")
 
 	line = "Visual Studio Code, Notepad++ and some Brain ;)"
-	DRAW:Spacer(UTIL:TextCenter(ImGui.GetWindowWidth(), line),1)
+	DRAW:Spacing(UTIL:TextCenter(ImGui.GetWindowWidth(), line),1)
 	DRAW:PageText("Grey", "Lighter", line)
 
 
@@ -1140,7 +1140,7 @@ function DRAW:About()
 
 	-- print github
 	line = "https://github.com/rp-freakaz/DeveloperExtras"
-	DRAW:Spacer(UTIL:TextCenter(ImGui.GetWindowWidth(), line),1)
+	DRAW:Spacing(UTIL:TextCenter(ImGui.GetWindowWidth(), line),1)
 	DRAW:PageText("Grey", "Lighter", line, false)
 
 
@@ -1197,13 +1197,13 @@ end
 function DRAW:AboutHeader(text)
 
 	-- top room
-	DRAW:Spacing(1,20)
+	DRAW:Spacer(1,20)
 
 	-- centering
-	DRAW:Spacer(UTIL:TextCenter(ImGui.GetWindowWidth(), text),1)
+	DRAW:Spacing(UTIL:TextCenter(ImGui.GetWindowWidth(), text),1)
 	DRAW:PageText("White", "Dark", text)
-	DRAW:Spacing(1,2)
-	DRAW:Spacer(math.floor(ImGui.GetWindowWidth() - 356) / 2,6)
+	DRAW:Spacer(1,2)
+	DRAW:Spacing(math.floor(ImGui.GetWindowWidth() - 356) / 2,6)
 
 	ImGui.PushStyleColor(ImGuiCol.Button, DRAW:GetColor("Orange", "Normal"))
 	ImGui.PushStyleColor(ImGuiCol.ButtonActive, DRAW:GetColor("Orange", "Normal"))
@@ -1218,7 +1218,7 @@ function DRAW:AboutHeader(text)
 	ImGui.PopStyleVar(1)
 	ImGui.PopStyleColor(3)
 
-	DRAW:Spacing(1,5)
+	DRAW:Spacer(1,5)
 end
 
 
@@ -1226,26 +1226,26 @@ end
 function DRAW:AboutSpecial(who, why, web)
 
 	-- centering
-	DRAW:Spacer(UTIL:TextCenter(ImGui.GetWindowWidth(), "~ "..who.." ~"),1)
+	DRAW:Spacing(UTIL:TextCenter(ImGui.GetWindowWidth(), "~ "..who.." ~"),1)
 	DRAW:PageText("Orange", "Normal", "~ ", true)
 	DRAW:PageText("White", "Normal", who, true)
 	DRAW:PageText("Orange", "Normal", " ~", false)
 
 	-- some room
-	DRAW:Spacing(1,3)
+	DRAW:Spacer(1,3)
 
 	-- centering
-	DRAW:Spacer(UTIL:TextCenter(ImGui.GetWindowWidth(), why),1)
+	DRAW:Spacing(UTIL:TextCenter(ImGui.GetWindowWidth(), why),1)
 	DRAW:PageText("Grey", "Lighter", why, false)
 
 	-- some room
-	DRAW:Spacing(1,2)
+	DRAW:Spacer(1,2)
 
 	-- centering
-	DRAW:Spacer(UTIL:TextCenter(ImGui.GetWindowWidth(), web),1)
+	DRAW:Spacing(UTIL:TextCenter(ImGui.GetWindowWidth(), web),1)
 	DRAW:PageText("Grey", "Normal", web, false)
 
-	DRAW:Spacing(1,10)
+	DRAW:Spacer(1,10)
 end
 
 
@@ -1257,22 +1257,22 @@ function DRAW:AboutThanks(who, why, add)
 	local add = add or false
 
 	-- centering
-	DRAW:Spacer(UTIL:TextCenter(ImGui.GetWindowWidth(), who),1)
+	DRAW:Spacing(UTIL:TextCenter(ImGui.GetWindowWidth(), who),1)
 	DRAW:PageText("Grey", "Lightest", who, false)
 
 	-- optional
 	if why
 	then
-		DRAW:Spacing(1,2)
-		DRAW:Spacer(UTIL:TextCenter(ImGui.GetWindowWidth(), why),1)
+		DRAW:Spacer(1,2)
+		DRAW:Spacing(UTIL:TextCenter(ImGui.GetWindowWidth(), why),1)
 		DRAW:PageText("Grey", "Lighter", why, false)
 	end
 
 	-- optional
 	if add
 	then
-		DRAW:Spacing(1,2)
-		DRAW:Spacer(UTIL:TextCenter(ImGui.GetWindowWidth(), add),1)
+		DRAW:Spacer(1,2)
+		DRAW:Spacing(UTIL:TextCenter(ImGui.GetWindowWidth(), add),1)
 		DRAW:PageText("Grey", "Lighter", add, false)
 	end
 end
@@ -1280,10 +1280,10 @@ end
 
 
 function DRAW:AboutVersion(which)
-	DRAW:Spacer(52,1)
+	DRAW:Spacing(52,1)
 	DRAW:PageText("White", "Dark", which)
-	DRAW:Spacing(1,1)
-	DRAW:Spacer(52,1)
+	DRAW:Spacer(1,1)
+	DRAW:Spacing(52,1)
 
 	ImGui.PushStyleColor(ImGuiCol.Button, DRAW:GetColor("Orange", "Normal"))
 	ImGui.PushStyleColor(ImGuiCol.ButtonActive, DRAW:GetColor("Orange", "Normal"))
@@ -1298,41 +1298,41 @@ function DRAW:AboutVersion(which)
 	ImGui.PopStyleVar(1)
 	ImGui.PopStyleColor(3)
 
-	DRAW:Spacing(1,3)
+	DRAW:Spacer(1,3)
 end
 
 function DRAW:AboutAdded(what, add)
 
 	local add = add or false
 
-	DRAW:Spacer(52,1)
+	DRAW:Spacing(52,1)
 	DRAW:PageText("Orange", "Normal", "+ ", true)
 	DRAW:PageText("Grey", "Lighter", what, false)
 
 	if add
 	then
-		DRAW:Spacer(66,1)
+		DRAW:Spacing(66,1)
 		DRAW:PageText("Grey", "Lighter", add, false)
 	end
 
-	DRAW:Spacing(1,3)
+	DRAW:Spacer(1,3)
 end
 
 function DRAW:AboutChange(what, add)
 
 	local add = add or false
 
-	DRAW:Spacer(52,1)
+	DRAW:Spacing(52,1)
 	DRAW:PageText("Grey", "Normal", "* ", true)
 	DRAW:PageText("Grey", "Lighter", what, false)
 
 	if add
 	then
-		DRAW:Spacer(66,1)
+		DRAW:Spacing(66,1)
 		DRAW:PageText("Grey", "Lighter", add, false)
 	end
 
-	DRAW:Spacing(1,3)
+	DRAW:Spacer(1,3)
 end
 
 
@@ -1343,9 +1343,9 @@ end
 function DRAW:AboutBreak()
 
 	-- centering
-	DRAW:Spacer(UTIL:TextCenter(ImGui.GetWindowWidth(), "___"),1)
+	DRAW:Spacing(UTIL:TextCenter(ImGui.GetWindowWidth(), "___"),1)
 	DRAW:PageText("Grey", "Dark", "___", false)
-	DRAW:Spacing(1,8)
+	DRAW:Spacer(1,8)
 end
 
 
@@ -1414,7 +1414,7 @@ function DRAW:LogoAnimation()
 	for _,_row in pairs(DRAW.Logo.Matrix)
 	do
 		-- centering row
-		DRAW:Spacer(DRAW.Logo.Center)
+		DRAW:Spacing(DRAW.Logo.Center)
 
 		-- loop matrix columns
 		for _,_col in pairs(_row)
@@ -1447,11 +1447,11 @@ function DRAW:LogoAnimation()
 		end
 
 		-- right end
-		DRAW:Spacing(1,1)
+		DRAW:Spacer(1,1)
 
 		-- space between
 		--DRAW:Spacing(UTIL:WindowWidth(0.25),UTIL:WindowWidth(0.25))
-		DRAW:Spacing(1,1)
+		DRAW:Spacer(1,1)
 	end
 
 
