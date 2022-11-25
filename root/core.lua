@@ -109,8 +109,7 @@ end
 --
 function CORE:Cronjobs()
 
-	-- always update
-	CORE:UpdateScale()
+
 
 
 
@@ -131,8 +130,8 @@ function CORE:Interface()
 	local _trigger = DRAW:WindowStart()
 	if _trigger
 	then
-		-- update window
-		CORE:WindowScale()
+		-- always update
+		CORE:UpdateScale()
 
 		-- start tabbar
 		local _trigger = DRAW:TabbarStart()
@@ -149,13 +148,13 @@ function CORE:Interface()
 				if _trigger
 				then
 					-- bottom space
-					local bottom = UTIL:WindowWidth(30)
+					local bottom = UTIL:ScaleSwitch(100)
 
 					-- add more then graph is enabled
 					if CORE.Extras["DeveloperExtras/Graph/Enable"]
 					and not CORE.Extras["DeveloperExtras/Graph/Overlay/Enable"]
 					then
-						bottom = bottom + 127
+						bottom = bottom + UTIL:ScaleSwitch(127)
 					end
 
 					-- start tabchild
@@ -199,7 +198,7 @@ function CORE:Interface()
 								-- collapsable render
 								else
 									-- begin collapse
-									local _trigger = DRAW:Collapse(loop.name.." ("..UTIL:TableLength(loop.list)..")", scale)
+									local _trigger = DRAW:Collapse(loop.name.." ("..UTIL:TableOption(loop.list)..")", scale)
 									if _trigger
 									then
 										-- show tab notice
@@ -239,7 +238,7 @@ function CORE:Interface()
 		DRAW:TabbarEnd()
 
 
-		DRAW:Separator(3,0,0,"Orange")
+		DRAW:Separator(1,0,0,"Orange")
 
 
 	-- end window
@@ -305,12 +304,12 @@ function CORE:RenderSwitch(pool, render)
 		end
 	elseif render.separator
 	then
-		DRAW:Spacing(1,10)
-		DRAW:Separator(render.separator)
-		DRAW:Spacing(1,10)
+		DRAW:Spacing(1,UTIL:ScaleSwitch(10))
+		DRAW:Separator(UTIL:ScaleSwitch(render.separator))
+		DRAW:Spacing(1,UTIL:ScaleSwitch(10))
 	elseif render.spacing
 	then
-		DRAW:Spacing(1,render.spacing)
+		DRAW:Spacing(1,UTIL:ScaleSwitch(render.spacing))
 	else
 		-- something is wrong
 		if CORE.isDebug then
@@ -1589,8 +1588,7 @@ function CORE:UpdateScale()
 	if CORE.Scaling.Enable
 	then
 		-- we use the screen height to keep the aspect ratio
-		CORE.Scaling.Screen.Factor = UTIL:ShortenFloat(CORE.Scaling.Screen / 9 * 16 / 100)
-		CORE.Scaling.Screen.Pixels = UTIL:ShortenFloat(1 / CORE.Scaling.Screen.Factor)
+		CORE.Scaling.Screen.Factor = UTIL:ShortenFloat((CORE.Scaling.Screen.Height / 9 * 16) / 1920)
 	end
 
 	-- update window
@@ -1598,8 +1596,7 @@ function CORE:UpdateScale()
 	CORE.Scaling.Window.Height = ImGui.GetWindowHeight()
 
 	-- update window factor
-	CORE.Scaling.Window.Factor = UTIL:ShortenFloat(CORE.Scaling.Window.Width / 100)
-	CORE.Scaling.Window.Pixels = UTIL:ShortenFloat(1 / CORE.Scaling.Window.Factor)
+	CORE.Scaling.Window.Factor = UTIL:ShortenFloat(CORE.Scaling.Window.Width / 456)
 
 	-- distribute to all
 	DRAW.Scaling = CORE.Scaling
@@ -1709,7 +1706,7 @@ function CORE:Prelude()
 	CORE.Project = "Developer Extras"
 	CORE.Authors = "FreakaZ"
 	CORE.Version = {String="3.0.161",Numeric=30161,Cet={String=nil,Numeric=0},Game={String=nil,Numeric=0}}
-	CORE.Scaling = {Enable=false,Screen={Width=1920,Height=1080,Factor=19.2,Pixels=0.052},Window={Width=456,Height=600,Factor=4.56,Pixels=0.219},Font=1.35}
+	CORE.Scaling = {Enable=false,Screen={Width=1920,Height=1080,Factor=1},Window={Width=456,Height=600,Factor=1},Font=1.38}
 	CORE.Timings = {Frame=0,Second=0,Millisecond=0}
 
 	-- new form

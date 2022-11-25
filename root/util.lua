@@ -146,6 +146,22 @@ function UTIL:TableLength(table)
 end
 
 --
+--// UTIL:TableOption(<TABLE>)
+--
+function UTIL:TableOption(table)
+	local count = 0
+	for i,v in pairs(table)
+	do
+		if v.path
+		then
+			count = count + 1
+		end
+	end
+	return count
+end
+
+
+--
 --// UTIL:TextWidth(<STRING>)
 --
 function UTIL:TextWidth(text)
@@ -269,7 +285,7 @@ function UTIL:SpaceBetween(left, right, width, size)
 	-- base value
 	--local total = width - UTIL:TextWidth(left..right) - (142 * CORE.Scaling.Window.Factor.Width)
 
-	local total = width - UTIL:TextWidth(left..right) - (10 * UTIL.Scaling.Window.Factor.Width)
+	local total = width - UTIL:TextWidth(left..right) - (10 * UTIL.Scaling.Window.Factor)
 
 	local space = ""
 
@@ -303,22 +319,22 @@ end
 --// UTIL:ScreenWidth(<FLOAT>), UTIL:ScreenHeight(<FLOAT>)
 --
 function UTIL:ScreenWidth(percent)
-	return UTIL.Scaling.Screen.Factor.Width * percent
+	return UTIL.Scaling.Screen.Factor * percent
 end
 
 function UTIL:ScreenHeight(percent)
-	return UTIL.Scaling.Screen.Factor.Height * percent
+	return UTIL.Scaling.Screen.Factor * percent
 end
 
 --
 --// UTIL:WindowWidth(<FLOAT>), UTIL:WindowHeight(<FLOAT>)
 --
 function UTIL:WindowWidth(percent)
-	return UTIL.Scaling.Window.Factor.Width * percent
+	return UTIL.Scaling.Window.Factor * percent
 end
 
 function UTIL:WindowHeight(percent)
-	return UTIL.Scaling.Window.Factor.Height * percent
+	return UTIL.Scaling.Window.Factor * percent
 end
 
 
@@ -332,27 +348,26 @@ end
 
 
 --
---// UTIL:ScaleSwitch(<INT>,<FLOAT>)
+--// UTIL:ScaleSwitch(<INT>,<BOOL>)
 --
-function UTIL:ScaleSwitch(pixel, percent, screen)
+function UTIL:ScaleSwitch(pixels, screen)
 
 	-- catch non set
-	local pixel = pixel or 0
-	local percent = percent or 0
+	local pixels = pixels or 0
 	local screen = screen or false
 
-	if DRAW.Scaling.Enable and percent > 0
+	if UTIL.Scaling.Enable and pixels > 0
 	then
 		if screen
 		then
-			return UTIL:ShortenFloat(UTIL.Scaling.Screen.Factor * percent)
-		else
-			return UTIL:ShortenFloat(UTIL.Scaling.Window.Factor * percent)
+			return UTIL:ShortenFloat(UTIL.Scaling.Screen.Factor * pixels)
 		end
-	else
-		return pixel
+		return UTIL:ShortenFloat(UTIL.Scaling.Window.Factor * pixels)
 	end
+	return pixels
 end
+
+
 
 
 

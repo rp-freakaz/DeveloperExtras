@@ -92,7 +92,7 @@ function DRAW:WindowStart()
 
 	-- absolute position
 	ImGui.SetNextWindowPos(100, 100, ImGuiCond.FirstUseEver)
-	ImGui.SetNextWindowSizeConstraints(UTIL:ScaleSwitch(456, 23.75, true), UTIL:ScaleSwitch(600, 31.25, true), UTIL:ScaleSwitch(456, 90, true), DRAW.Scaling.Window.Height - 100)
+	ImGui.SetNextWindowSizeConstraints(UTIL:ScaleSwitch(456, true), UTIL:ScaleSwitch(600, true), UTIL:ScaleSwitch(1500, true), DRAW.Scaling.Screen.Height - 100)
 
 	-- global styles
 	ImGui.PushStyleVar(ImGuiStyleVar.ScrollbarSize, 0)
@@ -100,8 +100,8 @@ function DRAW:WindowStart()
 	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, 0, 0)
 	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, 0)
 	ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, 0, 0)
-	ImGui.PushStyleVar(ImGuiStyleVar.ItemInnerSpacing, UTIL:ScaleSwitch(2, 0.5), 0)
-	ImGui.PushStyleVar(ImGuiStyleVar.GrabRounding, UTIL:ScaleSwitch(2, 0.5))
+	ImGui.PushStyleVar(ImGuiStyleVar.ItemInnerSpacing, UTIL:ScaleSwitch(2), 0)
+	ImGui.PushStyleVar(ImGuiStyleVar.GrabRounding, UTIL:ScaleSwitch(2))
 
 	--
 	-- window decoration
@@ -125,10 +125,10 @@ function DRAW:WindowStart()
 	ImGui.PushStyleColor(ImGuiCol.ResizeGripHovered, DRAW:GetColor("Orange","Light"))
 
 	-- define styles
-	ImGui.PushStyleVar(ImGuiStyleVar.WindowRounding, UTIL:ScaleSwitch(4, 1))
+	ImGui.PushStyleVar(ImGuiStyleVar.WindowRounding, UTIL:ScaleSwitch(4))
 	ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, 0, 0)
-	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:ScaleSwitch(8, 2), UTIL:ScaleSwitch(12, 3))
-	ImGui.PushStyleVar(ImGuiStyleVar.ItemInnerSpacing, UTIL:ScaleSwitch(7, 1.5), 0)
+	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:ScaleSwitch(8), UTIL:ScaleSwitch(10))
+	ImGui.PushStyleVar(ImGuiStyleVar.ItemInnerSpacing, UTIL:ScaleSwitch(7), 0)
 
 	-- trigger
 	local _trigger
@@ -141,7 +141,7 @@ function DRAW:WindowStart()
 		ImGui.SetWindowFontScale(DRAW.Scaling.Font)
 	else
 		-- create window
-		_trigger = ImGui.Begin(UTIL:SpaceBetween(DRAW.Project.." v"..DRAW.Version.String, "CET "..DRAW.Version.Cet.String.." // PATCH "..DRAW.Version.Game.String, UTIL:ScreenWidth(23.75), UTIL:TextWidth(" ")), ImGuiWindowFlags.NoScrollbar)
+		_trigger = ImGui.Begin(UTIL:SpaceBetween(DRAW.Project.." v"..DRAW.Version.String, "CET "..DRAW.Version.Cet.String.." // PATCH "..DRAW.Version.Game.String, ImGui.GetWindowWidth() - 36, UTIL:TextWidth(" ")), ImGuiWindowFlags.NoScrollbar)
 	end
 
 	-- drop stacks
@@ -173,7 +173,7 @@ function DRAW:TabbarStart()
 	ImGui.PushStyleColor(ImGuiCol.TabActive, DRAW:GetColor("Orange","Normal"))
 	ImGui.PushStyleColor(ImGuiCol.TabHovered, DRAW:GetColor("Orange","Light"))
 
-	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:WindowWidth(1), UTIL:WindowWidth(1.5))
+	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:ScaleSwitch(4), UTIL:ScaleSwitch(6))
 
 	-- fix left align
 	DRAW:Spacer(1,1)
@@ -208,7 +208,7 @@ function DRAW:TabitemStart(title)
 	ImGui.PushStyleColor(ImGuiCol.Tab, DRAW:GetColor("Grey","Darker"))
 	ImGui.PushStyleColor(ImGuiCol.TabActive, DRAW:GetColor("Orange","Normal"))
 	ImGui.PushStyleColor(ImGuiCol.TabHovered, DRAW:GetColor("Orange","Light"))
-	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:WindowWidth(1.55), UTIL:WindowWidth(1.44))
+	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:ScaleSwitch(7), UTIL:ScaleSwitch(6))
 
 	-- create tabitem
 	local _trigger = ImGui.BeginTabItem("¨"..title)
@@ -241,7 +241,7 @@ function DRAW:TabchildStart(width, height, scroll)
 	-- add scrollbar
 	if scroll
 	then
-		ImGui.PushStyleVar(ImGuiStyleVar.ScrollbarSize, UTIL:WindowWidth(2))
+		ImGui.PushStyleVar(ImGuiStyleVar.ScrollbarSize, UTIL:ScaleSwitch(10))
 	end
 
 	-- child flags
@@ -281,12 +281,12 @@ function DRAW:Collapse(title, scale)
 	ImGui.PushStyleColor(ImGuiCol.HeaderHovered, DRAW:GetColor("Orange","Light"))
 
 	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, 0)
-	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:WindowWidth(1.5), UTIL:WindowWidth(2.5))
+	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:ScaleSwitch(8), UTIL:ScaleSwitch(11))
 
 
 
 	-- space before
-	DRAW:Spacing(1,1)
+	DRAW:Spacing(1,UTIL:ScaleSwitch(3))
 
 	-- create collapse
 	local _trigger = ImGui.CollapsingHeader(title)
@@ -309,7 +309,7 @@ function DRAW:CollapseNotice(text)
 	ImGui.PushStyleColor(ImGuiCol.ButtonHovered, DRAW:GetColor("Orange","Normal"))
 
 	ImGui.PushID("Button"..tostring("CollapseNoticeSign"))
-	local _blind = ImGui.Button("", UTIL:GetWindowWidth(1), UTIL:GetWindowWidth(6))
+	local _blind = ImGui.Button("", UTIL:ScaleSwitch(5), UTIL:ScaleSwitch(30))
 	ImGui.PopID()
 
 	-- drop stacks
@@ -324,11 +324,11 @@ function DRAW:CollapseNotice(text)
 	ImGui.PushStyleColor(ImGuiCol.ButtonActive, DRAW:GetColor("Grey","Darkest"))
 	ImGui.PushStyleColor(ImGuiCol.ButtonHovered, DRAW:GetColor("Grey","Darkest"))
 
-	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:GetWindowWidth(1), UTIL:GetWindowWidth(1))
+	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:ScaleSwitch(6), UTIL:ScaleSwitch(6))
 	ImGui.PushStyleVar(ImGuiStyleVar.ButtonTextAlign, 0, 0)
 
 	ImGui.PushID("Button"..tostring("CollapseNoticeText"))
-	local _blind = ImGui.Button(tostring(text), UTIL:GetWindowWidth(99), UTIL:GetWindowWidth(6))
+	local _blind = ImGui.Button(tostring(text), UTIL:ScaleSwitch(456), UTIL:ScaleSwitch(30))
 	ImGui.PopID()
 
 	-- drop stacks
@@ -807,9 +807,9 @@ function DRAW:Checkbox(render, option, demand, value)
 		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("White","Normal", demand))
 	end
 
-	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, UTIL:WindowWidth(0.5))
-	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:WindowWidth(0.75), UTIL:WindowWidth(0.75))
-	ImGui.PushStyleVar(ImGuiStyleVar.ItemInnerSpacing, UTIL:WindowWidth(1.5), 0)
+	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, UTIL:ScaleSwitch(3))
+	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:ScaleSwitch(3), UTIL:ScaleSwitch(3))
+	ImGui.PushStyleVar(ImGuiStyleVar.ItemInnerSpacing, UTIL:ScaleSwitch(8), 0)
 
 
 	ImGui.PushID('DE_Checkbox'..tostring(render.path))
@@ -864,13 +864,13 @@ end
 --
 function DRAW:Quickswitch(render, option, demand, value)
 
-	-- element spacing
-	local _spacing = 3 * DRAW.Scaling.Window.Factor.Width
+	-- default spacing
+	local _spacing = UTIL:ScaleSwitch(14)
 
-	-- update element spacing
+	-- update spacing if present
 	if render.spacing
 	then
-		_spacing = render.spacing * DRAW.Scaling.Window.Factor.Width
+		_spacing = UTIL:ScaleSwitch(render.spacing)
 	end
 
 	-- paint leading spacing
@@ -879,14 +879,15 @@ function DRAW:Quickswitch(render, option, demand, value)
 	ImGui.Text(render.name)
 	DRAW:Sameline()
 
-	DRAW:Spacer(ImGui.GetWindowWidth() - ((_spacing * DRAW.Scaling.Window.Factor.Width) + UTIL:TextWidth(render.name.." OFF")),1)
+
+	DRAW:Spacer(DRAW.Scaling.Window.Width - (_spacing + UTIL:TextWidth(render.name) + UTIL:ScaleSwitch(82)),1)
 
 
 
 
 
 	-- quickswitches has a fixed width
-	ImGui.SetNextItemWidth(7.5 * DRAW.Scaling.Window.Factor.Width)
+	ImGui.SetNextItemWidth(UTIL:ScaleSwitch(34))
 
 
 
@@ -899,10 +900,10 @@ function DRAW:Quickswitch(render, option, demand, value)
 	ImGui.PushStyleColor(ImGuiCol.FrameBgActive, DRAW:GetColor("Grey","Darker",demand))
 	ImGui.PushStyleColor(ImGuiCol.FrameBgHovered, DRAW:GetColor("Grey","Darker",demand))
 
-	ImGui.PushStyleVar(ImGuiStyleVar.GrabRounding, 5 * DRAW.Scaling.Window.Factor.Width)
-	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, 5 * DRAW.Scaling.Window.Factor.Width)
+	ImGui.PushStyleVar(ImGuiStyleVar.GrabRounding, UTIL:ScaleSwitch(10))
+	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, UTIL:ScaleSwitch(10))
 	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, 0, 0)
-	ImGui.PushStyleVar(ImGuiStyleVar.FrameBorderSize, 1 * (DRAW.Scaling.Window.Factor.Width / 2))
+	ImGui.PushStyleVar(ImGuiStyleVar.FrameBorderSize, UTIL:ScaleSwitch(2))
 
 	-- make them local before
 	local _return, _trigger
@@ -927,6 +928,22 @@ function DRAW:Quickswitch(render, option, demand, value)
 	ImGui.PopStyleColor(7)
 
 
+
+	if render.desc
+	then
+		DRAW:Spacing(1,UTIL:ScaleSwitch(2))
+
+		if render.spacing then
+			DRAW:Spacer(UTIL:ScaleSwitch(render.spacing) + UTIL:ScaleSwitch(14),1)
+		else
+			DRAW:Spacer(UTIL:ScaleSwitch(14),1)
+		end
+
+		-- add stacks
+		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("White","Dark",demand))
+		ImGui.Text(render.desc)
+		ImGui.PopStyleColor(1)
+	end
 
 	-- result
 	return _return, _trigger
@@ -968,6 +985,27 @@ end
 --// DRAW:About()
 --
 function DRAW:About()
+
+	if DRAW.isDebug
+	then
+		-- some top room
+		DRAW:Spacing(1, 10)
+
+		ImGui.Text("Scaling is "..tostring(DRAW.Scaling.Enable))
+		ImGui.Text("Screen Width: "..tostring(DRAW.Scaling.Screen.Width))
+		ImGui.Text("Screen Height: "..tostring(DRAW.Scaling.Screen.Height))
+		ImGui.Text("Screen Factor: "..tostring(DRAW.Scaling.Screen.Factor))
+		ImGui.Text("Screen Pixels: "..tostring(DRAW.Scaling.Screen.Pixels))
+
+		ImGui.Text("Window Width: "..tostring(DRAW.Scaling.Window.Width))
+		ImGui.Text("Window Height: "..tostring(DRAW.Scaling.Window.Height))
+		ImGui.Text("Window Factor: "..tostring(DRAW.Scaling.Window.Factor))
+		ImGui.Text("Window Pixels: "..tostring(DRAW.Scaling.Window.Pixels))
+
+
+		-- some bottom room
+		DRAW:Spacing(1, 10)
+	end
 
 	-- some top room
 	DRAW:Spacing(1, 44)
@@ -1366,22 +1404,45 @@ function DRAW:LogoAnimation()
 	local _frames = 1000
 	local _blanks = 2000
 
+
+
+	ImGui.BeginChild("DE_LogoChild", math.floor(UTIL:ScaleSwitch(51 * 6) + 50), UTIL:ScaleSwitch((16 * 6) + 15), true, ImGuiWindowFlags.NoScrollbar + ImGuiWindowFlags.NoMove + ImGuiWindowFlags.NoScrollWithMouse)
+
+
+
+
+
 --76,25
 	--local _spacer = (ImGui.GetWindowWidth() - ((51 * UTIL:WindowWidth(1.25)) + (50 * UTIL:WindowWidth(0.25)))) / 2
 
-	--local _spacer = (ImGui.GetWindowWidth() - UTIL:WindowWidth(76.25)) / 2 +5
+	--local _spacer = (ImGui.GetWindowWidth() - (51 * UTIL:ScaleSwitch(6)) - 1)
+
+	--DRAW.Logo.Filler = math.floor(UTIL:ScaleSwitch(7))
+
+	--local _fields = 51
+
+	--local _spacer = UTIL:ScaleSwitch(50)
+
+	--if (_fields * 7) ~= (_fields * math.floor(UTIL:ScaleSwitch(7)))
+	--then
+	--	_spacer = (ImGui.GetWindowWidth() - (51 * math.floor(UTIL:ScaleSwitch(7))) - 1) / 2
+	--end
+
 
 	-- loop matrix rows
 	for _,_row in pairs(DRAW.Logo.Matrix)
 	do
 
-		local rownum = UTIL:TableLength(_row)
+		--local rownum = UTIL:TableLength(_row)
 
-		local _spacer = (ImGui.GetWindowWidth() - ((rownum * UTIL:WindowWidth(1.25)) + ((rownum - 1) * 1))) / 2
+		--local _spacer = (ImGui.GetWindowWidth() - ((rownum * UTIL:ScaleSwitch(5)) + ((rownum - 1) * 1))) / 2
+
+
+		--local _spacer = (ImGui.GetWindowWidth() - ((rownum * UTIL:ScaleSwitch(5)) + (rownum - 1))) / 2
 
 		-- left room
-		--DRAW:Spacer(UTIL:WindowWidth(13),UTIL:WindowWidth(1))
-		DRAW:Spacer(_spacer)
+		--DRAW:Spacer(UTIL:ScaleSwitch(50),1)
+		--DRAW:Spacer(_spacer)
 
 
 
@@ -1409,7 +1470,7 @@ function DRAW:LogoAnimation()
 				_blanks = _blanks + 1
 				--DRAW:Spacer(UTIL:WindowWidth(1.45),UTIL:WindowWidth(1))
 
-				DRAW:LogoPainter2(_blanks)
+				DRAW:LogoSpacer(_blanks)
 				DRAW:Sameline()
 				--DRAW:Spacer(UTIL:WindowWidth(0.25),UTIL:WindowWidth(0.25))
 
@@ -1427,17 +1488,19 @@ function DRAW:LogoAnimation()
 		--DRAW:Spacing(UTIL:WindowWidth(0.25),UTIL:WindowWidth(0.25))
 		DRAW:Spacing(1,1)
 	end
+
+
+	ImGui.EndChild()
+
 end
 
 
-function DRAW:LogoPainter2(_id)
+function DRAW:LogoSpacer(_id)
 
 	-- paint child
-	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, UTIL:WindowWidth(0.25))
 	ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColor())
-	local _blind = ImGui.BeginChildFrame(_id, UTIL:WindowWidth(1.25), UTIL:WindowWidth(1.25), ImGuiWindowFlags.NoScrollbar + ImGuiWindowFlags.NoScrollWithMouse)
+	local _blind = ImGui.BeginChildFrame(_id, UTIL:ScaleSwitch(6), UTIL:ScaleSwitch(6), ImGuiWindowFlags.NoScrollbar + ImGuiWindowFlags.NoScrollWithMouse)
 	ImGui.PopStyleColor(1)
-	ImGui.PopStyleVar(1)
 
 	-- close child
 	ImGui.EndChildFrame()
@@ -1469,9 +1532,9 @@ function DRAW:LogoPainter(_id, _transparency)
 	end
 
 	-- paint child
-	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, 1)
+	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, UTIL:ScaleSwitch(1))
 	ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColor(_color, "Logo", DRAW.Logo.Colors[_transparency]))
-	local _blind = ImGui.BeginChildFrame(_id, UTIL:WindowWidth(1.25), UTIL:WindowWidth(1.25), ImGuiWindowFlags.NoScrollbar + ImGuiWindowFlags.NoScrollWithMouse)
+	local _blind = ImGui.BeginChildFrame(_id, UTIL:ScaleSwitch(6), UTIL:ScaleSwitch(6), ImGuiWindowFlags.NoScrollbar + ImGuiWindowFlags.NoScrollWithMouse)
 	ImGui.PopStyleColor(1)
 	ImGui.PopStyleVar(1)
 
@@ -1530,6 +1593,7 @@ function DRAW:Prelude(project, version, scale, debug)
 
 	-- logo definition
 	DRAW.Logo = {
+		Filler = 0,
 		Cycles = 0,
 		Colors = {0.4,0.5,0.6,0.7,0.8,0.9,0.95,0.97,0.98,0.99,1,1,1,0.99,0.98,0.97,0.95,0.9,0.8,0.7,0.6,0.5},
 		Matrix = {
@@ -1551,16 +1615,6 @@ function DRAW:Prelude(project, version, scale, debug)
 			{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
 		}
 	}
-
-
-
-
-
-
-	-- useful stuff
-	--DRAW.SpaceWidth = UTIL:TextWidth(" ")
-
-
 
 	-- return
 	return o
