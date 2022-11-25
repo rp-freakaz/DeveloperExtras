@@ -7,7 +7,8 @@
 For the GitHub Release, drop the files into:  
     **"\<INSTALL DIR\>\bin\x64\plugins\cyber_engine_tweaks\mods\DeveloperExtras"**
 
+## Notes
+This Repository is for development only and not for Mod Users who can't wait, so don't report crashes or bugs on unreleased software. :P
+
 It is planned to release this mod on [NexusMods](https://www.nexusmods.com/cyberpunk2077), when it is ready.
-
-
 
