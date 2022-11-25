@@ -147,14 +147,14 @@ function CORE:Interface()
 				local _trigger = DRAW:TabitemStart(pool)
 				if _trigger
 				then
-					-- bottom space
-					local bottom = UTIL:ScaleSwitch(100)
+					-- default bottom space
+					local bottom = UTIL:ScaleSwitch(116)
 
-					-- add more then graph is enabled
+					-- add more if graph is enabled
 					if CORE.Extras["DeveloperExtras/Graph/Enable"]
 					and not CORE.Extras["DeveloperExtras/Graph/Overlay/Enable"]
 					then
-						bottom = bottom + UTIL:ScaleSwitch(127)
+						bottom = UTIL:ScaleSwitch(371)
 					end
 
 					-- start tabchild

@@ -870,7 +870,7 @@ function DRAW:Quickswitch(render, option, demand, value)
 	-- update spacing if present
 	if render.spacing
 	then
-		_spacing = UTIL:ScaleSwitch(render.spacing)
+		_spacing = UTIL:ScaleSwitch(render.spacing + 14)
 	end
 
 	-- paint leading spacing
@@ -888,8 +888,6 @@ function DRAW:Quickswitch(render, option, demand, value)
 
 	-- quickswitches has a fixed width
 	ImGui.SetNextItemWidth(UTIL:ScaleSwitch(34))
-
-
 
 	-- add stacks
 	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor())
@@ -991,24 +989,44 @@ function DRAW:About()
 		-- some top room
 		DRAW:Spacing(1, 10)
 
-		ImGui.Text("Scaling is "..tostring(DRAW.Scaling.Enable))
+		DRAW:Spacer(10, 1)
+		ImGui.Text("Scaling is: "..UTIL:FirstToUpper(tostring(DRAW.Scaling.Enable)))
+		DRAW:Spacing(1, 5)
+
+		DRAW:Spacer(10, 1)
 		ImGui.Text("Screen Width: "..tostring(DRAW.Scaling.Screen.Width))
+		DRAW:Sameline()
+		DRAW:Spacer(20, 1)
 		ImGui.Text("Screen Height: "..tostring(DRAW.Scaling.Screen.Height))
+		DRAW:Sameline()
+		DRAW:Spacer(20, 1)
 		ImGui.Text("Screen Factor: "..tostring(DRAW.Scaling.Screen.Factor))
-		ImGui.Text("Screen Pixels: "..tostring(DRAW.Scaling.Screen.Pixels))
+		DRAW:Spacing(1, 5)
 
+		DRAW:Spacer(10, 1)
 		ImGui.Text("Window Width: "..tostring(DRAW.Scaling.Window.Width))
+		DRAW:Sameline()
+		DRAW:Spacer(20, 1)
 		ImGui.Text("Window Height: "..tostring(DRAW.Scaling.Window.Height))
+		DRAW:Sameline()
+		DRAW:Spacer(20, 1)
 		ImGui.Text("Window Factor: "..tostring(DRAW.Scaling.Window.Factor))
-		ImGui.Text("Window Pixels: "..tostring(DRAW.Scaling.Window.Pixels))
+		DRAW:Spacing(1, 5)
 
 
-		-- some bottom room
-		DRAW:Spacing(1, 10)
+		DRAW:Spacer(10, 1)
+		ImGui.Text("Logo Painter Size: "..tostring(UTIL:ScaleSwitch(6)))
+		DRAW:Sameline()
+		DRAW:Spacer(20, 1)
+		ImGui.Text("Logo Painter Round: "..tostring(math.floor(UTIL:ScaleSwitch(6))))
+		DRAW:Sameline()
+		DRAW:Spacer(20, 1)
+		ImGui.Text("Logo Center Filler: "..tostring(DRAW.Logo.Center))
+		DRAW:Spacing(1, 5)
 	end
 
 	-- some top room
-	DRAW:Spacing(1, 44)
+	DRAW:Spacing(1, UTIL:ScaleSwitch(44))
 
 	-- draw animation
 	DRAW:LogoAnimation()
@@ -1404,47 +1422,14 @@ function DRAW:LogoAnimation()
 	local _frames = 1000
 	local _blanks = 2000
 
-
-
-	ImGui.BeginChild("DE_LogoChild", math.floor(UTIL:ScaleSwitch(51 * 6) + 50), UTIL:ScaleSwitch((16 * 6) + 15), true, ImGuiWindowFlags.NoScrollbar + ImGuiWindowFlags.NoMove + ImGuiWindowFlags.NoScrollWithMouse)
-
-
-
-
-
---76,25
-	--local _spacer = (ImGui.GetWindowWidth() - ((51 * UTIL:WindowWidth(1.25)) + (50 * UTIL:WindowWidth(0.25)))) / 2
-
-	--local _spacer = (ImGui.GetWindowWidth() - (51 * UTIL:ScaleSwitch(6)) - 1)
-
-	--DRAW.Logo.Filler = math.floor(UTIL:ScaleSwitch(7))
-
-	--local _fields = 51
-
-	--local _spacer = UTIL:ScaleSwitch(50)
-
-	--if (_fields * 7) ~= (_fields * math.floor(UTIL:ScaleSwitch(7)))
-	--then
-	--	_spacer = (ImGui.GetWindowWidth() - (51 * math.floor(UTIL:ScaleSwitch(7))) - 1) / 2
-	--end
-
+	-- update center spacer
+	DRAW.Logo.Center = (ImGui.GetWindowWidth() - ((51 * math.floor(UTIL:ScaleSwitch(6))) + 50)) / 2
 
 	-- loop matrix rows
 	for _,_row in pairs(DRAW.Logo.Matrix)
 	do
-
-		--local rownum = UTIL:TableLength(_row)
-
-		--local _spacer = (ImGui.GetWindowWidth() - ((rownum * UTIL:ScaleSwitch(5)) + ((rownum - 1) * 1))) / 2
-
-
-		--local _spacer = (ImGui.GetWindowWidth() - ((rownum * UTIL:ScaleSwitch(5)) + (rownum - 1))) / 2
-
-		-- left room
-		--DRAW:Spacer(UTIL:ScaleSwitch(50),1)
-		--DRAW:Spacer(_spacer)
-
-
+		-- centering row
+		DRAW:Spacer(DRAW.Logo.Center)
 
 		-- loop matrix columns
 		for _,_col in pairs(_row)
@@ -1458,26 +1443,21 @@ function DRAW:LogoAnimation()
 				-- seeding so its sticks
 				math.randomseed(_frames)
 
-				-- draw painter
+				-- call painter
 				DRAW:LogoPainter(_frames, math.random(1,UTIL:TableLength(DRAW.Logo.Colors)))
 				DRAW:Sameline()
-				--DRAW:Spacer(UTIL:WindowWidth(0.25),UTIL:WindowWidth(0.25))
 				DRAW:Spacer(1,1)
 				DRAW:Sameline()
 			-- or not
 			else
-				-- inc frames
+				-- inc blanks
 				_blanks = _blanks + 1
-				--DRAW:Spacer(UTIL:WindowWidth(1.45),UTIL:WindowWidth(1))
 
-				DRAW:LogoSpacer(_blanks)
+				-- call painter
+				DRAW:LogoBlanker(_blanks)
 				DRAW:Sameline()
-				--DRAW:Spacer(UTIL:WindowWidth(0.25),UTIL:WindowWidth(0.25))
-
 				DRAW:Spacer(1,1)
-
 				DRAW:Sameline()
-
 			end
 		end
 
@@ -1490,12 +1470,12 @@ function DRAW:LogoAnimation()
 	end
 
 
-	ImGui.EndChild()
+	--ImGui.EndChild()
 
 end
 
 
-function DRAW:LogoSpacer(_id)
+function DRAW:LogoBlanker(_id)
 
 	-- paint child
 	ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColor())
@@ -1510,6 +1490,7 @@ end
 
 function DRAW:LogoPainter(_id, _transparency)
 
+	-- base color
 	local _color = "Orange"
 
 	-- create white highlight
@@ -1593,7 +1574,7 @@ function DRAW:Prelude(project, version, scale, debug)
 
 	-- logo definition
 	DRAW.Logo = {
-		Filler = 0,
+		Center = 0,
 		Cycles = 0,
 		Colors = {0.4,0.5,0.6,0.7,0.8,0.9,0.95,0.97,0.98,0.99,1,1,1,0.99,0.98,0.97,0.95,0.9,0.8,0.7,0.6,0.5},
 		Matrix = {
