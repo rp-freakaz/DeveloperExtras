@@ -9,6 +9,19 @@
 local UTIL = {}
 
 --
+--// UTIL:ElementID(<STRING>)
+--   used for:
+--   DRAW:Quickshift
+--
+function UTIL:ElementID(input)
+	return string.gsub(tostring(input), "/", "")
+end
+
+
+
+
+
+--
 --// UTIL:BuildPath(<STRING>,<STRING>)
 --
 function UTIL:BuildPath(root, name)
@@ -19,44 +32,40 @@ end
 --// UTIL:SplitPath(<STRING>)
 --
 function UTIL:SplitPath(path)
-	return path:match('^(.+)/([A-Za-z0-9_]+)$')
+	return path:match("^(.+)/([A-Za-z0-9_]+)$")
 end
 
---
---// UTIL:IntToBool(<INT>)
---
---function UTIL:IntToBool(data)
---
---	if data > 0 then
---		return false
---	else
---		return true
---	end
---end
+
 
 --
 --// UTIL:IntToBool(<INT>)
+--   used for:
+--   CORE:RenderQuickshift
 --
-function UTIL:IntToBool(data)
-
-	if data == 1 then
-		return true
-	else
-		return false
-	end
+function UTIL:IntToBool(input)
+	if input == 1 then return true end
+	return false
 end
 
 --
 --// UTIL:BoolToInt(<BOOL>)
+--   used for:
+--   CORE:RenderQuickshift
 --
-function UTIL:BoolToInt(data)
-
-	if data == true then
-		return 1
-	else
-		return 0
-	end
+function UTIL:BoolToInt(input)
+	if input == true then return 1 end
+	return 0
 end
+
+
+
+
+
+
+
+
+
+
 
 
 --

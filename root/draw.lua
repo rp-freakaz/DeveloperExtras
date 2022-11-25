@@ -92,7 +92,7 @@ function DRAW:WindowStart()
 
 	-- absolute position
 	ImGui.SetNextWindowPos(100, 100, ImGuiCond.FirstUseEver)
-	ImGui.SetNextWindowSizeConstraints(UTIL:ScaleSwitch(456, true), UTIL:ScaleSwitch(600, true), UTIL:ScaleSwitch(1500, true), DRAW.Scaling.Screen.Height - 100)
+	ImGui.SetNextWindowSizeConstraints(UTIL:ScaleSwitch(456, true), UTIL:ScaleSwitch(600, true), UTIL:ScaleSwitch(1400, true), DRAW.Scaling.Screen.Height - 100)
 
 	-- global styles
 	ImGui.PushStyleVar(ImGuiStyleVar.ScrollbarSize, 0)
@@ -176,10 +176,10 @@ function DRAW:TabbarStart()
 	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:ScaleSwitch(4), UTIL:ScaleSwitch(6))
 
 	-- fix left align
-	DRAW:Spacer(1,1)
+	DRAW:Spacing(1,1)
 
 	-- create tabbar
-	local _trigger = ImGui.BeginTabBar("DE_Tabbar")
+	local _trigger = ImGui.BeginTabBar("DE_TB")
 
 	-- drop stacks
 	ImGui.PopStyleVar(1)
@@ -286,7 +286,7 @@ function DRAW:Collapse(title, scale)
 
 
 	-- space before
-	DRAW:Spacing(1,UTIL:ScaleSwitch(3))
+	DRAW:Spacer(1,UTIL:ScaleSwitch(3))
 
 	-- create collapse
 	local _trigger = ImGui.CollapsingHeader(title)
@@ -396,7 +396,6 @@ function DRAW:Spacer(width, height)
 	local height = height or 0
 
 	ImGui.Dummy(width, height)
-	DRAW:Sameline()
 end
 
 --
@@ -409,17 +408,13 @@ function DRAW:Spacing(width, height)
 	local height = height or 0
 
 	ImGui.Dummy(width, height)
+	DRAW:Sameline()
 end
 
 --
---// DRAW:Sameline(<INT>,<INT>)
+--// DRAW:Sameline()
 --
-function DRAW:Sameline(width, height)
-
-	-- catch non set
-	local width = width or 0
-	local height = height or 0
-
+function DRAW:Sameline()
 	ImGui.SameLine()
 end
 
@@ -500,19 +495,19 @@ function DRAW:RenderTitle(demand, title, min, max)
 
 	if min and max
 	then
-		DRAW:Spacer(8,1)
+		DRAW:Spacing(8,1)
 		ImGui.Text(title)
 		ImGui.SameLine()
-		DRAW:Spacer(8,1)
+		DRAW:Spacing(8,1)
 		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("Grey","Normal",demand))
 		ImGui.Text(tostring(min)..' to '..tostring(max))
 		ImGui.PopStyleColor(1)
 	else
-		DRAW:Spacer(8,1)
+		DRAW:Spacing(8,1)
 		ImGui.Text(title)
 	end
 	ImGui.PopStyleColor(1)
-	DRAW:Spacing(1,1)
+	DRAW:Spacer(1,1)
 end
 
 
@@ -550,14 +545,14 @@ function DRAW:Slider(render, option, demand, value)
 	-- int slider (no title)
 	if option.type == "int" or option.type == "Int"
 	then
-		ImGui.PushID('DE_SliderInt'..tostring(render.path))
+		ImGui.PushID("DE_SI"..UTIL:ElementID(render.path))
 		_return, _trigger = ImGui.SliderInt("", value, option.min, option.max)
 		ImGui.PopID()
 	end
 
 	if option.type == "float" or option.type == "Float"
 	then
-		ImGui.PushID('DE_SliderFloat'..tostring(render.path))
+		ImGui.PushID('DE_SF'..UTIL:ElementID(render.path))
 		_return, _trigger = ImGui.SliderFloat("", value, option.min, option.max, option.res)
 		ImGui.PopID()
 	end
@@ -589,10 +584,10 @@ function DRAW:SliderTitle(title, min, max, demand)
 
 	if min and max
 	then
-		DRAW:Spacer(8,1)
+		DRAW:Spacing(8,1)
 		ImGui.Text(title)
 		ImGui.SameLine()
-		DRAW:Spacer(8,1)
+		DRAW:Spacing(8,1)
 		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("Grey","Normal",demand))
 		ImGui.Text(tostring(min)..' to '..tostring(max))
 		ImGui.PopStyleColor(1)
@@ -672,14 +667,14 @@ function DRAW:ButtonTitle(title, min, max, demand)
 	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("White","Dark",demand))
 
 	if min and max then
-		DRAW:Spacer(8,1)
+		DRAW:Spacing(8,1)
 		ImGui.Text(title)
 		DRAW:Sameline()
 		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("Grey","Normal",demand))
 		ImGui.Text(tostring(min)..' to '..tostring(max))
 		ImGui.PopStyleColor(1)
 	else
-		DRAW:Spacer(8,1)
+		DRAW:Spacing(8,1)
 		ImGui.Text(title)
 	end
 	ImGui.PopStyleColor(1)
@@ -695,7 +690,7 @@ function DRAW:ButtonNotes(render, pointer, demand)
 
 	-- sameline
 	DRAW:Sameline()
-	DRAW:Spacer(7, 1)
+	DRAW:Spacing(7, 1)
 
 	-- add color stacks
 	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("White","Normal",demand))
@@ -708,7 +703,7 @@ function DRAW:ButtonNotes(render, pointer, demand)
 	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, 4, 1)
 
 	-- draw blind button
-	ImGui.PushID("Button"..tostring("ButtonNotes"))
+	ImGui.PushID("DE_BT"..UTIL:ElementID("Notes"))
 	local _blind = ImGui.Button(tostring(pointer), 15, 15)
 	ImGui.PopID()
 
@@ -833,9 +828,9 @@ function DRAW:CheckboxDesc(render, option, demand)
 	DRAW:Spacing(1,1)
 
 	if render.spacing then
-		DRAW:Spacer(render.spacing + 34,1)
+		DRAW:Spacing(render.spacing + 34,1)
 	else
-		DRAW:Spacer(44,1)
+		DRAW:Spacing(44,1)
 	end
 
 	-- add stacks
@@ -860,39 +855,45 @@ end
 
 
 --
---// DRAW:Quickswitch()
+--// DRAW:Quickshift()
 --
-function DRAW:Quickswitch(render, option, demand, value)
+function DRAW:Quickshift(render, option, demand, value)
 
-	-- default spacing
+	-- default
 	local _spacing = UTIL:ScaleSwitch(14)
 
-	-- update spacing if present
+	-- spacing
 	if render.spacing
 	then
-		_spacing = UTIL:ScaleSwitch(render.spacing + 14)
+		_spacing = UTIL:ScaleSwitch(render.spacing + _spacing)
 	end
 
-	-- paint leading spacing
-	DRAW:Spacer(_spacing,1)
+	-- top spacer
+	DRAW:Spacer(1,UTIL:ScaleSwitch(2))
 
+	-- lead spacing
+	DRAW:Spacing(_spacing,1)
 	ImGui.Text(render.name)
 	DRAW:Sameline()
 
+	-- fill space between
+	DRAW:Spacing(DRAW.Scaling.Window.Width - (_spacing + UTIL:TextWidth(render.name) + UTIL:ScaleSwitch(50)),1)
 
-	DRAW:Spacer(DRAW.Scaling.Window.Width - (_spacing + UTIL:TextWidth(render.name) + UTIL:ScaleSwitch(82)),1)
-
-
-
-
-
-	-- quickswitches has a fixed width
+	-- quickshifts have a fixed width
 	ImGui.SetNextItemWidth(UTIL:ScaleSwitch(34))
 
 	-- add stacks
 	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor())
-	ImGui.PushStyleColor(ImGuiCol.SliderGrab, DRAW:GetColor("Orange","Normal",demand))
-	ImGui.PushStyleColor(ImGuiCol.SliderGrabActive, DRAW:GetColor("Orange","Light",demand))
+
+	if value == 0
+	then
+		ImGui.PushStyleColor(ImGuiCol.SliderGrab, DRAW:GetColor("Grey","Light",demand))
+		ImGui.PushStyleColor(ImGuiCol.SliderGrabActive, DRAW:GetColor("Grey","Lighter",demand))
+	else
+		ImGui.PushStyleColor(ImGuiCol.SliderGrab, DRAW:GetColor("Orange","Normal",demand))
+		ImGui.PushStyleColor(ImGuiCol.SliderGrabActive, DRAW:GetColor("Orange","Light",demand))
+	end
+
 	ImGui.PushStyleColor(ImGuiCol.Border, DRAW:GetColor("Grey","Dark",demand))
 	ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColor("Grey","Darker",demand))
 	ImGui.PushStyleColor(ImGuiCol.FrameBgActive, DRAW:GetColor("Grey","Darker",demand))
@@ -903,39 +904,23 @@ function DRAW:Quickswitch(render, option, demand, value)
 	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, 0, 0)
 	ImGui.PushStyleVar(ImGuiStyleVar.FrameBorderSize, UTIL:ScaleSwitch(2))
 
-	-- make them local before
-	local _return, _trigger
-
-	ImGui.PushID('DE_Quickswitch'..tostring(render.path))
-	_return, _trigger = ImGui.SliderInt("", value, 0, 1)
+	-- draw minified slider
+	ImGui.PushID("DE_QS"..UTIL:ElementID(render.path))
+	local _return, _trigger = ImGui.SliderInt("", value, 0, 1)
 	ImGui.PopID()
-
-
-
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("White","Normal",demand))
-
-	DRAW:Sameline()
-	DRAW:Spacer(10,1)
-	ImGui.Text(UTIL:IntToText(value))
-
-	ImGui.PopStyleColor(1)
-
 
 	-- drop stacks
 	ImGui.PopStyleVar(4)
 	ImGui.PopStyleColor(7)
 
-
-
+	-- description
 	if render.desc
 	then
-		DRAW:Spacing(1,UTIL:ScaleSwitch(2))
+		-- top spacer
+		DRAW:Spacer(1,UTIL:ScaleSwitch(8))
 
-		if render.spacing then
-			DRAW:Spacer(UTIL:ScaleSwitch(render.spacing) + UTIL:ScaleSwitch(14),1)
-		else
-			DRAW:Spacer(UTIL:ScaleSwitch(14),1)
-		end
+		-- left spacing
+		DRAW:Spacing(_spacing,1)
 
 		-- add stacks
 		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("White","Dark",demand))

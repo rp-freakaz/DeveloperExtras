@@ -291,7 +291,7 @@ function CORE:RenderSwitch(pool, render)
 			then
 				if pool == "Settings"
 				then
-					CORE:RenderQuickswitch(pool, option, render, demand)
+					CORE:RenderQuickshift(pool, option, render, demand)
 				else
 					CORE:RenderCheckbox(pool, option, render, demand)
 				end
@@ -304,12 +304,12 @@ function CORE:RenderSwitch(pool, render)
 		end
 	elseif render.separator
 	then
-		DRAW:Spacing(1,UTIL:ScaleSwitch(10))
+		DRAW:Spacer(1,UTIL:ScaleSwitch(10))
 		DRAW:Separator(UTIL:ScaleSwitch(render.separator))
-		DRAW:Spacing(1,UTIL:ScaleSwitch(10))
+		DRAW:Spacer(1,UTIL:ScaleSwitch(10))
 	elseif render.spacing
 	then
-		DRAW:Spacing(1,UTIL:ScaleSwitch(render.spacing))
+		DRAW:Spacer(1,UTIL:ScaleSwitch(render.spacing))
 	else
 		-- something is wrong
 		if CORE.isDebug then
@@ -377,7 +377,7 @@ function CORE:RenderSlider(pool, option, render, demand)
 	-- render prepare
 	if render.spacing
 	then
-		DRAW:Spacer(render.spacing * CORE.Scaling.Window.Factor.Width,1)
+		DRAW:Spacing(render.spacing * CORE.Scaling.Window.Factor.Width,1)
 		DRAW:SliderTitle(render.name, option.min, option.max, demand)
 
 		-- render info
@@ -386,14 +386,14 @@ function CORE:RenderSlider(pool, option, render, demand)
 			DRAW:ButtonNotes(render, "?", demand)
 		else
 			DRAW:Sameline()
-			DRAW:Spacing(1,15)
+			DRAW:Spacer(1,15)
 		end
 
-		DRAW:Spacing(1,3 * CORE.Scaling)
-		DRAW:Spacer((render.spacing + 8) * CORE.Scaling.Window.Factor.Width,1)
+		DRAW:Spacer(1,3 * CORE.Scaling)
+		DRAW:Spacing((render.spacing + 8) * CORE.Scaling.Window.Factor.Width,1)
 		ImGui.SetNextItemWidth(ImGui.GetWindowWidth() - render.spacing - (95 * CORE.Scaling.Window.Factor.Width))
 	else
-		DRAW:Spacer(14 * CORE.Scaling.Window.Factor.Width,1)
+		DRAW:Spacing(14 * CORE.Scaling.Window.Factor.Width,1)
 		DRAW:SliderTitle(render.name, option.min, option.max, demand)
 
 		-- render info
@@ -402,11 +402,11 @@ function CORE:RenderSlider(pool, option, render, demand)
 			DRAW:ButtonNotes(render, "?", demand)
 		else
 			DRAW:Sameline()
-			DRAW:Spacing(1,8 * CORE.Scaling.Window.Factor.Width)
+			DRAW:Spacer(1,8 * CORE.Scaling.Window.Factor.Width)
 		end
 
-		DRAW:Spacing(1,3 * CORE.Scaling.Window.Factor.Width)
-		DRAW:Spacer((14 + 15) * CORE.Scaling.Window.Factor.Width,1)
+		DRAW:Spacer(1,3 * CORE.Scaling.Window.Factor.Width)
+		DRAW:Spacing((14 + 15) * CORE.Scaling.Window.Factor.Width,1)
 		ImGui.SetNextItemWidth(ImGui.GetWindowWidth() - (14 * CORE.Scaling.Window.Factor.Width) - 95)
 	end
 
@@ -432,7 +432,7 @@ function CORE:RenderSlider(pool, option, render, demand)
 	then
 		-- always
 		DRAW:Sameline()
-		DRAW:Spacer(4 * CORE.Scaling.Window.Factor.Width,1)
+		DRAW:Spacing(4 * CORE.Scaling.Window.Factor.Width,1)
 		DRAW:Sameline()
 
 		local trigger = DRAW:Button(render, option, demand, "Reset", "Reset")
@@ -446,13 +446,13 @@ function CORE:RenderSlider(pool, option, render, demand)
 	-- has list
 	if option.list
 	then
-		DRAW:Spacing(5,5)
+		DRAW:Spacer(5,5)
 
 		if render.spacing
 		then
-			DRAW:Spacer(render.spacing + 15,1)
+			DRAW:Spacing(render.spacing + 15,1)
 		else
-			DRAW:Spacer(28+15,1)
+			DRAW:Spacing(28+15,1)
 		end
 
 		-- start loop of steps
@@ -461,7 +461,7 @@ function CORE:RenderSlider(pool, option, render, demand)
 			-- space between
 			if num ~= 1
 			then
-				DRAW:Spacer(5,1)
+				DRAW:Spacing(5,1)
 			end
 
 			-- fix ugly floats
@@ -482,7 +482,7 @@ function CORE:RenderSlider(pool, option, render, demand)
 			DRAW:Sameline()
 		end
 
-		DRAW:Spacing(1,1) -- clear sameline
+		DRAW:Spacer(1,1) -- clear sameline
 	end
 
 end
@@ -537,7 +537,7 @@ function CORE:RenderButtons(pool, option, render, demand)
 
 	-- render prepare
 	if render.spacing then
-		DRAW:Spacer(render.spacing,1)
+		DRAW:Spacing(render.spacing,1)
 		DRAW:ButtonTitle(render.name, option.min, option.max, demand)
 
 		-- render info
@@ -546,13 +546,13 @@ function CORE:RenderButtons(pool, option, render, demand)
 			DRAW:ButtonNotes(render, "?", demand)
 		else
 			DRAW:Sameline()
-			DRAW:Spacing(1,15)
+			DRAW:Spacer(1,15)
 		end
 
-		DRAW:Spacing(1,5)
-		DRAW:Spacer(render.spacing + 15,1)
+		DRAW:Spacer(1,5)
+		DRAW:Spacing(render.spacing + 15,1)
 	else
-		DRAW:Spacer(28,1)
+		DRAW:Spacing(28,1)
 		DRAW:ButtonTitle(render.name, option.min, option.max, demand)
 
 		-- render info
@@ -561,11 +561,11 @@ function CORE:RenderButtons(pool, option, render, demand)
 			DRAW:ButtonNotes(render, "?", demand)
 		else
 			DRAW:Sameline()
-			DRAW:Spacing(1,15)
+			DRAW:Spacer(1,15)
 		end
 
-		DRAW:Spacing(1,5)
-		DRAW:Spacer(28+15,1)
+		DRAW:Spacer(1,5)
+		DRAW:Spacing(28+15,1)
 	end
 
 	-- start loop of options
@@ -574,7 +574,7 @@ function CORE:RenderButtons(pool, option, render, demand)
 		-- space between
 		if num ~= 1
 		then
-			DRAW:Spacer(5,1)
+			DRAW:Spacing(5,1)
 		end
 
 		-- create button
@@ -608,7 +608,7 @@ function CORE:RenderButtons(pool, option, render, demand)
 		DRAW:Sameline(5)
 	end
 
-	DRAW:Spacing(1, 0) -- clear sameline
+	DRAW:Spacer(1, 0) -- clear sameline
 
 	-- close child
 	if render.both
@@ -638,15 +638,15 @@ function CORE:RenderCheckbox(pool, option, render, demand)
 	then
 		-- render prepare
 		if render.spacing then
-			DRAW:Spacer(render.spacing,1)
+			DRAW:Spacing(render.spacing,1)
 			DRAW:RenderTitle(demand, render.name)
-			DRAW:Spacing(1,5)
-			DRAW:Spacer(render.spacing + 16,1)
+			DRAW:Spacer(1,5)
+			DRAW:Spacing(render.spacing + 16,1)
 		else
-			DRAW:Spacer(10,1)
+			DRAW:Spacing(10,1)
 			DRAW:RenderTitle(demand, render.name)
-			DRAW:Spacing(1,5)
-			DRAW:Spacer(10+16,1)
+			DRAW:Spacer(1,5)
+			DRAW:Spacing(10+16,1)
 		end
 
 		-- create button
@@ -681,7 +681,7 @@ function CORE:RenderCheckbox(pool, option, render, demand)
 		end
 
 		DRAW:Sameline()
-		DRAW:Spacer(5,1)
+		DRAW:Spacing(5,1)
 		DRAW:Sameline()
 
 		-- create button
@@ -716,12 +716,12 @@ function CORE:RenderCheckbox(pool, option, render, demand)
 	else
 		-- render prepare
 		if render.spacing then
-			DRAW:Spacer(render.spacing,1)
+			DRAW:Spacing(render.spacing,1)
 		elseif render.sameline then
 			DRAW:Sameline()
-			DRAW:Spacer(render.sameline,1)
+			DRAW:Spacing(render.sameline,1)
 		else
-			DRAW:Spacer(10,1)
+			DRAW:Spacing(10,1)
 		end
 
 		local value, trigger = DRAW:Checkbox(render, option, demand, value)
@@ -777,7 +777,7 @@ function CORE:RenderCheckbox(pool, option, render, demand)
 		DRAW:ButtonNotes(render, "?", demand)
 	else
 		DRAW:Sameline()
-		DRAW:Spacing(1,15)
+		DRAW:Spacer(1,15)
 	end
 
 
@@ -809,21 +809,20 @@ end
 
 
 --
---// CORE:RenderQuickswitch()
+--// CORE:RenderQuickshift()
 --
-function CORE:RenderQuickswitch(pool, option, render, demand)
+function CORE:RenderQuickshift(pool, option, render, demand)
 
 	-- debug id
-	local __func__ = "CORE:RenderQuickswitch"
+	local __func__ = "CORE:RenderQuickshift"
 
 	-- get current
 	local value = UTIL:BoolToInt(CORE:GetToggle(render.path, option.type))
 
 	-- create minified slider
-	local value, trigger = DRAW:Quickswitch(render, option, demand, value)
+	local value, trigger = DRAW:Quickshift(render, option, demand, value)
 	if trigger
 	then
-
 		CORE:SetToggle(render.path, option.type, UTIL:IntToBool(value))
 	end
 end
