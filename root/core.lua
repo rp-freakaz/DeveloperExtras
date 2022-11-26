@@ -1586,8 +1586,12 @@ function CORE:UpdateScale()
 	-- update screen factor
 	if CORE.Scaling.Enable
 	then
-		-- we use the screen height to keep the aspect ratio
-		CORE.Scaling.Screen.Factor = UTIL:ShortenFloat((CORE.Scaling.Screen.Height / 9 * 16) / 1920)
+		-- we don't go below 1, so nothing gets borked
+		if (CORE.Scaling.Screen.Height / 9 * 16) / 1920 >= 1
+		then
+			-- we use the screen height to keep the aspect ratio
+			CORE.Scaling.Screen.Factor = UTIL:ShortenFloat((CORE.Scaling.Screen.Height / 9 * 16) / 1920)
+		end
 	end
 
 	-- update window
