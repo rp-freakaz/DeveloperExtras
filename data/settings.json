@@ -7,22 +7,21 @@
 					"spacing":10
 				},
 				{
-					"name":"Enable Scrollbar",
-					"path":"DeveloperExtras/Scrollbar/Enable",
-					"desc":"The Scrollbar will be exposed for People\nwithout a Wheelmouse!"
+					"name":"Enable Debug",
+					"path":"DeveloperExtras/Debug/Enable",
+					"desc":"Enable Debugging with additional Informations.",
+					"warn":"what",
+					"note":"Required for DLSS or FSR 2.0"
 				},
 				{
 					"separator":5
 				},
 				{
-					"name":"Enable UI Scaling",
-					"path":"DeveloperExtras/Scale/Enable",
-					"desc":"Enables automatic UI Scaling depending on\nResolution. May has no effect."
-				},
-				{
-					"name":"UI Scale Override",
-					"path":"DeveloperExtras/Scale/Factor",
-					"desc":"Overrides detection and setting scale manually."
+					"name":"Enable Scrollbar",
+					"path":"DeveloperExtras/Scrollbar/Enable",
+					"desc":"The Scrollbar will be exposed for People\nwithout a Wheelmouse!",
+					"warn":"what",
+					"note":"Required for DLSS or FSR 2.0"
 				},
 				{
 					"separator":5
@@ -38,9 +37,7 @@
 				{
 					"name":"Background Update",
 					"path":"DeveloperExtras/Graph/BackgroundUpdate",
-					"desc":"Updates the Graph constantly and not only when\nvisible. May has some slight performance impact.",
-
-					"spacing":43
+					"desc":"Updates the Graph constantly and not only when\nvisible. May has some slight performance impact."
 				},
 				{
 					"spacing":10
@@ -48,54 +45,42 @@
 				{
 					"name":"Show Overlay",
 					"path":"DeveloperExtras/Graph/Overlay/Enable",
-					"desc":"Show's a permanent Overlay of the Performance Graph.\nDisables the Graph in the Main Window.",
-
-					"spacing":43
+					"desc":"Show's a permanent Overlay of the Performance Graph.\nDisables the Graph in the Main Window."
 				},
 				{
 					"spacing":10
 				},
 				{
 					"name":"Overlay Position",
-					"path":"DeveloperExtras/Graph/Overlay/Position",
-
-					"spacing":61
+					"path":"DeveloperExtras/Graph/Overlay/Position"
 				},
 				{
 					"spacing":10
 				},
 				{
 					"name":"Window Transparency",
-					"path":"DeveloperExtras/Graph/Overlay/Transparency",
-
-					"spacing":61
+					"path":"DeveloperExtras/Graph/Overlay/Transparency"
 				},
 				{
 					"spacing":10
 				},
 				{
 					"name":"Bar Transparency",
-					"path":"DeveloperExtras/Graph/Overlay/Transparency/Bar",
-
-					"spacing":61
+					"path":"DeveloperExtras/Graph/Overlay/Transparency/Bar"
 				},
 				{
 					"spacing":10
 				},
 				{
 					"name":"Bar Background Transparency",
-					"path":"DeveloperExtras/Graph/Overlay/Transparency/Bar/Background",
-
-					"spacing":61
+					"path":"DeveloperExtras/Graph/Overlay/Transparency/Bar/Background"
 				},
 				{
 					"spacing":10
 				},
 				{
 					"name":"Text Transparency",
-					"path":"DeveloperExtras/Graph/Overlay/Transparency/Text",
-
-					"spacing":61
+					"path":"DeveloperExtras/Graph/Overlay/Transparency/Text"
 				},
 				{
 					"spacing":10

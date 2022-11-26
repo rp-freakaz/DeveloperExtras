@@ -392,8 +392,8 @@ end
 function DRAW:Spacer(width, height)
 
 	-- catch non set
-	local width = width or 0
-	local height = height or 0
+	local width = width or 1
+	local height = height or 1
 
 	ImGui.Dummy(width, height)
 end
@@ -404,8 +404,8 @@ end
 function DRAW:Spacing(width, height)
 
 	-- catch non set
-	local width = width or 0
-	local height = height or 0
+	local width = width or 1
+	local height = height or 1
 
 	ImGui.Dummy(width, height)
 	DRAW:Sameline()
@@ -523,10 +523,121 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 --
 --// DRAW:Slider()
 --
 function DRAW:Slider(render, option, demand, value)
+
+	-- default
+	local _spacing = UTIL:ScaleSwitch(14)
+
+	-- spacing
+	if render.spacing
+	then
+		_spacing = UTIL:ScaleSwitch(render.spacing + _spacing)
+	end
+
+	-- lead spacing
+	DRAW:Spacing(_spacing,1)
+
+	-- add stacks
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("Grey","Dark",demand))
+	ImGui.Text("»")
+	ImGui.PopStyleColor(1)
+	ImGui.SameLine()
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("White","Dark",demand))
+
+	if option.min and option.max
+	then
+		DRAW:Spacing(UTIL:ScaleSwitch(8),1)
+		ImGui.Text(render.name)
+		ImGui.SameLine()
+		DRAW:Spacing(UTIL:ScaleSwitch(8),1)
+		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("Grey","Normal",demand))
+		ImGui.Text(tostring(option.min)..' to '..tostring(option.max))
+		ImGui.PopStyleColor(1)
+	else
+		ImGui.Text(render.name)
+	end
+
+	-- drop stacks
+	ImGui.PopStyleColor(1)
+
+	-- render info
+	if render.note or render.rate
+	then
+		DRAW:ButtonNotes(render, "?", demand)
+	else
+		DRAW:Sameline()
+		DRAW:Spacer(1,UTIL:ScaleSwitch(15))
+	end
+
+	DRAW:Spacer(1,UTIL:ScaleSwitch(5))
+	DRAW:Spacing(_spacing + UTIL:ScaleSwitch(14),1)
+	ImGui.SetNextItemWidth(ImGui.GetWindowWidth() - _spacing - UTIL:ScaleSwitch(90))
+
+	-- add stacks
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("White","Normal",demand))
+	ImGui.PushStyleColor(ImGuiCol.SliderGrab, DRAW:GetColor("Orange","Normal",demand))
+	ImGui.PushStyleColor(ImGuiCol.SliderGrabActive, DRAW:GetColor("Orange","Light",demand))
+	ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColor("Grey","Darker",demand))
+	ImGui.PushStyleColor(ImGuiCol.FrameBgActive, DRAW:GetColor("Grey","Darker",demand))
+	ImGui.PushStyleColor(ImGuiCol.FrameBgHovered, DRAW:GetColor("Grey","Darker",demand))
+
+	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, UTIL:ScaleSwitch(2))
+	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:ScaleSwitch(2), UTIL:ScaleSwitch(4))
+
+	-- make them local before
+	local _return, _trigger
+
+	-- int slider (no title)
+	if option.type == "int" or option.type == "Int"
+	then
+		ImGui.PushID("DE_SI"..UTIL:ElementID(render.path))
+		_return, _trigger = ImGui.SliderInt("", value, option.min, option.max)
+		ImGui.PopID()
+	end
+
+	if option.type == "float" or option.type == "Float"
+	then
+		ImGui.PushID('DE_SF'..UTIL:ElementID(render.path))
+		_return, _trigger = ImGui.SliderFloat("", value, option.min, option.max, option.res)
+		ImGui.PopID()
+	end
+
+	-- drop stacks
+	ImGui.PopStyleVar(2)
+	ImGui.PopStyleColor(6)
+
+	-- result
+	return _return, _trigger
+end
+
+
+
+
+
+
+
+
+
+--
+--// DRAW:Slider()
+--
+function DRAW:LegacySlider(render, option, demand, value)
 
 	-- add stacks
 	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("White","Normal",demand))
@@ -570,7 +681,7 @@ end
 --
 --// DRAW:SliderTitle()
 --
-function DRAW:SliderTitle(title, min, max, demand)
+function DRAW:LegacySliderTitle(title, min, max, demand)
 
 	-- catch non set
 	local min = min or false
@@ -857,7 +968,10 @@ end
 --
 --// DRAW:Quickshift()
 --
-function DRAW:Quickshift(render, option, demand, value)
+function DRAW:Quickshift(render, option, demand, value, align)
+
+	-- catch non set
+	local align = align or false
 
 	-- default
 	local _spacing = UTIL:ScaleSwitch(14)
@@ -873,11 +987,17 @@ function DRAW:Quickshift(render, option, demand, value)
 
 	-- lead spacing
 	DRAW:Spacing(_spacing,1)
-	ImGui.Text(render.name)
-	DRAW:Sameline()
 
-	-- fill space between
-	DRAW:Spacing(DRAW.Scaling.Window.Width - (_spacing + UTIL:TextWidth(render.name) + UTIL:ScaleSwitch(50)),1)
+	-- alignment
+	if align
+	then
+		-- paint title
+		ImGui.Text(render.name)
+		DRAW:Sameline()
+
+		-- fill space between
+		DRAW:Spacing(DRAW.Scaling.Window.Width - (_spacing + UTIL:TextWidth(render.name) + UTIL:ScaleSwitch(50)),1)
+	end
 
 	-- quickshifts have a fixed width
 	ImGui.SetNextItemWidth(UTIL:ScaleSwitch(34))
@@ -913,6 +1033,36 @@ function DRAW:Quickshift(render, option, demand, value)
 	ImGui.PopStyleVar(4)
 	ImGui.PopStyleColor(7)
 
+	-- alignment
+	if not align
+	then
+		DRAW:Sameline()
+		DRAW:Spacing(UTIL:ScaleSwitch(8),1)
+		ImGui.Text(render.name)
+	end
+
+	-- debug info
+	if DRAW.isDebug
+	then
+		-- top spacer
+		DRAW:Spacer(1,UTIL:ScaleSwitch(2))
+
+		-- left spacing
+		DRAW:Spacing(_spacing,1)
+
+		-- alignment
+		if not align
+		then
+			DRAW:Spacing(UTIL:ScaleSwitch(42),1)
+		end
+
+		-- add stacks
+		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("Orange","Dark",demand))
+		ImGui.Text(render.path)
+		ImGui.PopStyleColor(1)
+	end
+
+
 	-- description
 	if render.desc
 	then
@@ -921,6 +1071,12 @@ function DRAW:Quickshift(render, option, demand, value)
 
 		-- left spacing
 		DRAW:Spacing(_spacing,1)
+
+		-- alignment
+		if not align
+		then
+			DRAW:Spacing(UTIL:ScaleSwitch(42),1)
+		end
 
 		-- add stacks
 		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("White","Dark",demand))

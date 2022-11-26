@@ -6,6 +6,10 @@
 		"DeveloperExtras/BoolFalse":{
 			"type":"bool"
 		},
+		"DeveloperExtras/Debug/Enable":{
+			"type":"bool",
+			"boot":true
+		},
 		"DeveloperExtras/Scrollbar/Enable":{
 			"type":"bool",
 			"boot":false

@@ -274,7 +274,7 @@ function CORE:RenderSwitch(pool, render)
 			or option.type == "float"
 			or option.type == "Float"
 			then
-				--CORE:RenderSlider(pool, option, render, demand)
+				CORE:RenderSlider(pool, option, render, demand)
 			end
 
 			-- button types
@@ -374,47 +374,10 @@ function CORE:RenderSlider(pool, option, render, demand)
 	-- get current
 	local value = CORE:GetToggle(render.path, option.type)
 
-	-- render prepare
-	if render.spacing
-	then
-		DRAW:Spacing(render.spacing * CORE.Scaling.Window.Factor.Width,1)
-		DRAW:SliderTitle(render.name, option.min, option.max, demand)
-
-		-- render info
-		if render.note or render.rate
-		then
-			DRAW:ButtonNotes(render, "?", demand)
-		else
-			DRAW:Sameline()
-			DRAW:Spacer(1,15)
-		end
-
-		DRAW:Spacer(1,3 * CORE.Scaling)
-		DRAW:Spacing((render.spacing + 8) * CORE.Scaling.Window.Factor.Width,1)
-		ImGui.SetNextItemWidth(ImGui.GetWindowWidth() - render.spacing - (95 * CORE.Scaling.Window.Factor.Width))
-	else
-		DRAW:Spacing(14 * CORE.Scaling.Window.Factor.Width,1)
-		DRAW:SliderTitle(render.name, option.min, option.max, demand)
-
-		-- render info
-		if render.note or render.rate
-		then
-			DRAW:ButtonNotes(render, "?", demand)
-		else
-			DRAW:Sameline()
-			DRAW:Spacer(1,8 * CORE.Scaling.Window.Factor.Width)
-		end
-
-		DRAW:Spacer(1,3 * CORE.Scaling.Window.Factor.Width)
-		DRAW:Spacing((14 + 15) * CORE.Scaling.Window.Factor.Width,1)
-		ImGui.SetNextItemWidth(ImGui.GetWindowWidth() - (14 * CORE.Scaling.Window.Factor.Width) - 95)
-	end
-
 	-- create slider
 	local value, trigger = DRAW:Slider(render, option, demand, value)
 	if trigger
 	then
-
 		CORE:SetToggle(render.path, option.type, value)
 
 		-- needs to be enabled
@@ -432,7 +395,7 @@ function CORE:RenderSlider(pool, option, render, demand)
 	then
 		-- always
 		DRAW:Sameline()
-		DRAW:Spacing(4 * CORE.Scaling.Window.Factor.Width,1)
+		DRAW:Spacing(UTIL:ScaleSwitch(4),1)
 		DRAW:Sameline()
 
 		local trigger = DRAW:Button(render, option, demand, "Reset", "Reset")
@@ -446,7 +409,7 @@ function CORE:RenderSlider(pool, option, render, demand)
 	-- has list
 	if option.list
 	then
-		DRAW:Spacer(5,5)
+		DRAW:Spacer(UTIL:ScaleSwitch(5),UTIL:ScaleSwitch(5))
 
 		if render.spacing
 		then
@@ -1401,6 +1364,7 @@ function CORE:GetInternal(path)
 	end
 
 	-- ui toggles
+	if path == "DeveloperExtras/Debug/Enable" then return CORE.Extras[path] end
 	if path == "DeveloperExtras/Scrollbar/Enable" then return CORE.Extras[path] end
 
 	-- ui scaling
@@ -1434,6 +1398,14 @@ function CORE:SetInternal(path, set)
 	end
 	if path == 'DeveloperExtras/TimeTick/World' then
 		CORE.Extras[path] = set
+	end
+
+	-- debug me
+	if path == "DeveloperExtras/Debug/Enable" then
+		CORE.Extras[path] = set
+		CORE.isDebug = set
+		DRAW.isDebug = set
+		UTIL.isDebug = set
 	end
 
 	-- ui toggles
