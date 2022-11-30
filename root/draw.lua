@@ -1084,7 +1084,13 @@ function DRAW:Quickshift(render, option, demand, value, align)
 
 		-- add stacks
 		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("White","Dark",demand))
-		ImGui.Text(UTIL:WordWrap(render.desc))
+
+		if not align
+		then
+			ImGui.Text(UTIL:WordWrap(render.desc,_spacing + 42))
+		else
+			ImGui.Text(UTIL:WordWrap(render.desc,_spacing))
+		end
 		ImGui.PopStyleColor(1)
 	end
 
@@ -1178,7 +1184,7 @@ end
 
 
 --
---// DRAW:TextTitle(<STRING>,<INT>,<STRING>,<STRING>,<STRING>)
+--// DRAW:TextTitle(<STRING>,<INT>,<BOOL>,<STRING>,<STRING>,<STRING>,<STRING>,<STRING>)
 --
 -- input: (R!)	single text line
 -- space:	spacing for left padding, right is not needed
@@ -1210,49 +1216,54 @@ function DRAW:TextTitle(_input, _space, _limit, _align, t_color, t_style, u_colo
 	ImGui.Text(_input)
 	ImGui.PopStyleColor(1)
 
-	-- draw underline
-	DRAW:TextTitle_Underline(_input, _space, _limit, _align, u_color, u_style)
+	-- define underline
+	local function _Underline(_i, _s, _l, _a, _color, _style)
+
+		-- spacing
+		if _s > 0 then DRAW:Spacing(_s,1) end
+
+		-- alignment
+		if _l
+		then
+			if _a == "center" then DRAW:Spacing((DRAW.Scaling.Window.Width / 2) - (UTIL:TextWidth(_input) / 2) - _space,1) end
+			if _a == "right" then DRAW:Spacing(DRAW.Scaling.Window.Width - UTIL:TextWidth(_input) - (_space * 2),1) end
+		end
+
+		-- add stacks
+		ImGui.PushStyleColor(ImGuiCol.Button, DRAW:GetColor(_color,_style))
+		ImGui.PushStyleColor(ImGuiCol.ButtonActive, DRAW:GetColor(_color,_style))
+		ImGui.PushStyleColor(ImGuiCol.ButtonHovered, DRAW:GetColor(_color,_style))
+		ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, 0, 0)
+
+		ImGui.PushID("deco".._i)
+		-- underline size
+		if _limit
+		then
+			local _blind = ImGui.Button("", UTIL:TextWidth(_i), UTIL:ScaleSwitch(2))
+		else
+			local _blind = ImGui.Button("", DRAW.Scaling.Window.Width - (_s * 2), UTIL:ScaleSwitch(2))
+		end
+		ImGui.PopID()
+
+		-- drop stacks
+		ImGui.PopStyleVar(1)
+		ImGui.PopStyleColor(3)
+	end
+
+	-- call underline
+	_Underline(_input, _space, _limit, _align, u_color, u_style)
 end
 
 
 
 
-function DRAW:TextTitle_Underline(_input, _space, _limit, _align, _color, _style)
 
-	-- spacing
-	if _space > 0 then DRAW:Spacing(_space,1) end
 
-	-- alignment
-	if _limit
-	then
-		if _align == "center" then DRAW:Spacing((DRAW.Scaling.Window.Width / 2) - (UTIL:TextWidth(_input) / 2) - _space,1) end
-		if _align == "right" then DRAW:Spacing(DRAW.Scaling.Window.Width - UTIL:TextWidth(_input) - (_space * 2),1) end
-	end
+function DRAW:PageWrapper_AboutTitle(input)
 
-	-- add stacks
-	ImGui.PushStyleColor(ImGuiCol.Button, DRAW:GetColor(_color,_style))
-	ImGui.PushStyleColor(ImGuiCol.ButtonActive, DRAW:GetColor(_color,_style))
-	ImGui.PushStyleColor(ImGuiCol.ButtonHovered, DRAW:GetColor(_color,_style))
-	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, 0, 0)
+	DRAW:TextTitle(_input, _space, _limit, _align, t_color, t_style, u_color, u_style)
 
-	ImGui.PushID("deco".._input)
-	-- underline size
-	if _limit
-	then
-		local _blind = ImGui.Button("", UTIL:TextWidth(_input), 1)
-	else
-		local _blind = ImGui.Button("", DRAW.Scaling.Window.Width - (_space * 2), 1)
-	end
-	ImGui.PopID()
-
-	-- drop stacks
-	ImGui.PopStyleVar(1)
-	ImGui.PopStyleColor(3)
 end
-
-
-
-
 
 
 
