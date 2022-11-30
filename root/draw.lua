@@ -982,9 +982,6 @@ function DRAW:Quickshift(render, option, demand, value, align)
 		_spacing = UTIL:ScaleSwitch(render.spacing + _spacing)
 	end
 
-	-- top spacer
-	DRAW:Spacer(1,UTIL:ScaleSwitch(2))
-
 	-- lead spacing
 	DRAW:Spacing(_spacing,1)
 
@@ -1095,6 +1092,181 @@ end
 
 
 
+--
+--// DRAW:PageDebug()
+--
+function DRAW:PageDebug()
+
+	local _spacing = 14
+
+	-- some room
+	DRAW:Spacer(1, _spacing)
+
+	-- scaling specs
+	DRAW:Spacing(_spacing, 1)
+	ImGui.Text("Scaling is: "..UTIL:FirstToUpper(tostring(DRAW.Scaling.Enable)))
+	DRAW:Spacer(1, 3)
+
+	DRAW:Spacing(_spacing, 1)
+	ImGui.Text("Screen Size: "..tostring(DRAW.Scaling.Screen.Width).."x"..tostring(DRAW.Scaling.Screen.Height).." // Factor: "..tostring(DRAW.Scaling.Screen.Factor))
+
+	DRAW:Spacing(_spacing, 1)
+	ImGui.Text("Window Size: "..tostring(DRAW.Scaling.Window.Width).."x"..tostring(DRAW.Scaling.Window.Height).." // Factor: "..tostring(DRAW.Scaling.Window.Factor))
+
+	-- some room
+	DRAW:Spacer(1,_spacing)
+	DRAW:Separator(UTIL:ScaleSwitch(5))
+	DRAW:Spacer(1,_spacing)
+
+	-- logo animation
+	DRAW:Spacing(_spacing, 1)
+	ImGui.Text("Logo Painter:")
+	DRAW:Spacer(1, 3)
+
+	DRAW:Spacing(_spacing, 1)
+	ImGui.Text("Blocksize: "..tostring(UTIL:ScaleSwitch(6)).." /// Rounding: "..tostring(math.floor(UTIL:ScaleSwitch(6))).." /// Filling: "..tostring(DRAW.Logo.Center))
+
+	-- some room
+	DRAW:Spacer(1,_spacing)
+
+
+
+
+
+
+
+	DRAW:Spacing(_spacing, 1)
+	ImGui.Text("DRAW:TextTitle (alignment)")
+	DRAW:TextTitle("Left", _spacing, 0, 0)
+	DRAW:TextTitle("Center", _spacing, 1, 0)
+	DRAW:TextTitle("Right", _spacing, 2, 0)
+
+	DRAW:Spacing(_spacing, 1)
+	ImGui.Text("DRAW:TextTitle (underline: text sized)")
+	DRAW:TextTitle("Left", _spacing, 0, 1)
+	DRAW:TextTitle("Center", _spacing, 1, 1)
+	DRAW:TextTitle("Right", _spacing, 2, 1)
+
+	DRAW:Spacing(_spacing, 1)
+	ImGui.Text("DRAW:TextTitle (underline: window sized)")
+	DRAW:TextTitle("Left", _spacing, 0, 2)
+	DRAW:TextTitle("Center", _spacing, 1, 2)
+	DRAW:TextTitle("Right", _spacing, 2, 2)
+
+
+
+	-- title
+	--DRAW:Spacing(_spacing,1)
+	--DRAW:PageText("Orange", "Normal", "Text Rendering", false)
+
+
+
+
+
+
+
+
+
+
+
+
+
+end
+
+
+
+
+
+
+
+
+
+--
+--// DRAW:TextTitle(<STRING>,<INT>,<STRING>,<STRING/BOOL>)
+--// <STRING>
+--// <STRING>,<INT>
+--// <STRING>,<INT>,<STRING>
+--// <STRING>,<INT>,<STRING>,<STRING/BOOL>
+--
+-- input:	(required) wanted text
+-- space:	spacing for left padding, right is not needed
+-- align:	0 = left, 1 = center, 2 = right
+-- under:	0 = false, 1 = same as text, 2 = window width (w/o padding)
+--
+function DRAW:TextTitle(_t, _s, _a, _u)
+
+	-- catch non set
+	local _s = _s or 0
+	local _a = _a or 0
+	local _u = _u or 0
+
+	-- left spacing
+	if _s > 0 then DRAW:Spacing(_s,1) end
+
+	-- align center
+	if _a == 1 then DRAW:Spacing((DRAW.Scaling.Window.Width / 2) - (UTIL:TextWidth(_t) / 2) - _s,1) end
+
+	-- align right
+	if _a == 2 then DRAW:Spacing(DRAW.Scaling.Window.Width - UTIL:TextWidth(_t) - (_s * 2),1) end
+
+	-- format text
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("Orange","Light"))
+	ImGui.Text(_t)
+	ImGui.PopStyleColor(1)
+
+	-- underline
+	if _u == 1
+	then
+		-- left spacing
+		if _s > 0 then DRAW:Spacing(_s,1) end
+
+		-- align center
+		if _a == 1 then DRAW:Spacing((DRAW.Scaling.Window.Width / 2) - (UTIL:TextWidth(_t) / 2) - _s,1) end
+
+		-- align right
+		if _a == 2 then DRAW:Spacing(DRAW.Scaling.Window.Width - UTIL:TextWidth(_t) - (_s * 2),1) end
+
+		ImGui.PushStyleColor(ImGuiCol.Button, DRAW:GetColor("Orange", "Normal"))
+		ImGui.PushStyleColor(ImGuiCol.ButtonActive, DRAW:GetColor("Orange", "Normal"))
+		ImGui.PushStyleColor(ImGuiCol.ButtonHovered, DRAW:GetColor("Orange", "Normal"))
+		ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, 0, 0)
+
+		ImGui.PushID("decoButton".._t)
+		local _blind = ImGui.Button("", UTIL:TextWidth(_t), 1)
+		ImGui.PopID()
+
+		-- drop stacks
+		ImGui.PopStyleVar(1)
+		ImGui.PopStyleColor(3)
+	end
+
+	-- underline
+	if _u == 2
+	then
+		-- left spacing
+		if _s > 0 then DRAW:Spacing(_s,1) end
+
+		ImGui.PushStyleColor(ImGuiCol.Button, DRAW:GetColor("Orange", "Normal"))
+		ImGui.PushStyleColor(ImGuiCol.ButtonActive, DRAW:GetColor("Orange", "Normal"))
+		ImGui.PushStyleColor(ImGuiCol.ButtonHovered, DRAW:GetColor("Orange", "Normal"))
+		ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, 0, 0)
+
+		ImGui.PushID("decoButton".._t)
+		local _blind = ImGui.Button("", DRAW.Scaling.Window.Width - (_s * 2), 1)
+		ImGui.PopID()
+
+		-- drop stacks
+		ImGui.PopStyleVar(1)
+		ImGui.PopStyleColor(3)
+	end
+
+
+end
+
+
+
+
+
 
 
 
@@ -1124,47 +1296,6 @@ end
 --// DRAW:About()
 --
 function DRAW:About()
-
-	if DRAW.isDebug
-	then
-		-- some top room
-		DRAW:Spacer(1, 10)
-
-		DRAW:Spacing(10, 1)
-		ImGui.Text("Scaling is: "..UTIL:FirstToUpper(tostring(DRAW.Scaling.Enable)))
-		DRAW:Spacer(1, 5)
-
-		DRAW:Spacing(10, 1)
-		ImGui.Text("Screen Width: "..tostring(DRAW.Scaling.Screen.Width))
-		DRAW:Sameline()
-		DRAW:Spacing(20, 1)
-		ImGui.Text("Screen Height: "..tostring(DRAW.Scaling.Screen.Height))
-		DRAW:Sameline()
-		DRAW:Spacing(20, 1)
-		ImGui.Text("Screen Factor: "..tostring(DRAW.Scaling.Screen.Factor))
-		DRAW:Spacer(1, 5)
-
-		DRAW:Spacing(10, 1)
-		ImGui.Text("Window Width: "..tostring(DRAW.Scaling.Window.Width))
-		DRAW:Sameline()
-		DRAW:Spacing(20, 1)
-		ImGui.Text("Window Height: "..tostring(DRAW.Scaling.Window.Height))
-		DRAW:Sameline()
-		DRAW:Spacing(20, 1)
-		ImGui.Text("Window Factor: "..tostring(DRAW.Scaling.Window.Factor))
-		DRAW:Spacer(1, 5)
-
-
-		DRAW:Spacing(10, 1)
-		ImGui.Text("Logo Painter Size: "..tostring(UTIL:ScaleSwitch(6)))
-		DRAW:Sameline()
-		DRAW:Spacing(20, 1)
-		ImGui.Text("Logo Painter Round: "..tostring(math.floor(UTIL:ScaleSwitch(6))))
-		DRAW:Sameline()
-		DRAW:Spacing(20, 1)
-		ImGui.Text("Logo Center Filler: "..tostring(DRAW.Logo.Center))
-		DRAW:Spacer(1, 5)
-	end
 
 	-- some top room
 	DRAW:Spacer(1, UTIL:ScaleSwitch(44))
@@ -1663,14 +1794,6 @@ function DRAW:LogoPainter(_id, _transparency)
 	-- close child
 	ImGui.EndChildFrame()
 end
-
-
-
-
-
-
-
-
 
 
 

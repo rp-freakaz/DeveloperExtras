@@ -273,7 +273,37 @@ end
 
 
 
+--
+--// UTIL:WordWrap(<STRING>,<INT>,<INT>)
+--
+function UTIL:WordWrap(input, width, space)
 
+	-- debug id
+	local __func__ = "UTIL:WordWrap"
+
+	-- catch non set
+	local space = space or 0
+
+	-- whats left
+	local limit = width - (UTIL:ScaleSwitch(space) * 2)
+	local lines = ""
+
+	-- split text
+	for word in input:gmatch("%S+")
+	do
+		if UTIL:TextWidth(lines.." "..word) > limit
+		then
+			-- break line
+			lines = lines.."\n"..word
+
+			-- update limit
+			limit = limit + (width - (UTIL:ScaleSwitch(space) * 2))
+		else
+			-- add to line
+			lines = lines.." "..word
+		end
+	end
+end
 
 
 
@@ -318,6 +348,12 @@ end
 function UTIL:FirstToUpper(text)
 	return (text:gsub("^%l", string.upper))
 end
+
+
+
+
+
+
 
 
 

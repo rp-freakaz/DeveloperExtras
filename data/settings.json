@@ -4,7 +4,7 @@
 			"name":"Developer Extras",
 			"list":[
 				{
-					"spacing":10
+					"spacing":14
 				},
 				{
 					"name":"Enable Debug",

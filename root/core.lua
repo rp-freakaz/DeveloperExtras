@@ -162,7 +162,9 @@ function CORE:Interface()
 					if _trigger
 					then
 						-- page render
-						if pool == "About" or pool == "Stash"
+						if pool == "About"
+						or pool == "Stash"
+						or pool == "Debug"
 						then
 							-- about tab
 							if pool == "About"
@@ -178,6 +180,12 @@ function CORE:Interface()
 							if pool == "__Stash"
 							then
 								DRAW:PageStash()
+							end
+
+							-- debug tab
+							if pool == "Debug"
+							then
+								DRAW:PageDebug()
 							end
 
 						-- option render
@@ -1539,6 +1547,7 @@ end
 function CORE:TabOrder()
 	local list = {"Graphics","Features","Settings","About"}
 	if CORE.isStash then table.insert(list, "Stash") end
+	if CORE.isDebug then table.insert(list, "Debug") end
 
 	--if _experimental then table.insert(_list, "Experimental") end
 	--table.insert(_list, "Experimental")
