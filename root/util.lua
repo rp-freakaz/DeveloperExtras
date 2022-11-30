@@ -9,6 +9,12 @@
 local UTIL = {}
 
 --
+--
+--//////////////////// CORE ////////////////////
+--
+--
+
+--
 --// UTIL:ElementID(<STRING>)
 --   used for:
 --   DRAW:Quickshift
@@ -16,10 +22,6 @@ local UTIL = {}
 function UTIL:ElementID(input)
 	return string.gsub(tostring(input), "/", "")
 end
-
-
-
-
 
 --
 --// UTIL:BuildPath(<STRING>,<STRING>)
@@ -35,197 +37,11 @@ function UTIL:SplitPath(path)
 	return path:match("^(.+)/([A-Za-z0-9_]+)$")
 end
 
-
-
 --
---// UTIL:IntToBool(<INT>)
---   used for:
---   CORE:RenderQuickshift
 --
-function UTIL:IntToBool(input)
-	if input == 1 then return true end
-	return false
-end
-
+--//////////////////// TIMINGS ////////////////////
 --
---// UTIL:BoolToInt(<BOOL>)
---   used for:
---   CORE:RenderQuickshift
 --
-function UTIL:BoolToInt(input)
-	if input == true then return 1 end
-	return 0
-end
-
-
-
-
-
-
-
-
-
-
-
-
---
---// UTIL:IntToText(<INT>)
---
-function UTIL:IntToText(data)
-
-	if data == 1 then
-		return "ON"
-	else
-		return "OFF"
-	end
-end
-
---
---// UTIL:TextToInt(<STRING>)
---
-function UTIL:TextToInt(data)
-
-	if data == "On" then
-		return 1
-	else
-		return 0
-	end
-end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
---
---// UTIL:FilterNumbers(<STRING>)
---
-function UTIL:FilterNumbers(data)
-	local result = ""
-	string.gsub(data,"%d+",function(found)
-		result = result..found
-	end)
-	return result;
-end
-
---
---// UTIL:RoundPixel(<FLOAT>)
---
-function UTIL:RoundPixel(data)
-
-	--return (math.floor((data * (ImGui.GetWindowWidth() / 100)) + 0.5) / 10)
-
---ImGui.GetWindowWidth()
-
-	return data
-end
-
---
---// UTIL:ShortenFloat(<FLOAT>)
---
-function UTIL:ShortenFloat(data)
-	return tonumber(string.format("%.3f", data))
-end
-
---
---// UTIL:TableLength(<TABLE>)
---
-function UTIL:TableLength(table)
-	local count = 0
-	for _ in pairs(table)
-	do
-		count = count + 1
-	end
-	return count
-end
-
---
---// UTIL:TableOption(<TABLE>)
---
-function UTIL:TableOption(table)
-	local count = 0
-	for i,v in pairs(table)
-	do
-		if v.path
-		then
-			count = count + 1
-		end
-	end
-	return count
-end
-
-
---
---// UTIL:TextWidth(<STRING>)
---
-function UTIL:TextWidth(text)
-	x, y = ImGui.CalcTextSize(tostring(text))
-	return x
-end
-
---
---// UTIL:TextHeight(<STRING>)
---
-function UTIL:TextHeight(text)
-	x, y = ImGui.CalcTextSize(tostring(text))
-	return y
-end
-
---
---// UTIL:TextSplit(<STRING>)
---
-function UTIL:TextSplit(text)
-	local result = {}
-	for part in string.gmatch(text, "([^%s]+)")
-	do
-		table.insert(result, part)
-	end
-	return result
-end
-
---
---// UTIL:TextCenter(<INT>,<STRING>)
---
-function UTIL:TextCenter(width, text)
-	return math.floor((width - UTIL:TextWidth(text)) / 2)
-end
-
---
---// UTIL:ButtonWidth()
---
-function UTIL:ButtonWidth(text)
-	x, y = ImGui.CalcTextSize(tostring(text))
-	--return (x * UTIL.Texting + (12 * UTIL.Scaling))
-	return x + 12
-end
-
---
---// UTIL:ButtonHeight()
---
-function UTIL:ButtonHeight(text)
-	x, y = ImGui.CalcTextSize(tostring(text))
-	--return (y * UTIL.Texting + (8 * UTIL.Scaling))
-	return y + 7
-end
-
-
-
-
 
 --
 -- default timings
@@ -257,6 +73,193 @@ function UTIL:Get100thSeconds()
 	return math.floor(ImGui.GetTime() * 100)
 end
 
+--
+--
+--//////////////////// SCALING ////////////////////
+--
+--
+
+--
+--// UTIL:ScaleSwitch(<INT>,<BOOL>)
+--
+function UTIL:ScaleSwitch(pixels, screen)
+
+	-- catch non set
+	local pixels = pixels or 0
+	local screen = screen or false
+
+	if UTIL.Scaling.Enable and pixels > 0
+	then
+		if screen
+		then
+			return UTIL:ShortenFloat(UTIL.Scaling.Screen.Factor * pixels)
+		end
+		return UTIL:ShortenFloat(UTIL.Scaling.Window.Factor * pixels)
+	end
+	return pixels
+end
+
+--
+--
+--//////////////////// CONVERSIONS ////////////////////
+--
+--
+
+--
+--// UTIL:IntToBool(<INT>)
+--   used for:
+--   CORE:RenderQuickshift
+--
+function UTIL:IntToBool(input)
+	if input == 1 then return true end
+	return false
+end
+
+--
+--// UTIL:BoolToInt(<BOOL>)
+--   used for:
+--   CORE:RenderQuickshift
+--
+function UTIL:BoolToInt(input)
+	if input == true then return 1 end
+	return 0
+end
+
+--
+--// UTIL:FirstToUpper(<STRING>)
+--
+function UTIL:FirstToUpper(_input)
+	return (_input:gsub("^%l", string.upper))
+end
+
+--
+--
+--//////////////////// FILTERING ////////////////////
+--
+--
+
+--
+--// UTIL:FilterNumbers(<STRING>)
+--
+function UTIL:FilterNumbers(data)
+	local result = ""
+	string.gsub(data,"%d+",function(found)
+		result = result..found
+	end)
+	return result;
+end
+
+--
+--// UTIL:ShortenFloat(<FLOAT>)
+--
+function UTIL:ShortenFloat(data)
+	return tonumber(string.format("%.3f", data))
+end
+
+--
+--
+--//////////////////// COUNTING ////////////////////
+--
+--
+
+--
+--// UTIL:TableLength(<TABLE>)
+--
+function UTIL:TableLength(table)
+	local count = 0
+	for _ in pairs(table)
+	do
+		count = count + 1
+	end
+	return count
+end
+
+--
+--// UTIL:TableOption(<TABLE>)
+--
+function UTIL:TableOption(table)
+	local count = 0
+	for i,v in pairs(table)
+	do
+		if v.path
+		then
+			count = count + 1
+		end
+	end
+	return count
+end
+
+--
+--
+--//////////////////// INTERFACE ////////////////////
+--
+--
+
+--
+--// UTIL:TextWidth(<STRING>)
+--
+function UTIL:TextWidth(text)
+	local x, y = ImGui.CalcTextSize(tostring(text))
+	return x
+end
+
+--
+--// UTIL:TextHeight(<STRING>)
+--
+function UTIL:TextHeight(text)
+	local x, y = ImGui.CalcTextSize(tostring(text))
+	return y
+end
+
+--
+--// UTIL:ButtonWidth()
+--
+function UTIL:ButtonWidth(text)
+	x, y = ImGui.CalcTextSize(tostring(text))
+	return x + UTIL:ScaleSwitch(12)
+end
+
+--
+--// UTIL:ButtonHeight()
+--
+function UTIL:ButtonHeight(text)
+	x, y = ImGui.CalcTextSize(tostring(text))
+	return y + UTIL:ScaleSwitch(7)
+end
+
+
+
+
+
+
+
+
+
+--
+--// UTIL:TextSplit(<STRING>)
+--
+function UTIL:TextSplit(text)
+	local result = {}
+	for part in string.gmatch(text, "([^%s]+)")
+	do
+		table.insert(result, part)
+	end
+	return result
+end
+
+--
+--// UTIL:TextCenter(<INT>,<STRING>)
+--
+function UTIL:TextCenter(width, text)
+	return math.floor((width - UTIL:TextWidth(text)) / 2)
+end
+
+
+
+
+
+
+
 
 
 
@@ -274,12 +277,9 @@ end
 
 
 --
---// UTIL:WordWrap(<STRING>,<INT>,<INT>)
+--// UTIL:WordWrap(<STRING>,<INT>)
 --
 function UTIL:WordWrap(input, space)
-
-	-- debug id
-	local __func__ = "UTIL:WordWrap"
 
 	-- catch non set
 	local space = space or 0
@@ -295,9 +295,6 @@ function UTIL:WordWrap(input, space)
 		then
 			-- break line
 			lines = lines.."\n"..word
-
-			-- update limit
-			--limit = limit + (UTIL.Scaling.Window.Width - (UTIL:ScaleSwitch(space) * 2))
 		else
 			if lines == ""
 			then
@@ -310,6 +307,7 @@ function UTIL:WordWrap(input, space)
 		end
 	end
 
+	-- result
 	return lines
 end
 
@@ -350,12 +348,7 @@ end
 
 
 
---
---// UTIL:FirstToUpper(<STRING>)
---
-function UTIL:FirstToUpper(text)
-	return (text:gsub("^%l", string.upper))
-end
+
 
 
 
@@ -400,46 +393,34 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --
---// UTIL:ScaleSwitch(<INT>,<BOOL>)
 --
-function UTIL:ScaleSwitch(pixels, screen)
+--//////////////////// FILE ACTIONS ////////////////////
+--
+--
 
-	-- catch non set
-	local pixels = pixels or 0
-	local screen = screen or false
-
-	if UTIL.Scaling.Enable and pixels > 0
-	then
-		if screen
-		then
-			return UTIL:ShortenFloat(UTIL.Scaling.Screen.Factor * pixels)
-		end
-		return UTIL:ShortenFloat(UTIL.Scaling.Window.Factor * pixels)
-	end
-	return pixels
-end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
--- load any file
+--
+--// UTIL:ReadFile(<STRING>)
+--
 function UTIL:ReadFile(path)
 
 	-- define
@@ -459,7 +440,9 @@ function UTIL:ReadFile(path)
 	return data
 end
 
--- load any json
+--
+--// UTIL:LoadJson(<STRING>)
+--
 function UTIL:LoadJson(path)
 
 	-- define
@@ -480,19 +463,25 @@ function UTIL:LoadJson(path)
 	return exit, data
 end
 
+--
+--
+--//////////////////// DEBUGGING ////////////////////
+--
+--
 
-
-
--- debugging only
+--
+--// UTIL:DebugDump(<TABLE>)
+--
 function UTIL:DebugDump(data)
 	local tablecache = {}
 	local buffer = ""
-    local padder = "    "
- 
-    local function _dumpvar(d, depth)
-        local t = type(d)
-        local str = tostring(d)
-        if (t == "table") then
+	local padder = "    "
+
+	local function _dumpvar(d, depth)
+	local t = type(d)
+	local str = tostring(d)
+	if (t == "table") then
+
             if (tablecache[str]) then
                 -- table already dumped before, so we dont
                 -- dump it again, just mention it

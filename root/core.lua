@@ -126,12 +126,15 @@ function CORE:Interface()
 	-- run cronjobs
 	CORE:Cronjobs()
 
+	-- always update
+	CORE:UpdateScreen()
+
 	-- start window
 	local _trigger = DRAW:WindowStart()
 	if _trigger
 	then
 		-- always update
-		CORE:UpdateScale()
+		CORE:UpdateWindow()
 
 		-- start tabbar
 		local _trigger = DRAW:TabbarStart()
@@ -501,7 +504,7 @@ function CORE:RenderButtons(pool, option, render, demand)
 		-- version [smooth font renderin added with cet 1210)]
 		if DRAW.Version.Cet.Numeric >= 1210
 		then
-			ImGui.SetWindowFontScale(1.35)
+			ImGui.SetWindowFontScale(DRAW.Scaling.Font)
 		end
 	end
 
@@ -1557,11 +1560,11 @@ end
 
 
 --
---// CORE:UpdateScale()
+--// CORE:UpdateScreen()
 --
-function CORE:UpdateScale()
+function CORE:UpdateScreen()
 
-	-- update screen
+	-- update dimension
 	CORE.Scaling.Screen.Width, CORE.Scaling.Screen.Height = GetDisplayResolution()
 
 	-- update screen factor
@@ -1575,12 +1578,28 @@ function CORE:UpdateScale()
 		end
 	end
 
-	-- update window
+	-- distribute to all
+	DRAW.Scaling = CORE.Scaling
+	UTIL.Scaling = CORE.Scaling
+end
+
+--
+--// CORE:UpdateWindow()
+--
+function CORE:UpdateWindow()
+
+	-- update dimension
 	CORE.Scaling.Window.Width = ImGui.GetWindowWidth()
 	CORE.Scaling.Window.Height = ImGui.GetWindowHeight()
 
 	-- update window factor
 	CORE.Scaling.Window.Factor = UTIL:ShortenFloat(CORE.Scaling.Window.Width / 456)
+
+	-- update font size
+	if CORE.Scaling.Enable
+	then
+		CORE.Scaling.Font = CORE.Scaling.Window.Factor
+	end
 
 	-- distribute to all
 	DRAW.Scaling = CORE.Scaling
@@ -1690,7 +1709,10 @@ function CORE:Prelude()
 	CORE.Project = "Developer Extras"
 	CORE.Authors = "FreakaZ"
 	CORE.Version = {String="3.0.161",Numeric=30161,Cet={String=nil,Numeric=0},Game={String=nil,Numeric=0}}
-	CORE.Scaling = {Enable=false,Screen={Width=1920,Height=1080,Factor=1},Window={Width=456,Height=600,Factor=1},Font=1.38}
+	--CORE.Scaling = {Enable=false,Screen={Width=1920,Height=1080,Factor=1},Window={Width=456,Height=600,Factor=1},Font=1.38}
+
+	CORE.Scaling = {Enable=false,Screen={Width=1920,Height=1080,Factor=1},Window={Width=456,Height=600,Factor=1},Font=1}
+
 	CORE.Timings = {Frame=0,Second=0,Millisecond=0}
 
 	-- new form

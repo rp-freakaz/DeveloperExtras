@@ -19,7 +19,7 @@
 				{
 					"name":"Enable Scrollbar",
 					"path":"DeveloperExtras/Scrollbar/Enable",
-					"desc":"The Scrollbar will be exposed for People\nwithout a Wheelmouse!",
+					"desc":"The Scrollbar will be exposed for People without a Wheelmouse!",
 					"warn":"what",
 					"note":"Required for DLSS or FSR 2.0"
 				},
@@ -29,7 +29,7 @@
 				{
 					"name":"Performance Graph",
 					"path":"DeveloperExtras/Graph/Enable",
-					"desc":"Show's the Performance Graph with Frametimes and\nFrames Per Second in the Window."
+					"desc":"Show's the Performance Graph with Frametimes and Frames Per Second in the Window."
 				},
 				{
 					"spacing":10
@@ -37,7 +37,7 @@
 				{
 					"name":"Background Update",
 					"path":"DeveloperExtras/Graph/BackgroundUpdate",
-					"desc":"Updates the Graph constantly and not only when\nvisible. May has some slight performance impact."
+					"desc":"Updates the Graph constantly and not only when visible. May has some slight performance impact."
 				},
 				{
 					"spacing":10
@@ -45,7 +45,7 @@
 				{
 					"name":"Show Overlay",
 					"path":"DeveloperExtras/Graph/Overlay/Enable",
-					"desc":"Show's a permanent Overlay of the Performance Graph.\nDisables the Graph in the Main Window."
+					"desc":"Show's a permanent Overlay of the Performance Graph. Disables the Graph in the Main Window."
 				},
 				{
 					"spacing":10

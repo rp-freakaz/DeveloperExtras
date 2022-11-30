@@ -90,9 +90,16 @@ end
 --
 function DRAW:WindowStart()
 
-	-- absolute position
+	-- first position
 	ImGui.SetNextWindowPos(100, 100, ImGuiCond.FirstUseEver)
-	ImGui.SetNextWindowSizeConstraints(UTIL:ScaleSwitch(456, true), UTIL:ScaleSwitch(600, true), UTIL:ScaleSwitch(1400, true), DRAW.Scaling.Screen.Height - 100)
+
+	-- native scaling
+	if DRAW.Scaling.Enable
+	then
+		ImGui.SetNextWindowSizeConstraints(UTIL:ScaleSwitch(456, true), UTIL:ScaleSwitch(600, true), (DRAW.Scaling.Screen.Width / 2) - 50, DRAW.Scaling.Screen.Height - 100)
+	else
+		ImGui.SetNextWindowSizeConstraints(456, 600, 456, ImGui.GetWindowHeight() - 200)
+	end
 
 	-- global styles
 	ImGui.PushStyleVar(ImGuiStyleVar.ScrollbarSize, 0)
@@ -1077,7 +1084,7 @@ function DRAW:Quickshift(render, option, demand, value, align)
 
 		-- add stacks
 		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("White","Dark",demand))
-		ImGui.Text(render.desc)
+		ImGui.Text(UTIL:WordWrap(render.desc))
 		ImGui.PopStyleColor(1)
 	end
 
@@ -1104,7 +1111,7 @@ function DRAW:PageDebug()
 
 	-- scaling specs
 	DRAW:Spacing(_spacing, 1)
-	ImGui.Text("Scaling is: "..UTIL:FirstToUpper(tostring(DRAW.Scaling.Enable)))
+	ImGui.Text("Scaling is: "..UTIL:FirstToUpper(tostring(DRAW.Scaling.Enable)).." // Fontsize: "..tostring(ImGui.GetFontSize()))
 	DRAW:Spacer(1, 3)
 
 	DRAW:Spacing(_spacing, 1)
@@ -1147,11 +1154,6 @@ function DRAW:PageDebug()
 	ImGui.Text(UTIL:WordWrap("Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.", _spacing))
 
 	DRAW:Separator(UTIL:ScaleSwitch(5),14,10)
-
-
-	-- title
-	--DRAW:Spacing(_spacing,1)
-	--DRAW:PageText("Orange", "Normal", "Text Rendering", false)
 
 
 
