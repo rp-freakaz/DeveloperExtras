@@ -276,7 +276,7 @@ end
 --
 --// UTIL:WordWrap(<STRING>,<INT>,<INT>)
 --
-function UTIL:WordWrap(input, width, space)
+function UTIL:WordWrap(input, space)
 
 	-- debug id
 	local __func__ = "UTIL:WordWrap"
@@ -285,7 +285,7 @@ function UTIL:WordWrap(input, width, space)
 	local space = space or 0
 
 	-- whats left
-	local limit = width - (UTIL:ScaleSwitch(space) * 2)
+	local limit = UTIL.Scaling.Window.Width - (UTIL:ScaleSwitch(space) * 2)
 	local lines = ""
 
 	-- split text
@@ -297,12 +297,20 @@ function UTIL:WordWrap(input, width, space)
 			lines = lines.."\n"..word
 
 			-- update limit
-			limit = limit + (width - (UTIL:ScaleSwitch(space) * 2))
+			--limit = limit + (UTIL.Scaling.Window.Width - (UTIL:ScaleSwitch(space) * 2))
 		else
-			-- add to line
-			lines = lines.." "..word
+			if lines == ""
+			then
+				-- add to line
+				lines = word
+			else
+				-- add to line
+				lines = lines.." "..word
+			end
 		end
 	end
+
+	return lines
 end
 
 

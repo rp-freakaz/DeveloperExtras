@@ -1097,7 +1097,7 @@ end
 --
 function DRAW:PageDebug()
 
-	local _spacing = 14
+	local _spacing = UTIL:ScaleSwitch(14)
 
 	-- some room
 	DRAW:Spacer(1, _spacing)
@@ -1113,10 +1113,7 @@ function DRAW:PageDebug()
 	DRAW:Spacing(_spacing, 1)
 	ImGui.Text("Window Size: "..tostring(DRAW.Scaling.Window.Width).."x"..tostring(DRAW.Scaling.Window.Height).." // Factor: "..tostring(DRAW.Scaling.Window.Factor))
 
-	-- some room
-	DRAW:Spacer(1,_spacing)
-	DRAW:Separator(UTIL:ScaleSwitch(5))
-	DRAW:Spacer(1,_spacing)
+	DRAW:Separator(UTIL:ScaleSwitch(5),14,10)
 
 	-- logo animation
 	DRAW:Spacing(_spacing, 1)
@@ -1124,35 +1121,32 @@ function DRAW:PageDebug()
 	DRAW:Spacer(1, 3)
 
 	DRAW:Spacing(_spacing, 1)
-	ImGui.Text("Blocksize: "..tostring(UTIL:ScaleSwitch(6)).." /// Rounding: "..tostring(math.floor(UTIL:ScaleSwitch(6))).." /// Filling: "..tostring(DRAW.Logo.Center))
+	ImGui.Text("Blocksize: "..tostring(UTIL:ScaleSwitch(6)).." // Rounding: "..tostring(math.floor(UTIL:ScaleSwitch(6))).." // Filling: "..tostring(DRAW.Logo.Center))
 
-	-- some room
-	DRAW:Spacer(1,_spacing)
-
-
-
-
-
-
-
-	DRAW:Spacing(_spacing, 1)
-	ImGui.Text("DRAW:TextTitle (alignment)")
-	DRAW:TextTitle("Left", _spacing, 0, 0)
-	DRAW:TextTitle("Center", _spacing, 1, 0)
-	DRAW:TextTitle("Right", _spacing, 2, 0)
+	DRAW:Separator(UTIL:ScaleSwitch(5),14,10)
 
 	DRAW:Spacing(_spacing, 1)
 	ImGui.Text("DRAW:TextTitle (underline: text sized)")
-	DRAW:TextTitle("Left", _spacing, 0, 1)
-	DRAW:TextTitle("Center", _spacing, 1, 1)
-	DRAW:TextTitle("Right", _spacing, 2, 1)
+	DRAW:TextTitle("Left", _spacing, true, "left")
+	DRAW:TextTitle("Center", _spacing, true, "center")
+	DRAW:TextTitle("Right", _spacing, true, "right")
+
+	DRAW:Separator(UTIL:ScaleSwitch(5),14,10)
 
 	DRAW:Spacing(_spacing, 1)
 	ImGui.Text("DRAW:TextTitle (underline: window sized)")
-	DRAW:TextTitle("Left", _spacing, 0, 2)
-	DRAW:TextTitle("Center", _spacing, 1, 2)
-	DRAW:TextTitle("Right", _spacing, 2, 2)
+	DRAW:TextTitle("Left", _spacing, false, "left")
+	DRAW:TextTitle("Center", _spacing, false, "center")
+	DRAW:TextTitle("Right", _spacing, false, "right")
 
+	DRAW:Separator(UTIL:ScaleSwitch(5),14,10)
+
+	DRAW:Spacing(_spacing, 1)
+	ImGui.Text("UTIL:WordWrap")
+	DRAW:Spacing(_spacing, 1)
+	ImGui.Text(UTIL:WordWrap("Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.", _spacing))
+
+	DRAW:Separator(UTIL:ScaleSwitch(5),14,10)
 
 
 	-- title
@@ -1182,92 +1176,77 @@ end
 
 
 --
---// DRAW:TextTitle(<STRING>,<INT>,<STRING>,<STRING/BOOL>)
---// <STRING>
---// <STRING>,<INT>
---// <STRING>,<INT>,<STRING>
---// <STRING>,<INT>,<STRING>,<STRING/BOOL>
+--// DRAW:TextTitle(<STRING>,<INT>,<STRING>,<STRING>,<STRING>)
 --
--- input:	(required) wanted text
+-- input: (R!)	single text line
 -- space:	spacing for left padding, right is not needed
--- align:	0 = left, 1 = center, 2 = right
--- under:	0 = false, 1 = same as text, 2 = window width (w/o padding)
+-- align:	"left", "center", "right"
+-- under:	"none", "text" = text width, "full" = window width (minus padding)
 --
-function DRAW:TextTitle(_t, _s, _a, _u)
+function DRAW:TextTitle(_input, _space, _limit, _align, t_color, t_style, u_color, u_style)
 
 	-- catch non set
-	local _s = _s or 0
-	local _a = _a or 0
-	local _u = _u or 0
+	local _space = _space or 0
+	local _limit = _limit or false
+	local _align = _align or "left"
 
-	-- left spacing
-	if _s > 0 then DRAW:Spacing(_s,1) end
+	-- catch non set:colors
+	local t_color = t_color or "Orange"
+	local t_style = t_style or "Normal"
+	local u_color = u_color or "Grey"
+	local u_style = u_style or "Normal"
 
-	-- align center
-	if _a == 1 then DRAW:Spacing((DRAW.Scaling.Window.Width / 2) - (UTIL:TextWidth(_t) / 2) - _s,1) end
+	-- spacing
+	if _space > 0 then DRAW:Spacing(_space,1) end
 
-	-- align right
-	if _a == 2 then DRAW:Spacing(DRAW.Scaling.Window.Width - UTIL:TextWidth(_t) - (_s * 2),1) end
+	-- alignment
+	if _align == "center" then DRAW:Spacing((DRAW.Scaling.Window.Width / 2) - (UTIL:TextWidth(_input) / 2) - _space,1) end
+	if _align == "right" then DRAW:Spacing(DRAW.Scaling.Window.Width - UTIL:TextWidth(_input) - (_space * 2),1) end
 
 	-- format text
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("Orange","Light"))
-	ImGui.Text(_t)
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor(t_color,t_style))
+	ImGui.Text(_input)
 	ImGui.PopStyleColor(1)
 
-	-- underline
-	if _u == 1
-	then
-		-- left spacing
-		if _s > 0 then DRAW:Spacing(_s,1) end
-
-		-- align center
-		if _a == 1 then DRAW:Spacing((DRAW.Scaling.Window.Width / 2) - (UTIL:TextWidth(_t) / 2) - _s,1) end
-
-		-- align right
-		if _a == 2 then DRAW:Spacing(DRAW.Scaling.Window.Width - UTIL:TextWidth(_t) - (_s * 2),1) end
-
-		ImGui.PushStyleColor(ImGuiCol.Button, DRAW:GetColor("Orange", "Normal"))
-		ImGui.PushStyleColor(ImGuiCol.ButtonActive, DRAW:GetColor("Orange", "Normal"))
-		ImGui.PushStyleColor(ImGuiCol.ButtonHovered, DRAW:GetColor("Orange", "Normal"))
-		ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, 0, 0)
-
-		ImGui.PushID("decoButton".._t)
-		local _blind = ImGui.Button("", UTIL:TextWidth(_t), 1)
-		ImGui.PopID()
-
-		-- drop stacks
-		ImGui.PopStyleVar(1)
-		ImGui.PopStyleColor(3)
-	end
-
-	-- underline
-	if _u == 2
-	then
-		-- left spacing
-		if _s > 0 then DRAW:Spacing(_s,1) end
-
-		ImGui.PushStyleColor(ImGuiCol.Button, DRAW:GetColor("Orange", "Normal"))
-		ImGui.PushStyleColor(ImGuiCol.ButtonActive, DRAW:GetColor("Orange", "Normal"))
-		ImGui.PushStyleColor(ImGuiCol.ButtonHovered, DRAW:GetColor("Orange", "Normal"))
-		ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, 0, 0)
-
-		ImGui.PushID("decoButton".._t)
-		local _blind = ImGui.Button("", DRAW.Scaling.Window.Width - (_s * 2), 1)
-		ImGui.PopID()
-
-		-- drop stacks
-		ImGui.PopStyleVar(1)
-		ImGui.PopStyleColor(3)
-	end
-
-
+	-- draw underline
+	DRAW:TextTitle_Underline(_input, _space, _limit, _align, u_color, u_style)
 end
 
 
 
 
+function DRAW:TextTitle_Underline(_input, _space, _limit, _align, _color, _style)
 
+	-- spacing
+	if _space > 0 then DRAW:Spacing(_space,1) end
 
+	-- alignment
+	if _limit
+	then
+		if _align == "center" then DRAW:Spacing((DRAW.Scaling.Window.Width / 2) - (UTIL:TextWidth(_input) / 2) - _space,1) end
+		if _align == "right" then DRAW:Spacing(DRAW.Scaling.Window.Width - UTIL:TextWidth(_input) - (_space * 2),1) end
+	end
+
+	-- add stacks
+	ImGui.PushStyleColor(ImGuiCol.Button, DRAW:GetColor(_color,_style))
+	ImGui.PushStyleColor(ImGuiCol.ButtonActive, DRAW:GetColor(_color,_style))
+	ImGui.PushStyleColor(ImGuiCol.ButtonHovered, DRAW:GetColor(_color,_style))
+	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, 0, 0)
+
+	ImGui.PushID("deco".._input)
+	-- underline size
+	if _limit
+	then
+		local _blind = ImGui.Button("", UTIL:TextWidth(_input), 1)
+	else
+		local _blind = ImGui.Button("", DRAW.Scaling.Window.Width - (_space * 2), 1)
+	end
+	ImGui.PopID()
+
+	-- drop stacks
+	ImGui.PopStyleVar(1)
+	ImGui.PopStyleColor(3)
+end
 
 
 
