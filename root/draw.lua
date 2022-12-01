@@ -98,7 +98,7 @@ function DRAW:WindowStart()
 	then
 		ImGui.SetNextWindowSizeConstraints(UTIL:ScaleSwitch(456, true), UTIL:ScaleSwitch(600, true), (DRAW.Scaling.Screen.Width / 2) - 50, DRAW.Scaling.Screen.Height - 100)
 	else
-		ImGui.SetNextWindowSizeConstraints(456, 600, 456, ImGui.GetWindowHeight() - 200)
+		ImGui.SetNextWindowSizeConstraints(456, 600, 456, DRAW.Scaling.Screen.Height - 100)
 	end
 
 	-- global styles
@@ -1134,23 +1134,55 @@ function DRAW:PageDebug()
 	DRAW:Spacer(1, 3)
 
 	DRAW:Spacing(_spacing, 1)
-	ImGui.Text("Blocksize: "..tostring(UTIL:ScaleSwitch(6)).." // Rounding: "..tostring(math.floor(UTIL:ScaleSwitch(6))).." // Filling: "..tostring(DRAW.Logo.Center))
+	ImGui.Text("Blocksize: "..tostring(UTIL:ScaleSwitch(6)).." // Rounding: "..tostring(math.floor(UTIL:ScaleSwitch(6))).." // Center: "..tostring(DRAW.Logo.Center).." // Pixels: "..tostring(DRAW.Logo.Pixels))
 
 	DRAW:Separator(UTIL:ScaleSwitch(5),14,10)
 
 	DRAW:Spacing(_spacing, 1)
-	ImGui.Text("DRAW:TextTitle (underline: text sized)")
-	DRAW:TextTitle("Left", _spacing, true, "left")
-	DRAW:TextTitle("Center", _spacing, true, "center")
-	DRAW:TextTitle("Right", _spacing, true, "right")
+	ImGui.Text("DRAW:TextTitle (no underline)")
+	DRAW:TextTitle("Left", {space=_spacing,underline={paint=false}})
+
+	DRAW:Spacing(_spacing, 1)
+	ImGui.Text("DRAW:TextTitle (underline text sized)")
+	DRAW:TextTitle("Left", {space=_spacing,underline={paint=true}})
+
+	DRAW:Spacing(_spacing, 1)
+	ImGui.Text("DRAW:TextTitle (underline window sized)")
+	DRAW:TextTitle("Left", {space=_spacing,underline={paint=true,limit=false}})
 
 	DRAW:Separator(UTIL:ScaleSwitch(5),14,10)
 
 	DRAW:Spacing(_spacing, 1)
-	ImGui.Text("DRAW:TextTitle (underline: window sized)")
-	DRAW:TextTitle("Left", _spacing, false, "left")
-	DRAW:TextTitle("Center", _spacing, false, "center")
-	DRAW:TextTitle("Right", _spacing, false, "right")
+	ImGui.Text("DRAW:TextTitle (no underline)")
+	DRAW:TextTitle("Center", {space=_spacing,align="center",underline={paint=false}})
+
+	DRAW:Spacing(_spacing, 1)
+	ImGui.Text("DRAW:TextTitle (underline text sized)")
+	DRAW:TextTitle("Center", {space=_spacing,align="center",underline={paint=true}})
+
+	DRAW:Spacing(_spacing, 1)
+	ImGui.Text("DRAW:TextTitle (underline window sized)")
+	DRAW:TextTitle("Center", {space=_spacing,align="center",underline={paint=true,limit=false}})
+
+	DRAW:Separator(UTIL:ScaleSwitch(5),14,10)
+
+	DRAW:Spacing(_spacing, 1)
+	ImGui.Text("DRAW:TextTitle (no underline)")
+	DRAW:TextTitle("Right", {space=_spacing,align="right",underline={paint=false}})
+
+	DRAW:Spacing(_spacing, 1)
+	ImGui.Text("DRAW:TextTitle (underline text sized)")
+	DRAW:TextTitle("Right", {space=_spacing,align="right",underline={paint=true}})
+
+	DRAW:Spacing(_spacing, 1)
+	ImGui.Text("DRAW:TextTitle (underline window sized)")
+	DRAW:TextTitle("Right", {space=_spacing,align="right",underline={paint=true,limit=false}})
+
+
+
+
+
+
 
 	DRAW:Separator(UTIL:ScaleSwitch(5),14,10)
 
@@ -1161,10 +1193,17 @@ function DRAW:PageDebug()
 
 	DRAW:Separator(UTIL:ScaleSwitch(5),14,10)
 
+	DRAW:Spacing(_spacing, 1)
+	ImGui.Text("ImGui.TextWrapped")
+	DRAW:Spacing(_spacing, 1)
+	ImGui.TextWrapped("Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.")
 
+	DRAW:Separator(UTIL:ScaleSwitch(5),14,10)
 
-
-
+	DRAW:Spacing(_spacing, 1)
+	ImGui.Text("ImGui.BulletText")
+	DRAW:Spacing(_spacing, 1)
+	ImGui.BulletText("Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.")
 
 
 
@@ -1183,65 +1222,91 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --
---// DRAW:TextTitle(<STRING>,<INT>,<BOOL>,<STRING>,<STRING>,<STRING>,<STRING>,<STRING>)
+--// DRAW:TextTitle(<STRING>,<TABLE>)
 --
--- input: (R!)	single text line
--- space:	spacing for left padding, right is not needed
--- align:	"left", "center", "right"
--- under:	"none", "text" = text width, "full" = window width (minus padding)
---
-function DRAW:TextTitle(_input, _space, _limit, _align, t_color, t_style, u_color, u_style)
+function DRAW:TextTitle(input, flags)
 
 	-- catch non set
-	local _space = _space or 0
-	local _limit = _limit or false
-	local _align = _align or "left"
+	local flags = flags or {}
 
-	-- catch non set:colors
-	local t_color = t_color or "Orange"
-	local t_style = t_style or "Normal"
-	local u_color = u_color or "Grey"
-	local u_style = u_style or "Normal"
+	-- defaulting flags
+	local _space = 0
+	local _color = "Orange"
+	local _style = "Normal"
+	local _align = "left"
+	local _underline = {paint=true,limit=true,color="Grey",style="Normal"}
+
+	-- parse flags if any
+	if flags.space then _space = flags.space end
+	if flags.color then _color = flags.color end
+	if flags.style then _style = flags.style end
+	if flags.align then _align = flags.align end
+	if flags.underline then
+		if flags.underline.paint ~= nil then _underline.paint = flags.underline.paint end
+		if flags.underline.limit ~= nil then _underline.limit = flags.underline.limit end
+		if flags.underline.color ~= nil then _underline.color = flags.underline.color end
+		if flags.underline.style ~= nil then _underline.style = flags.underline.style end
+	end
 
 	-- spacing
 	if _space > 0 then DRAW:Spacing(_space,1) end
 
 	-- alignment
-	if _align == "center" then DRAW:Spacing((DRAW.Scaling.Window.Width / 2) - (UTIL:TextWidth(_input) / 2) - _space,1) end
-	if _align == "right" then DRAW:Spacing(DRAW.Scaling.Window.Width - UTIL:TextWidth(_input) - (_space * 2),1) end
+	if _align == "center" then DRAW:Spacing((DRAW.Scaling.Window.Width / 2) - (UTIL:TextWidth(input) / 2) - _space,1) end
+	if _align == "right" then DRAW:Spacing(DRAW.Scaling.Window.Width - UTIL:TextWidth(input) - (_space * 2),1) end
 
 	-- format text
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor(t_color,t_style))
-	ImGui.Text(_input)
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor(_color,_style))
+	ImGui.Text(input)
 	ImGui.PopStyleColor(1)
 
-	-- define underline
-	local function _Underline(_i, _s, _l, _a, _color, _style)
+	--
+	-- underline
+	--
 
+	if _underline.paint
+	then
 		-- spacing
-		if _s > 0 then DRAW:Spacing(_s,1) end
+		if _space > 0 then DRAW:Spacing(_space,1) end
 
 		-- alignment
-		if _l
+		if _underline.limit
 		then
-			if _a == "center" then DRAW:Spacing((DRAW.Scaling.Window.Width / 2) - (UTIL:TextWidth(_input) / 2) - _space,1) end
-			if _a == "right" then DRAW:Spacing(DRAW.Scaling.Window.Width - UTIL:TextWidth(_input) - (_space * 2),1) end
+			if _align == "center" then DRAW:Spacing((DRAW.Scaling.Window.Width / 2) - (UTIL:TextWidth(input) / 2) - _space,1) end
+			if _align == "right" then DRAW:Spacing(DRAW.Scaling.Window.Width - UTIL:TextWidth(input) - (_space * 2),1) end
 		end
 
 		-- add stacks
-		ImGui.PushStyleColor(ImGuiCol.Button, DRAW:GetColor(_color,_style))
-		ImGui.PushStyleColor(ImGuiCol.ButtonActive, DRAW:GetColor(_color,_style))
-		ImGui.PushStyleColor(ImGuiCol.ButtonHovered, DRAW:GetColor(_color,_style))
+		ImGui.PushStyleColor(ImGuiCol.Button, DRAW:GetColor(_underline.color,_underline.style))
+		ImGui.PushStyleColor(ImGuiCol.ButtonActive, DRAW:GetColor(_underline.color,_underline.style))
+		ImGui.PushStyleColor(ImGuiCol.ButtonHovered, DRAW:GetColor(_underline.color,_underline.style))
 		ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, 0, 0)
 
-		ImGui.PushID("deco".._i)
+		ImGui.PushID("deco"..input)
 		-- underline size
-		if _limit
+		if _underline.limit
 		then
-			local _blind = ImGui.Button("", UTIL:TextWidth(_i), UTIL:ScaleSwitch(2))
+			local _blind = ImGui.Button("", UTIL:TextWidth(input), UTIL:ScaleSwitch(1))
 		else
-			local _blind = ImGui.Button("", DRAW.Scaling.Window.Width - (_s * 2), UTIL:ScaleSwitch(2))
+			local _blind = ImGui.Button("", DRAW.Scaling.Window.Width - (_space * 2), UTIL:ScaleSwitch(1))
 		end
 		ImGui.PopID()
 
@@ -1249,9 +1314,11 @@ function DRAW:TextTitle(_input, _space, _limit, _align, t_color, t_style, u_colo
 		ImGui.PopStyleVar(1)
 		ImGui.PopStyleColor(3)
 	end
+end
 
-	-- call underline
-	_Underline(_input, _space, _limit, _align, u_color, u_style)
+
+function DRAW:Wrapper_AboutTitle(input, space)
+	DRAW:TextTitle(input, {space=(DRAW.Scaling.Window.Width - DRAW.Logo.Pixels),color="Grey",style="Normal",align="center",underline={paint=true,limit=false,color="Orange",style="Normal"}})
 end
 
 
@@ -1259,11 +1326,15 @@ end
 
 
 
-function DRAW:PageWrapper_AboutTitle(input)
 
-	DRAW:TextTitle(_input, _space, _limit, _align, t_color, t_style, u_color, u_style)
 
-end
+
+
+
+
+
+
+
 
 
 
@@ -1316,21 +1387,10 @@ function DRAW:About()
 	-- some room
 	DRAW:Spacer(1,7)
 
-	-- print website
-	line = "https://rootpunk.com/mod/"
+	-- print github
+	line = "https://github.com/rp-freakaz/DeveloperExtras"
 	DRAW:Spacing(UTIL:TextCenter(ImGui.GetWindowWidth(), line),1)
 	DRAW:PageText("White", "Dark", line, false)
-
-	-- some room
-	DRAW:Spacer(1,7)
-
-	-- print email
-	line = "hello @ rootpunk.com"
-	part = UTIL:TextSplit(line)
-	DRAW:Spacing(UTIL:TextCenter(ImGui.GetWindowWidth(), line),1)
-	DRAW:PageText("Orange", "Dark", part[1], true)
-	DRAW:PageText("Grey", "Light", " "..part[2].." ", true)
-	DRAW:PageText("Orange", "Dark", part[3], false)
 
 	-- some room
 	DRAW:Spacer(1,25)
@@ -1358,12 +1418,15 @@ function DRAW:About()
 	DRAW:Spacer(1,10)
 
 
+
+
+	DRAW:Wrapper_AboutTitle("SPECIAL THANKS TO")
+
+
 	-- special thanks
 	DRAW:AboutHeader("SPECIAL THANKS TO")
 	DRAW:AboutSpecial("CD PROJEKT RED", "FOR CREATING THIS AWESOME WORLD", "https://cdprojektred.com/")
-	DRAW:AboutSpecial("YAMASHI", "CYBER ENGINE TWEAKS", "https://github.com/yamashi/CyberEngineTweaks")
-	DRAW:AboutSpecial("PSIBERX", "CET KIT", "https://github.com/psiberx/cp2077-cet-kit")
-
+	DRAW:AboutSpecial("YAMASHI, PSIBERX, WSSDUDE", "CYBER ENGINE TWEAKS", "https://github.com/yamashi/CyberEngineTweaks")
 
 
 
@@ -1686,8 +1749,11 @@ function DRAW:LogoAnimation()
 	local _frames = 1000
 	local _blanks = 2000
 
+	-- update pixel size
+	DRAW.Logo.Pixels = (51 * math.floor(UTIL:ScaleSwitch(6))) + 50
+
 	-- update center spacer
-	DRAW.Logo.Center = (ImGui.GetWindowWidth() - ((51 * math.floor(UTIL:ScaleSwitch(6))) + 50)) / 2
+	DRAW.Logo.Center = (DRAW.Scaling.Window.Width - DRAW.Logo.Pixels) / 2
 
 	-- loop matrix rows
 	for _,_row in pairs(DRAW.Logo.Matrix)
@@ -1830,6 +1896,7 @@ function DRAW:Prelude(project, version, scale, debug)
 
 	-- logo definition
 	DRAW.Logo = {
+		Pixels = 0,
 		Center = 0,
 		Cycles = 0,
 		Colors = {0.4,0.5,0.6,0.7,0.8,0.9,0.95,0.97,0.98,0.99,1,1,1,0.99,0.98,0.97,0.95,0.9,0.8,0.7,0.6,0.5},

@@ -1593,7 +1593,7 @@ function CORE:UpdateWindow()
 	CORE.Scaling.Window.Height = ImGui.GetWindowHeight()
 
 	-- update window factor
-	CORE.Scaling.Window.Factor = UTIL:ShortenFloat(CORE.Scaling.Window.Width / 456)
+	CORE.Scaling.Window.Factor = UTIL:ShortenFloat(CORE.Scaling.Window.Width / (456 * CORE.Scaling.Screen.Factor))
 
 	-- update font size
 	if CORE.Scaling.Enable
@@ -1709,8 +1709,6 @@ function CORE:Prelude()
 	CORE.Project = "Developer Extras"
 	CORE.Authors = "FreakaZ"
 	CORE.Version = {String="3.0.161",Numeric=30161,Cet={String=nil,Numeric=0},Game={String=nil,Numeric=0}}
-	--CORE.Scaling = {Enable=false,Screen={Width=1920,Height=1080,Factor=1},Window={Width=456,Height=600,Factor=1},Font=1.38}
-
 	CORE.Scaling = {Enable=false,Screen={Width=1920,Height=1080,Factor=1},Window={Width=456,Height=600,Factor=1},Font=1}
 
 	CORE.Timings = {Frame=0,Second=0,Millisecond=0}

@@ -94,7 +94,7 @@ function UTIL:ScaleSwitch(pixels, screen)
 		then
 			return UTIL:ShortenFloat(UTIL.Scaling.Screen.Factor * pixels)
 		end
-		return UTIL:ShortenFloat(UTIL.Scaling.Window.Factor * pixels)
+		return UTIL:ShortenFloat((UTIL.Scaling.Screen.Factor * UTIL.Scaling.Window.Factor) * pixels)
 	end
 	return pixels
 end
@@ -298,7 +298,7 @@ function UTIL:WordWrap(input, space)
 		else
 			if lines == ""
 			then
-				-- add to line
+				-- add first
 				lines = word
 			else
 				-- add to line
@@ -382,10 +382,6 @@ end
 function UTIL:WindowHeight(percent)
 	return UTIL.Scaling.Window.Factor * percent
 end
-
-
-
-
 
 function UTIL:GetWindowWidth(percent)
 	return ImGui.GetWindowWidth() / 100 * percent
