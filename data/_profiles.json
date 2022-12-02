@@ -1,0 +1,107 @@
+{
+	"default":{
+		"transparency":						[0, 0, 0, 0],
+
+		"generic/white":					[1, 1, 1, 1],
+		"generic/white/dark":					[0.8, 0.8, 0.85, 0.8],
+		"generic/white/light":					[0.9, 0.9, 1, 1],
+		"generic/white/normal":					[0.9, 0.9, 1, 0.9],
+
+		"generic/black":					[0, 0, 0, 1],
+		"generic/black/dark":					[0.01, 0.01, 0.03, 0.9],
+		"generic/black/light":					[0.1, 0.1, 0.12, 0.5],
+		"generic/black/normal":					[0.04, 0.04, 0.06, 0.85],
+
+		"generic/orange":					[1, 0.56, 0.13, 1],
+		"generic/orange/dark":					[1, 0.56, 0.13, 0.7],
+		"generic/orange/light":					[1, 0.56, 0.13, 1],
+		"generic/orange/normal":				[1, 0.56, 0.13, 0.85],
+
+		"generic/grey":						[0.5, 0.5, 0.5, 1],
+		"generic/grey/dark":					[0.3, 0.3, 0.33, 0.7],
+		"generic/grey/darker":					[0.2, 0.2, 0.23, 0.7],
+		"generic/grey/darkest":					[0.1, 0.1, 0.13, 0.7],
+		"generic/grey/light":					[0.5, 0.5, 0.53, 0.7],
+		"generic/grey/lighter":					[0.6, 0.6, 0.63, 0.8],
+		"generic/grey/lightest":				[0.7, 0.7, 0.73, 0.9],
+		"generic/grey/normal":					[0.4, 0.4, 0.43, 0.7],
+
+		"window/main/text":					"generic/white/light",
+		"window/main/border":					[0.2, 0.2, 0.23, 0.5],
+		"window/main/background":				"generic/black/dark",
+		"window/main/title/background":				"window/main/background",
+		"window/main/title/background/active":			"window/main/background",
+		"window/main/title/background/collapsed":		"window/main/background",
+		"window/main/resize":					"generic/grey/dark",
+		"window/main/resize/active":				"generic/orange/normal",
+		"window/main/resize/hovered":				"generic/orange/light",
+
+		"window/main/tab":					"generic/grey/darker",
+		"window/main/tab/text":					"generic/white/normal",
+		"window/main/tab/active":				"generic/orange/normal",
+		"window/main/tab/hovered":				"generic/orange/light",
+
+		"window/main/scrollbar/grab":				"generic/orange/dark",
+		"window/main/scrollbar/hovered":			"generic/orange/normal",
+		"window/main/scrollbar/background":			"transparency",
+
+		"window/main/collapse/text":				"generic/white/normal",
+		"window/main/collapse/header":				"generic/grey/darker",
+		"window/main/collapse/header/active":			"generic/orange/normal",
+		"window/main/collapse/header/hovered":			"generic/orange/light"
+
+
+	},
+
+	"white_satin":{
+		"transparency":						[0, 0, 0, 0],
+
+		"generic/white":					[1, 1, 1, 1],
+		"generic/white/dark":					[0.8, 0.8, 0.85, 0.8],
+		"generic/white/light":					[0.9, 0.9, 1, 1],
+		"generic/white/normal":					[0.9, 0.9, 1, 0.9],
+
+		"generic/black":					[0, 0, 0, 1],
+		"generic/black/dark":					[0.01, 0.01, 0.03, 0.9],
+		"generic/black/light":					[0.1, 0.1, 0.12, 0.5],
+		"generic/black/normal":					[0.04, 0.04, 0.06, 0.85],
+
+		"generic/orange":					[1, 0.56, 0.13, 1],
+		"generic/orange/dark":					[1, 0.56, 0.13, 0.7],
+		"generic/orange/light":					[1, 0.56, 0.13, 1],
+		"generic/orange/normal":				[1, 0.56, 0.13, 0.85],
+
+		"generic/grey":						[0.5, 0.5, 0.5, 1],
+		"generic/grey/dark":					[0.3, 0.3, 0.33, 0.7],
+		"generic/grey/darker":					[0.2, 0.2, 0.23, 0.7],
+		"generic/grey/darkest":					[0.1, 0.1, 0.13, 0.7],
+		"generic/grey/light":					[0.5, 0.5, 0.53, 0.7],
+		"generic/grey/lighter":					[0.6, 0.6, 0.63, 0.8],
+		"generic/grey/lightest":				[0.7, 0.7, 0.73, 0.9],
+		"generic/grey/normal":					[0.4, 0.4, 0.43, 0.7],
+
+		"window/main/text":					"generic/white/light",
+		"window/main/border":					[0.2, 0.2, 0.23, 0.5],
+		"window/main/background":				"generic/black/dark",
+		"window/main/title/background":				"window/main/background",
+		"window/main/title/background/active":			"window/main/background",
+		"window/main/title/background/collapsed":		"window/main/background",
+		"window/main/resize":					"generic/grey/dark",
+		"window/main/resize/active":				"generic/orange/normal",
+		"window/main/resize/hovered":				"generic/orange/light",
+
+		"window/main/tab":					"generic/grey/darker",
+		"window/main/tab/text":					"generic/white/normal",
+		"window/main/tab/active":				"generic/orange/normal",
+		"window/main/tab/hovered":				"generic/orange/light",
+
+		"window/main/scrollbar/grab":				"generic/orange/dark",
+		"window/main/scrollbar/hovered":			"generic/orange/normal",
+		"window/main/scrollbar/background":			"transparency",
+
+		"window/main/collapse/text":				"generic/white/normal",
+		"window/main/collapse/header":				"generic/grey/darker",
+		"window/main/collapse/header/active":			"generic/orange/normal",
+		"window/main/collapse/header/hovered":			"generic/orange/light"
+	}
+}

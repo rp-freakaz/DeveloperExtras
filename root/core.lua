@@ -44,46 +44,64 @@ function CORE:Initialize()
 			CORE:DebugConsole(__func__,"Native Scaling: Not Supported")
 		end
 
-		-- libraries
-		UTIL:Prelude(CORE.Project, CORE.Version, CORE.Scaling, CORE.isDebug)
-		DRAW:Prelude(CORE.Project, CORE.Version, CORE.Scaling, CORE.isDebug)
-
 		-- debug msg
-		CORE:DebugConsole(__func__,"Loading Options ..")
+		CORE:DebugConsole(__func__,"Loading Colors ..")
 
-		-- load options
-		if CORE:LoadOption()
+		-- load colors
+		if CORE:LoadColors()
 		then
 			-- debug msg
-			CORE:DebugConsole(__func__,"Found "..tostring(UTIL:TableLength(CORE.Option)).." Options")
-			CORE:DebugConsole(__func__,"Loading Structure ..")
+			CORE:DebugConsole(__func__,"Found "..tostring(UTIL:TableLength(CORE.Profile.Colors)).." Profiles")
 
-			-- load list
-			local list = {"Graphics","Features","Settings","Experimental"}
-
-			-- looping through
-			for _,pool in pairs(list)
-			do
-				-- load selected
-				local exit,data = UTIL:LoadJson("data/"..string.lower(pool)..".json")
-
-				-- validate
-				if exit
-				then
-					-- debug msg
-					CORE:DebugConsole(__func__,"Loaded Pool: "..pool)
-					CORE.Render[pool] = data.pool
-				else
-					-- debug msg
-					CORE:DebugConsole(__func__,"Failed to Load: "..pool)
-				end
-			end
-
-			-- we are done
-			CORE.isReady = true
+			-- libraries
+			UTIL:Prelude(CORE.Project, CORE.Version, CORE.Profile, CORE.Scaling, CORE.isDebug)
+			DRAW:Prelude(CORE.Project, CORE.Version, CORE.Profile, CORE.Scaling, CORE.isDebug)
 
 			-- debug msg
-			CORE:DebugConsole(__func__,"Finished ..")
+			CORE:DebugConsole(__func__,"Loading Options ..")
+
+			-- load options
+			if CORE:LoadOption()
+			then
+				-- debug msg
+				CORE:DebugConsole(__func__,"Found "..tostring(UTIL:TableLength(CORE.Option)).." Options")
+				CORE:DebugConsole(__func__,"Loading Structure ..")
+
+				-- load list
+				local list = {"Graphics","Features","Settings","Experimental"}
+
+				-- looping through
+				for _,pool in pairs(list)
+				do
+					-- load selected
+					local exit,data = UTIL:LoadJson("data/"..string.lower(pool)..".json")
+
+					-- validate
+					if exit
+					then
+						-- debug msg
+						CORE:DebugConsole(__func__,"Loaded Pool: "..pool)
+						CORE.Render[pool] = data.pool
+					else
+						-- debug msg
+						CORE:DebugConsole(__func__,"Failed to Load: "..pool)
+					end
+				end
+
+				-- we are done
+				CORE.isReady = true
+
+				-- debug msg
+				CORE:DebugConsole(__func__,"Finished ..")
+			else
+				-- debug msg
+				CORE:DebugConsole(__func__,"Detected: Cyberpunk 2077: "..CORE.Version.Game.String.." ("..CORE.Version.Game.Numeric..")")
+				CORE:DebugConsole(__func__,"Detected: Cyber Engine Tweaks: "..CORE.Version.Cet.String.." ("..CORE.Version.Cet.Numeric..")")
+				CORE:DebugConsole(__func__,"Finished ..")
+
+				-- public msg
+				CORE:PrintConsole("Failed to initialize, missing or corrupt file")
+			end
 		else
 			-- debug msg
 			CORE:DebugConsole(__func__,"Detected: Cyberpunk 2077: "..CORE.Version.Game.String.." ("..CORE.Version.Game.Numeric..")")
@@ -824,12 +842,34 @@ end
 
 
 
+--
+--// CORE:LoadColors()
+--
+function CORE:LoadColors()
 
+	-- debug id
+	local __func__ = "CORE:LoadColors"
 
+	-- define
+	local data = nil
+	local exit = false
 
+	-- load & convert
+	exit, data = UTIL:LoadJson("data/_profiles.json")
 
+	-- validate
+	if exit
+	then
+		-- assign colors
+		CORE.Profile.Colors = data
+	else
+		-- debug msg
+		CORE:DebugConsole(__func__,"failed to parse _profiles.json")
+	end
 
-
+	-- result
+	return exit
+end
 
 --
 --// CORE:LoadOption()
@@ -863,7 +903,7 @@ function CORE:LoadOption()
 		CORE:LoadSorted(UTIL:FilterNumbers(CORE.Version.Game.String), data)
 	else
 		-- debug msg
-		CORE:DebugConsole(__func__,"failed to parse "..tostring(file))
+		CORE:DebugConsole(__func__,"failed to parse _options.json")
 	end
 
 	-- result
@@ -1708,13 +1748,15 @@ function CORE:Prelude()
 	-- identity
 	CORE.Project = "Developer Extras"
 	CORE.Authors = "FreakaZ"
+	CORE.Profile = {Select="default",Colors={}}
 	CORE.Version = {String="3.0.0-161",Numeric=300161,Cet={String=nil,Numeric=0},Game={String=nil,Numeric=0}}
 	CORE.Scaling = {Enable=false,Screen={Width=1920,Height=1080,Factor=1},Window={Width=456,Height=600,Factor=1},Font=1}
-
 	CORE.Timings = {Frame=0,Second=0,Millisecond=0}
 
 	-- new form
 	CORE.Trigger = {Saving=0,Export=0,Redraw=0}
+
+
 
 	-- pooling
 	CORE.Render = {}

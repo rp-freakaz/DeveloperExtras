@@ -504,7 +504,7 @@ end
 --
 -- constructor
 --
-function UTIL:Prelude(project, version, scale, debug)
+function UTIL:Prelude(project, version, color, scale, debug)
 	local o = {}
 	setmetatable(o, self)
 	self.__index = self
@@ -512,6 +512,7 @@ function UTIL:Prelude(project, version, scale, debug)
 	-- identity
 	UTIL.Project = project
 	UTIL.Version = version
+	UTIL.Profile = color
 	UTIL.Scaling = scale
 	UTIL.isDebug = debug
 

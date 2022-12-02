@@ -85,6 +85,33 @@ function DRAW:GetState(state, trans)
 	end
 end
 
+
+
+function DRAW:ColorSwitch(color, state)
+
+	-- catch unset
+	local state = state or 0
+
+	-- find the color
+	while type(DRAW.Profile.Colors[DRAW.Profile.Select][color]) == "string"
+	do
+		-- rewrite element
+		color = DRAW.Profile.Colors[DRAW.Profile.Select][color]
+	end
+
+
+	--print(tostring(ImGui.GetColorU32(DRAW.Profile.Colors[DRAW.Profile.Select][color][1], DRAW.Profile.Colors[DRAW.Profile.Select][color][2], DRAW.Profile.Colors[DRAW.Profile.Select][color][3], DRAW.Profile.Colors[DRAW.Profile.Select][color][4])))
+
+	return ImGui.GetColorU32(DRAW.Profile.Colors[DRAW.Profile.Select][color][1], DRAW.Profile.Colors[DRAW.Profile.Select][color][2], DRAW.Profile.Colors[DRAW.Profile.Select][color][3], DRAW.Profile.Colors[DRAW.Profile.Select][color][4])
+
+
+
+	--return DRAW:GetColor("Orange","Border")
+
+end
+
+
+
 --
 --// DRAW:WindowStart()
 --
@@ -115,7 +142,7 @@ function DRAW:WindowStart()
 	--
 
 	-- define colors
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("White","Light"))
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:ColorSwitch("window/main/text"))
 	ImGui.PushStyleColor(ImGuiCol.Border, DRAW:GetColor("Orange","Border"))
 	ImGui.PushStyleColor(ImGuiCol.WindowBg, DRAW:GetColor("Black","Dark"))
 
@@ -304,6 +331,40 @@ function DRAW:Collapse(title, scale)
 
 	return _trigger
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 --
 --// DRAW:CollapseNotice()
@@ -1384,7 +1445,7 @@ function DRAW:PageAbout()
 	local part = {}
 
 	-- print who
-	DRAW:Spacing(UTIL:TextCenter(DRAW.Scaling.Window.Width, "2022 BY FREAKAZ"),1)
+	DRAW:Spacing(UTIL:TextCenter(DRAW.Scaling.Window.Width, "2022 by FREAKAZ"),1)
 	DRAW:PageText("White", "Normal", "2022", true)
 	DRAW:PageText("Orange", "Normal", " by ", true)
 	DRAW:PageText("White", "Normal", "FREAKAZ", false)
@@ -1518,17 +1579,17 @@ end
 --
 --// DRAW:PageAbout_Text(<STRING>,<STRING>,<STRING>,<BOOL>)
 --
-function DRAW:PageAbout_Text(text, color, style, break)
+function DRAW:PageAbout_Text(text, color, style, sameline)
 
 	-- catch unset
-	local break = break or false
+	local sameline = sameline or false
 
 	-- paint it
 	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor(color, style))
 	ImGui.Text(text)
 	ImGui.PopStyleColor(1)
 
-	if same then
+	if sameline then
 		DRAW:Sameline()
 	end
 end
@@ -2091,7 +2152,7 @@ end
 --
 -- constructor
 --
-function DRAW:Prelude(project, version, scale, debug)
+function DRAW:Prelude(project, version, color, scale, debug)
 	local o = {}
 	setmetatable(o, self)
 	self.__index = self
@@ -2099,6 +2160,7 @@ function DRAW:Prelude(project, version, scale, debug)
 	-- identity
 	DRAW.Project = project
 	DRAW.Version = version
+	DRAW.Profile = color
 	DRAW.Scaling = scale
 	DRAW.isDebug = debug
 
