@@ -16,7 +16,7 @@ local UTIL = require("root/util.lua"):Prelude()
 --
 function DRAW:GetColor(color, style, state)
 
-	-- catch non set
+	-- catch unset
 	local color = color or "Transparent"
 	local style = style or "Normal"
 	local state = state or 0
@@ -207,7 +207,7 @@ end
 --
 function DRAW:TabitemStart(title)
 
-	-- catch non set
+	-- catch unset
 	local title = title or "Unknown"
 
 	-- add stacks
@@ -398,7 +398,7 @@ end
 --
 function DRAW:Spacer(width, height)
 
-	-- catch non set
+	-- catch unset
 	local width = width or 1
 	local height = height or 1
 
@@ -410,7 +410,7 @@ end
 --
 function DRAW:Spacing(width, height)
 
-	-- catch non set
+	-- catch unset
 	local width = width or 1
 	local height = height or 1
 
@@ -430,7 +430,7 @@ end
 --
 function DRAW:Separator(height, top, bot, color, style)
 
-	-- catch non set
+	-- catch unset
 	local top = top or 0
 	local bot = bot or 0
 	local color = color or false
@@ -490,7 +490,7 @@ end
 --
 function DRAW:RenderTitle(demand, title, min, max)
 
-	-- catch non set
+	-- catch unset
 	local min = min or false
 	local max = max or false
 
@@ -690,7 +690,7 @@ end
 --
 function DRAW:LegacySliderTitle(title, min, max, demand)
 
-	-- catch non set
+	-- catch unset
 	local min = min or false
 	local max = max or false
 
@@ -726,7 +726,7 @@ end
 --
 function DRAW:Button(render, option, demand, piece, value)
 
-	-- catch non set
+	-- catch unset
 	local piece = tostring(piece) or true
 	local value = tostring(value) or false
 
@@ -774,7 +774,7 @@ end
 --
 function DRAW:ButtonTitle(title, min, max, demand)
 
-	-- catch non set
+	-- catch unset
 	local min = min or false
 	local max = max or false
 
@@ -977,7 +977,7 @@ end
 --
 function DRAW:Quickshift(render, option, demand, value, align)
 
-	-- catch non set
+	-- catch unset
 	local align = align or false
 
 	-- default
@@ -1244,7 +1244,7 @@ end
 --
 function DRAW:TextTitle(input, flags)
 
-	-- catch non set
+	-- catch unset
 	local flags = flags or {}
 
 	-- defaulting flags
@@ -1351,49 +1351,51 @@ end
 
 
 
-
-
-
+--
+--
+--//////////////////// ABOUT PAGE ////////////////////
+--
+--
 
 --
---// DRAW:About()
+--// DRAW:PageAbout()
 --
-function DRAW:About()
+function DRAW:PageAbout()
 
-	-- some top room
+	-- make room
 	DRAW:Spacer(1, UTIL:ScaleSwitch(44))
 
 	-- draw animation
 	DRAW:LogoAnimation()
 
-	-- more room
-	DRAW:Spacer(1,12)
+	-- paint version
+	DRAW:PageAbout_Version("v"..DRAW.Version.String)
 
-	-- remove spacing between
-	ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, 0, 0)
+	-- make room
+	DRAW:Spacer(1,UTIL:ScaleSwitch(15))
+
+
+
+
+
 
 	-- predefine
 	local line = ""
 	local part = {}
 
 	-- print who
-	line = "2022 BY FREAKAZ"
-	part = UTIL:TextSplit(line)
-	DRAW:Spacing(UTIL:TextCenter(ImGui.GetWindowWidth(), line),1)
-	DRAW:PageText("White", "Normal", part[1], true)
-	DRAW:PageText("Orange", "Normal", " "..part[2].." ", true)
-	DRAW:PageText("White", "Normal", part[3], false)
+	DRAW:Spacing(UTIL:TextCenter(DRAW.Scaling.Window.Width, "2022 BY FREAKAZ"),1)
+	DRAW:PageText("White", "Normal", "2022", true)
+	DRAW:PageText("Orange", "Normal", " by ", true)
+	DRAW:PageText("White", "Normal", "FREAKAZ", false)
 
-	-- some room
-	DRAW:Spacer(1,7)
 
-	-- print github
-	line = "https://github.com/rp-freakaz/DeveloperExtras"
-	DRAW:Spacing(UTIL:TextCenter(ImGui.GetWindowWidth(), line),1)
-	DRAW:PageText("White", "Dark", line, false)
+	-- make room
+	DRAW:Spacer(1,UTIL:ScaleSwitch(10))
 
-	-- some room
-	DRAW:Spacer(1,25)
+
+
+
 
 	-- print random
 	line = "made in endless hours at day and night"
@@ -1403,8 +1405,8 @@ function DRAW:About()
 	DRAW:Spacing(UTIL:TextCenter(ImGui.GetWindowWidth(), line),1)
 	DRAW:PageText("Grey", "Lighter", line)
 
-	-- some room
-	DRAW:Spacer(1,3)
+	-- make room
+	DRAW:Spacer(1,UTIL:ScaleSwitch(3))
 
 	-- print judy
 	line = "~ FOR JUDY ~"
@@ -1414,24 +1416,45 @@ function DRAW:About()
 	local unlock = DRAW:PageButton("Orange", "Normal", part[2].." "..part[3], true)
 	DRAW:PageText("Grey", "Lighter", " "..part[4], false)
 
-	-- some room
-	DRAW:Spacer(1,10)
+	-- make room
+	DRAW:Spacer(1,UTIL:ScaleSwitch(15))
+
+	-- print modpage
+	DRAW:Spacing(UTIL:TextCenter(DRAW.Scaling.Window.Width, "https://rootpunk.com/mod"),1)
+	DRAW:PageText("Grey", "Light", "https://", true)
+	DRAW:PageText("Grey", "Lighter", "rootpunk.com/", true)
+	DRAW:PageText("Orange", "Dark", "mod", false)
+
+	-- make room
+	DRAW:Spacer(1,UTIL:ScaleSwitch(3))
+
+	-- print github
+	DRAW:Spacing(UTIL:TextCenter(DRAW.Scaling.Window.Width, "https://github.com/rp-freakaz/DeveloperExtras"),1)
+	DRAW:PageText("Grey", "Light", "https://", true)
+	DRAW:PageText("Grey", "Lighter", "github.com/rp-freakaz/", true)
+	DRAW:PageText("Orange", "Dark", "DeveloperExtras", false)
+
+	-- make room
+	DRAW:Spacer(1,UTIL:ScaleSwitch(20))
 
 
 
 
-	DRAW:Wrapper_AboutTitle("SPECIAL THANKS TO")
+
 
 
 	-- special thanks
-	DRAW:AboutHeader("SPECIAL THANKS TO")
+	DRAW:PageAbout_Header("SPECIAL THANKS TO")
+
 	DRAW:AboutSpecial("CD PROJEKT RED", "FOR CREATING THIS AWESOME WORLD", "https://cdprojektred.com/")
 	DRAW:AboutSpecial("YAMASHI, PSIBERX, WSSDUDE", "CYBER ENGINE TWEAKS", "https://github.com/yamashi/CyberEngineTweaks")
 
 
 
 	-- section
-	DRAW:AboutHeader("THANKS TO")
+	DRAW:PageAbout_Header("THANKS TO")
+
+
 	DRAW:AboutThanks("AnnettK", "for being a friend, even in dark times")
 	DRAW:AboutBreak()
 	DRAW:AboutThanks("Halvkyrie", "who inspired me to get into modding")
@@ -1447,7 +1470,7 @@ function DRAW:About()
 
 
 	-- section
-	DRAW:AboutHeader("CHANGELOG")
+	DRAW:PageAbout_Header("CHANGELOG")
 	DRAW:AboutVersion("v3.0")
 	DRAW:AboutChange("rewrote entire core for improved option handling")
 	DRAW:AboutChange("switched description file format to JSON")
@@ -1468,7 +1491,7 @@ function DRAW:About()
 
 
 	-- section
-	DRAW:AboutHeader("MADE WITH")
+	DRAW:PageAbout_Header("MADE WITH")
 
 	line = "Visual Studio Code, Notepad++ and some Brain ;)"
 	DRAW:Spacing(UTIL:TextCenter(ImGui.GetWindowWidth(), line),1)
@@ -1480,17 +1503,212 @@ function DRAW:About()
 
 
 
-	-- print github
-	line = "https://github.com/rp-freakaz/DeveloperExtras"
-	DRAW:Spacing(UTIL:TextCenter(ImGui.GetWindowWidth(), line),1)
-	DRAW:PageText("Grey", "Lighter", line, false)
-
-
-
-	-- restore spacing between
-	ImGui.PopStyleVar(1)
-
 end
+
+
+
+
+
+--
+--
+--//////////////////// ABOUT PAGE - SPECIFIC ELEMENTS ////////////////////
+--
+--
+
+--
+--// DRAW:PageAbout_Text(<STRING>,<STRING>,<STRING>,<BOOL>)
+--
+function DRAW:PageAbout_Text(text, color, style, break)
+
+	-- catch unset
+	local break = break or false
+
+	-- paint it
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor(color, style))
+	ImGui.Text(text)
+	ImGui.PopStyleColor(1)
+
+	if same then
+		DRAW:Sameline()
+	end
+end
+
+
+
+function DRAW:PageAbout_Header(text)
+
+	-- make room
+	DRAW:Spacer(1,UTIL:ScaleSwitch(20))
+
+	-- centering text
+	DRAW:Spacing(UTIL:TextCenter(DRAW.Scaling.Window.Width, text),1)
+
+	DRAW:PageText("Grey", "Lightest", text)
+
+	-- force underline
+	DRAW:Underline(DRAW.Logo.Pixels,UTIL:ScaleSwitch(1),0,"center")
+
+	-- make room
+	DRAW:Spacer(1,UTIL:ScaleSwitch(5))
+end
+
+
+
+
+
+function DRAW:PageAbout_Version(text)
+
+	-- push to the right side of the logo animation
+	DRAW:Spacing((DRAW.Scaling.Window.Width / 2) + ((DRAW.Logo.Pixels / 2) - UTIL:TextWidth(text)) + UTIL:ScaleSwitch(3),1)
+
+	-- paint it
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("Grey", "Normal"))
+	ImGui.Text(text)
+	ImGui.PopStyleColor(1)
+end
+
+
+
+
+function DRAW:PageAbout_Special(who, why, web)
+
+	-- centering
+	DRAW:Spacing(UTIL:TextCenter(DRAW.Scaling.Window.Width, "~ "..who.." ~"),1)
+	DRAW:PageText("Orange", "Normal", "~ ", true)
+	DRAW:PageText("White", "Normal", who, true)
+	DRAW:PageText("Orange", "Normal", " ~", false)
+
+	-- some room
+	DRAW:Spacer(1,3)
+
+	-- centering
+	DRAW:Spacing(UTIL:TextCenter(ImGui.GetWindowWidth(), why),1)
+	DRAW:PageText("Grey", "Lighter", why, false)
+
+	-- some room
+	DRAW:Spacer(1,2)
+
+	-- centering
+	DRAW:Spacing(UTIL:TextCenter(ImGui.GetWindowWidth(), web),1)
+	DRAW:PageText("Grey", "Normal", web, false)
+
+	DRAW:Spacer(1,10)
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--
+--// DRAW:Underline(<NUMBER>,<NUMBER>,<NUMBER>,<STRING>)
+--
+function DRAW:Underline(width,height,padding,alignment)
+
+	-- catch unset
+	local width = width or DRAW.Scaling.Window.Width
+	local height = height or UTIL:ScaleSwitch(1)
+	local padding = padding or UTIL:ScaleSwitch(14)
+	local alignment = alignment or "left"
+
+	-- padding/aligment only if smaller
+	if DRAW.Scaling.Window.Width > width
+	then
+		-- padding left (right not needed)
+		if padding > 0 then DRAW:Spacing(padding,1) end
+
+		-- align center or right (left is default)
+		if alignment == "center" then DRAW:Spacing((DRAW.Scaling.Window.Width / 2) - (width / 2) - padding,1) end
+		if alignment == "right" then DRAW:Spacing(DRAW.Scaling.Window.Width - width - (padding * 2),1) end
+	end
+
+	-- add stacks
+	ImGui.PushStyleColor(ImGuiCol.Button, DRAW:GetColor("Orange", "Dark"))
+	ImGui.PushStyleColor(ImGuiCol.ButtonActive, DRAW:GetColor("Orange", "Dark"))
+	ImGui.PushStyleColor(ImGuiCol.ButtonHovered, DRAW:GetColor("Orange", "Dark"))
+
+	-- use a blind button
+	DRAW:FlexButton(width,height)
+
+	-- drop stacks
+	ImGui.PopStyleColor(3)
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--
+--
+--//////////////////// FLEX ELEMENTS ////////////////////
+--
+--
+
+--
+--// DRAW:FlexButton(<NUMBER>,<NUMBER>)
+--
+function DRAW:FlexButton(width, height)
+
+	-- catch unset
+	local width = width or UTIL:ScaleSwitch(1)
+	local height = height or UTIL:ScaleSwitch(1)
+
+	-- add stack
+	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, 0, 0)
+
+	-- element id
+	ImGui.PushID("DE_StyleButton")
+	local _blind = ImGui.Button("", width, height)
+	ImGui.PopID()
+
+	-- drop stacks
+	ImGui.PopStyleVar(1)
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1498,7 +1716,7 @@ end
 
 function DRAW:PageText(color, style, text, same)
 
-	-- catch non set
+	-- catch unset
 	local same = same or false
 
 	-- paint it
@@ -1594,7 +1812,7 @@ end
 
 function DRAW:AboutThanks(who, why, add)
 
-	-- catch non set
+	-- catch unset
 	local why = why or false
 	local add = add or false
 
