@@ -8,7 +8,7 @@
 --
 
 -- load core
-local devEx = require("root/core.lua"):Prelude()
+local devEx = require("root/core.lua"):Pre()
 
 -- force debug
 --devEx.isDebug = true
@@ -35,13 +35,15 @@ end)
 	--end
 --end)
 
---registerForEvent("onShutdown", function()
-	--devEx.isReady = false
---end)
+registerForEvent("onShutdown", function()
+	devEx.isReady = false
+end)
 
 registerForEvent("onOverlayOpen", function()
 	if devEx.isReady
 	then
+
+
 		-- reset always
 		--devEx.ResetOverlay()
 
@@ -65,6 +67,9 @@ registerForEvent("onDraw", function()
 
 		-- window
 		if devEx.isPaint then devEx.Interface() end
+
+
+
 
 		-- overlay
 		--if devEx.isGraph then devEx.ShowGraph() end

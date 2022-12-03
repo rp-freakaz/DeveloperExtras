@@ -82,7 +82,7 @@
 
 		"window/main/text":					"generic/white/light",
 		"window/main/border":					[0.2, 0.2, 0.23, 0.5],
-		"window/main/background":				"generic/black/dark",
+		"window/main/background":				"generic/white/dark",
 		"window/main/title/background":				"window/main/background",
 		"window/main/title/background/active":			"window/main/background",
 		"window/main/title/background/collapsed":		"window/main/background",
@@ -90,7 +90,7 @@
 		"window/main/resize/active":				"generic/orange/normal",
 		"window/main/resize/hovered":				"generic/orange/light",
 
-		"window/main/tab":					"generic/grey/darker",
+		"window/main/tab":					"generic/orange/normal",
 		"window/main/tab/text":					"generic/white/normal",
 		"window/main/tab/active":				"generic/orange/normal",
 		"window/main/tab/hovered":				"generic/orange/light",

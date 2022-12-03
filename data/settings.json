@@ -7,6 +7,13 @@
 					"spacing":14
 				},
 				{
+					"name":"Color Preset",
+					"path":"DeveloperExtras/Color/Preset"
+				},
+				{
+					"separator":5
+				},
+				{
 					"name":"Enable Debug",
 					"path":"DeveloperExtras/Debug/Enable",
 					"desc":"Enable Debugging with additional Informations.",

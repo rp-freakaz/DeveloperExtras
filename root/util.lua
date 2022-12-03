@@ -151,6 +151,34 @@ end
 
 --
 --
+--//////////////////// STYLING ////////////////////
+--
+--
+
+--
+--// UTIL:ThemeToInt(<STRING>)
+--
+function UTIL:ThemeToInt(input)
+	for k,v in pairs(UTIL.Runtime.Themes)
+	do
+		if v == input then return (k - 1) end
+	end
+	return false
+end
+
+--
+--// UTIL:ThemeToInt(<INT>)
+--
+function UTIL:IntToTheme(input)
+	for k,v in pairs(UTIL.Runtime.Themes)
+	do
+		if (k - 1) == input then return v end
+	end
+	return false
+end
+
+--
+--
 --//////////////////// FILTERING ////////////////////
 --
 --
@@ -521,7 +549,7 @@ end
 --
 -- constructor
 --
-function UTIL:Prelude(project, version, color, scale, debug)
+function UTIL:Pre(project, version, runtime, scaling, debug)
 	local o = {}
 	setmetatable(o, self)
 	self.__index = self
@@ -529,10 +557,9 @@ function UTIL:Prelude(project, version, color, scale, debug)
 	-- identity
 	UTIL.Project = project
 	UTIL.Version = version
-	UTIL.Profile = color
-	UTIL.Scaling = scale
+	UTIL.Runtime = runtime
+	UTIL.Scaling = scaling
 	UTIL.isDebug = debug
-
 
 	return o
 end

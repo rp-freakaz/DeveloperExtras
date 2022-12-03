@@ -6,6 +6,10 @@
 		"DeveloperExtras/BoolFalse":{
 			"type":"bool"
 		},
+		"DeveloperExtras/Color/Preset":{
+			"type":"select",
+			"boot":0
+		},
 		"DeveloperExtras/Debug/Enable":{
 			"type":"bool",
 			"boot":true

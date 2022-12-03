@@ -45,8 +45,8 @@ function CORE:Initialize()
 		end
 
 		-- libraries
-		UTIL:Prelude(CORE.Project, CORE.Version, CORE.Profile, CORE.Scaling, CORE.isDebug)
-		DRAW:Prelude(CORE.Project, CORE.Version, CORE.Profile, CORE.Scaling, CORE.isDebug)
+		UTIL:Pre(CORE.Project, CORE.Version, CORE.Runtime, CORE.Scaling, CORE.isDebug)
+		DRAW:Pre(CORE.Project, CORE.Version, CORE.Runtime, CORE.Scaling, CORE.isDebug)
 
 		-- debug msg
 		CORE:DebugConsole(__func__,"Loading Options ..")
@@ -79,29 +79,23 @@ function CORE:Initialize()
 				end
 			end
 
+
+			--print(UTIL:DebugDump(UTIL:ThemeList()))
+
+
+			--for k,v in pairs(UTIL:ThemeList())
+			--do
+			--	print(UTIL:DebugDump(UTIL:ThemeToInt(v)))
+			--	print(UTIL:DebugDump(UTIL:IntToTheme(k)))
+			--end
+
+
+
+			-- we are done
+			CORE.isReady = true
+
 			-- debug msg
-			CORE:DebugConsole(__func__,"Loading Colors ..")
-
-			-- load colors
-			if CORE:LoadColors()
-			then
-				-- debug msg
-				CORE:DebugConsole(__func__,"Found "..tostring(UTIL:TableLength(CORE.Profile.Colors)).." Profiles")
-
-				-- we are done
-				CORE.isReady = true
-
-				-- debug msg
-				CORE:DebugConsole(__func__,"Finished ..")
-			else
-				-- debug msg
-				CORE:DebugConsole(__func__,"Detected: Cyberpunk 2077: "..CORE.Version.Game.String.." ("..CORE.Version.Game.Numeric..")")
-				CORE:DebugConsole(__func__,"Detected: Cyber Engine Tweaks: "..CORE.Version.Cet.String.." ("..CORE.Version.Cet.Numeric..")")
-				CORE:DebugConsole(__func__,"Finished ..")
-
-				-- public msg
-				CORE:PrintConsole("Failed to initialize, missing or corrupt file")
-			end
+			CORE:DebugConsole(__func__,"Finished ..")
 		else
 			-- debug msg
 			CORE:DebugConsole(__func__,"Detected: Cyberpunk 2077: "..CORE.Version.Game.String.." ("..CORE.Version.Game.Numeric..")")
@@ -324,6 +318,12 @@ function CORE:RenderSwitch(pool, render)
 				else
 					CORE:RenderCheckbox(pool, option, render, demand)
 				end
+			end
+
+			-- combobox types
+			if option.type == "select"
+			then
+				CORE:RenderCombobox(pool, option, render, demand)
 			end
 		else
 			-- something is wrong
@@ -795,7 +795,27 @@ end
 
 
 
+--
+--// CORE:RenderCombobox()
+--
+function CORE:RenderCombobox(pool, option, render, demand)
 
+	-- debug id
+	local __func__ = "CORE:RenderCombobox"
+
+	-- get current
+	local value = CORE:GetToggle(render.path, option.type)
+
+	-- call draw
+	local value, trigger = DRAW:Combobox(render, option, demand, CORE.Runtime.Themes, UTIL:TableLength(CORE.Runtime.Themes), value)
+	if trigger
+	then
+		--print(tostring(value))
+		CORE:SetToggle(render.path, option.type, value)
+
+		--print(UTIL:DebugDump(DRAW.Profile["window/main/background"]))
+	end
+end
 
 
 
@@ -832,106 +852,6 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
-
---
---// CORE:LoadColors()
---
-function CORE:LoadColors()
-
-	-- debug id
-	local __func__ = "CORE:LoadColors"
-
-	-- define
-	local data = nil
-	local exit = false
-
-	-- load & convert
-	local exit, data = UTIL:LoadJson("data/_profiles.json")
-
-	-- validate
-	if exit
-	then
-		-- loop profiles
-		for group,list in pairs(data)
-		do
-			-- create profile group
-			if not CORE.Profile.Colors[group]
-			then
-				-- debug msg
-				CORE:DebugConsole(__func__,"Create Profile: "..UTIL:WordsToUpper(group))
-
-				CORE.Profile.Colors[group] = {}
-			end
-
-			-- debug msg
-			CORE:DebugConsole(__func__,"Reading Records: "..tostring(UTIL:TableLength(list)))
-
-			-- loop records
-			for element,content in pairs(list)
-			do
-				-- convert references
-				while type(data[group][element]) == "string"
-				do
-					-- debug msg
-					CORE:DebugConsole(__func__,"Reference: "..tostring(element).." >> "..tostring(content))
-
-					-- rewrite element
-					data[group][element] = data[group][content]
-				end
-			end
-
-			-- loop elements
-			for element,content in pairs(list)
-			do
-				-- assignment if exist
-				if content[1] and content[2] and content[3] and content[4]
-				then
-					-- create profile element
-					if not CORE.Profile.Colors[group][element]
-					then
-						CORE.Profile.Colors[group][element] = {}
-					end
-
-					-- assign rgb and alpha channel
-					CORE.Profile.Colors[group][element]["r"] = content[1]
-					CORE.Profile.Colors[group][element]["g"] = content[2]
-					CORE.Profile.Colors[group][element]["b"] = content[3]
-					CORE.Profile.Colors[group][element]["a"] = content[4]
-
-					-- also add a disabled version
-					CORE.Profile.Colors[group][element]["d"] = UTIL:ShortenFloat(content[4] / 1.5)
-				else
-					-- debug msg
-					CORE:DebugConsole(__func__,"Element in '"..UTIL:WordsToUpper(group).."' seens to be broken ("..tostring(element)..")")
-				end
-			end
-
-			-- something was wrong while parsing
-			if UTIL:TableLength(CORE.Profile.Colors[group]) ~= UTIL:TableLength(data[group])
-			then
-				-- debug msg
-				CORE:DebugConsole(__func__,"Disabled: '"..UTIL:WordsToUpper(group).."' (element number mismatch)")
-
-				CORE.Profile.Colors[group] = nil
-			end
-		end
-	else
-		-- debug msg
-		CORE:DebugConsole(__func__,"failed to parse _profiles.json")
-	end
-
-	-- result
-	return exit
-end
 
 --
 --// CORE:LoadOption()
@@ -1476,6 +1396,10 @@ function CORE:GetInternal(path)
 		return CORE.Extras[path]
 	end
 
+
+	if path == "DeveloperExtras/Color/Preset" then return CORE.Extras[path] end
+
+
 	-- ui toggles
 	if path == "DeveloperExtras/Debug/Enable" then return CORE.Extras[path] end
 	if path == "DeveloperExtras/Scrollbar/Enable" then return CORE.Extras[path] end
@@ -1519,6 +1443,14 @@ function CORE:SetInternal(path, set)
 		CORE.isDebug = set
 		DRAW.isDebug = set
 		UTIL.isDebug = set
+	end
+
+	-- color theme
+	if path == "DeveloperExtras/Color/Preset" then
+		CORE.Extras[path] = set
+		CORE.Runtime.Theme = set
+		DRAW.Runtime.Theme = set
+		UTIL.Runtime.Theme = set
 	end
 
 	-- ui toggles
@@ -1802,7 +1734,7 @@ end
 --
 -- CONSTRUCTOR
 --
-function CORE:Prelude()
+function CORE:Pre()
 	local o = {}
 	setmetatable(o, self)
 	self.__index = self
@@ -1810,10 +1742,10 @@ function CORE:Prelude()
 	-- identity
 	CORE.Project = "Developer Extras"
 	CORE.Authors = "FreakaZ"
-	CORE.Profile = {Select="default",Colors={}}
 	CORE.Version = {String="3.0.0-161",Numeric=300161,Cet={String=nil,Numeric=0},Game={String=nil,Numeric=0}}
 	CORE.Scaling = {Enable=false,Screen={Width=1920,Height=1080,Factor=1},Window={Width=456,Height=600,Factor=1},Font=1}
 	CORE.Timings = {Frame=0,Second=0,Millisecond=0}
+	CORE.Runtime = {Theme=0,Themes={"Default","White Satin","Mox Destiny"}}
 
 	-- new form
 	CORE.Trigger = {Saving=0,Export=0,Redraw=0}

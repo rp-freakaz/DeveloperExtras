@@ -11,6 +11,7 @@
 | SI | Slider Integer | ImGui | |
 | SF | Slider Float | ImGui | |
 | BT | Button | ImGui + Internal | |
-| CB | Checkbox | ImGui | |
+| CH | Checkbox | ImGui | |
+| CO | Combobox | ImGui | |
 | QS | Quickshift | ImGui + Internal | ImGui:SliderInt with value conversion (Bool 2 Int 2 Bool) |
 
