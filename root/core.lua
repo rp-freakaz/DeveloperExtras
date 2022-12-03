@@ -44,49 +44,49 @@ function CORE:Initialize()
 			CORE:DebugConsole(__func__,"Native Scaling: Not Supported")
 		end
 
-		-- debug msg
-		CORE:DebugConsole(__func__,"Loading Colors ..")
+		-- libraries
+		UTIL:Prelude(CORE.Project, CORE.Version, CORE.Profile, CORE.Scaling, CORE.isDebug)
+		DRAW:Prelude(CORE.Project, CORE.Version, CORE.Profile, CORE.Scaling, CORE.isDebug)
 
-		-- load colors
-		if CORE:LoadColors()
+		-- debug msg
+		CORE:DebugConsole(__func__,"Loading Options ..")
+
+		-- load options
+		if CORE:LoadOption()
 		then
 			-- debug msg
-			CORE:DebugConsole(__func__,"Found "..tostring(UTIL:TableLength(CORE.Profile.Colors)).." Profiles")
+			CORE:DebugConsole(__func__,"Found "..tostring(UTIL:TableLength(CORE.Option)).." Options")
+			CORE:DebugConsole(__func__,"Loading Structure ..")
 
-			-- libraries
-			UTIL:Prelude(CORE.Project, CORE.Version, CORE.Profile, CORE.Scaling, CORE.isDebug)
-			DRAW:Prelude(CORE.Project, CORE.Version, CORE.Profile, CORE.Scaling, CORE.isDebug)
+			-- load list
+			local list = {"Graphics","Features","Settings","Experimental"}
+
+			-- looping through
+			for _,pool in pairs(list)
+			do
+				-- load selected
+				local exit,data = UTIL:LoadJson("data/"..string.lower(pool)..".json")
+
+				-- validate
+				if exit
+				then
+					-- debug msg
+					CORE:DebugConsole(__func__,"Loaded Pool: "..pool)
+					CORE.Render[pool] = data.pool
+				else
+					-- debug msg
+					CORE:DebugConsole(__func__,"Failed to Load: "..pool)
+				end
+			end
 
 			-- debug msg
-			CORE:DebugConsole(__func__,"Loading Options ..")
+			CORE:DebugConsole(__func__,"Loading Colors ..")
 
-			-- load options
-			if CORE:LoadOption()
+			-- load colors
+			if CORE:LoadColors()
 			then
 				-- debug msg
-				CORE:DebugConsole(__func__,"Found "..tostring(UTIL:TableLength(CORE.Option)).." Options")
-				CORE:DebugConsole(__func__,"Loading Structure ..")
-
-				-- load list
-				local list = {"Graphics","Features","Settings","Experimental"}
-
-				-- looping through
-				for _,pool in pairs(list)
-				do
-					-- load selected
-					local exit,data = UTIL:LoadJson("data/"..string.lower(pool)..".json")
-
-					-- validate
-					if exit
-					then
-						-- debug msg
-						CORE:DebugConsole(__func__,"Loaded Pool: "..pool)
-						CORE.Render[pool] = data.pool
-					else
-						-- debug msg
-						CORE:DebugConsole(__func__,"Failed to Load: "..pool)
-					end
-				end
+				CORE:DebugConsole(__func__,"Found "..tostring(UTIL:TableLength(CORE.Profile.Colors)).." Profiles")
 
 				-- we are done
 				CORE.isReady = true
@@ -855,13 +855,75 @@ function CORE:LoadColors()
 	local exit = false
 
 	-- load & convert
-	exit, data = UTIL:LoadJson("data/_profiles.json")
+	local exit, data = UTIL:LoadJson("data/_profiles.json")
 
 	-- validate
 	if exit
 	then
-		-- assign colors
-		CORE.Profile.Colors = data
+		-- loop profiles
+		for group,list in pairs(data)
+		do
+			-- create profile group
+			if not CORE.Profile.Colors[group]
+			then
+				-- debug msg
+				CORE:DebugConsole(__func__,"Create Profile: "..UTIL:WordsToUpper(group))
+
+				CORE.Profile.Colors[group] = {}
+			end
+
+			-- debug msg
+			CORE:DebugConsole(__func__,"Reading Records: "..tostring(UTIL:TableLength(list)))
+
+			-- loop records
+			for element,content in pairs(list)
+			do
+				-- convert references
+				while type(data[group][element]) == "string"
+				do
+					-- debug msg
+					CORE:DebugConsole(__func__,"Reference: "..tostring(element).." >> "..tostring(content))
+
+					-- rewrite element
+					data[group][element] = data[group][content]
+				end
+			end
+
+			-- loop elements
+			for element,content in pairs(list)
+			do
+				-- assignment if exist
+				if content[1] and content[2] and content[3] and content[4]
+				then
+					-- create profile element
+					if not CORE.Profile.Colors[group][element]
+					then
+						CORE.Profile.Colors[group][element] = {}
+					end
+
+					-- assign rgb and alpha channel
+					CORE.Profile.Colors[group][element]["r"] = content[1]
+					CORE.Profile.Colors[group][element]["g"] = content[2]
+					CORE.Profile.Colors[group][element]["b"] = content[3]
+					CORE.Profile.Colors[group][element]["a"] = content[4]
+
+					-- also add a disabled version
+					CORE.Profile.Colors[group][element]["d"] = UTIL:ShortenFloat(content[4] / 1.5)
+				else
+					-- debug msg
+					CORE:DebugConsole(__func__,"Element in '"..UTIL:WordsToUpper(group).."' seens to be broken ("..tostring(element)..")")
+				end
+			end
+
+			-- something was wrong while parsing
+			if UTIL:TableLength(CORE.Profile.Colors[group]) ~= UTIL:TableLength(data[group])
+			then
+				-- debug msg
+				CORE:DebugConsole(__func__,"Disabled: '"..UTIL:WordsToUpper(group).."' (element number mismatch)")
+
+				CORE.Profile.Colors[group] = nil
+			end
+		end
 	else
 		-- debug msg
 		CORE:DebugConsole(__func__,"failed to parse _profiles.json")

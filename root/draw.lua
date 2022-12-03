@@ -102,11 +102,11 @@ function DRAW:ColorSwitch(color, state)
 
 	--print(tostring(ImGui.GetColorU32(DRAW.Profile.Colors[DRAW.Profile.Select][color][1], DRAW.Profile.Colors[DRAW.Profile.Select][color][2], DRAW.Profile.Colors[DRAW.Profile.Select][color][3], DRAW.Profile.Colors[DRAW.Profile.Select][color][4])))
 
-	return ImGui.GetColorU32(DRAW.Profile.Colors[DRAW.Profile.Select][color][1], DRAW.Profile.Colors[DRAW.Profile.Select][color][2], DRAW.Profile.Colors[DRAW.Profile.Select][color][3], DRAW.Profile.Colors[DRAW.Profile.Select][color][4])
+	--return ImGui.GetColorU32(DRAW.Profile.Colors[DRAW.Profile.Select][color][1], DRAW.Profile.Colors[DRAW.Profile.Select][color][2], DRAW.Profile.Colors[DRAW.Profile.Select][color][3], DRAW.Profile.Colors[DRAW.Profile.Select][color][4])
 
 
 
-	--return DRAW:GetColor("Orange","Border")
+	return DRAW:GetColor("Orange","Border")
 
 end
 

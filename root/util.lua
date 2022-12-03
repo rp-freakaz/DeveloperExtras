@@ -128,8 +128,25 @@ end
 --
 --// UTIL:FirstToUpper(<STRING>)
 --
-function UTIL:FirstToUpper(_input)
-	return (_input:gsub("^%l", string.upper))
+function UTIL:FirstToUpper(input)
+	return (input:gsub("^%l", string.upper))
+end
+
+--
+--// UTIL:WordsToUpper(<STRING>)
+--
+function UTIL:WordsToUpper(input)
+	local result = ""
+	for part in string.gmatch(input, "([^%s]+)")
+	do
+		if result == ""
+		then
+			result = UTIL:FirstToUpper(part)
+		else
+			result = result.." "..UTIL:FirstToUpper(part)
+		end
+	end
+	return result
 end
 
 --
