@@ -275,3 +275,91 @@ function DRAW:ColorSwitch(color, state)
 	return DRAW:GetColor("Alarm")
 
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--
+--// DRAW:Slider()
+--
+function DRAW:LegacySlider(render, option, demand, value)
+
+	-- add stacks
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("White","Normal",demand))
+	ImGui.PushStyleColor(ImGuiCol.SliderGrab, DRAW:GetColor("Orange","Normal",demand))
+	ImGui.PushStyleColor(ImGuiCol.SliderGrabActive, DRAW:GetColor("Orange","Light",demand))
+	ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColor("Grey","Darker",demand))
+	ImGui.PushStyleColor(ImGuiCol.FrameBgActive, DRAW:GetColor("Grey","Darker",demand))
+	ImGui.PushStyleColor(ImGuiCol.FrameBgHovered, DRAW:GetColor("Grey","Darker",demand))
+
+	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, 2)
+	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, 2, 2)
+
+	-- make them local before
+	local _return, _trigger
+
+	-- int slider (no title)
+	if option.type == "int" or option.type == "Int"
+	then
+		ImGui.PushID("DE_SI"..UTIL:ElementID(render.path))
+		_return, _trigger = ImGui.SliderInt("", value, option.min, option.max)
+		ImGui.PopID()
+	end
+
+	if option.type == "float" or option.type == "Float"
+	then
+		ImGui.PushID('DE_SF'..UTIL:ElementID(render.path))
+		_return, _trigger = ImGui.SliderFloat("", value, option.min, option.max, option.res)
+		ImGui.PopID()
+	end
+
+	-- drop stacks
+	ImGui.PopStyleVar(2)
+	ImGui.PopStyleColor(6)
+
+	-- result
+	return _return, _trigger
+end
+
+
+
+--
+--// DRAW:SliderTitle()
+--
+function DRAW:LegacySliderTitle(title, min, max, demand)
+
+	-- catch unset
+	local min = min or false
+	local max = max or false
+
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("Grey","Dark",demand))
+	ImGui.Text("»")
+	ImGui.PopStyleColor(1)
+	ImGui.SameLine()
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("White","Dark",demand))
+
+	if min and max
+	then
+		DRAW:Spacing(8,1)
+		ImGui.Text(title)
+		ImGui.SameLine()
+		DRAW:Spacing(8,1)
+		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("Grey","Normal",demand))
+		ImGui.Text(tostring(min)..' to '..tostring(max))
+		ImGui.PopStyleColor(1)
+	else
+		ImGui.Text(title)
+	end
+	ImGui.PopStyleColor(1)
+end

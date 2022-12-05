@@ -94,10 +94,52 @@ function UTIL:ScaleSwitch(pixels, screen)
 		then
 			return UTIL:ShortenFloat(UTIL.Scaling.Screen.Factor * pixels)
 		end
-		return UTIL:ShortenFloat((UTIL.Scaling.Screen.Factor * UTIL.Scaling.Window.Factor) * pixels)
+		--return UTIL:ShortenFloat((UTIL.Scaling.Screen.Factor * UTIL.Scaling.Window.Factor) * pixels)
+		return UTIL:ShortenFloat(UTIL.Scaling.Window.Factor * pixels)
+		--return UTIL:ShortenFloat((ImGui.GetFontSize() / 18) * pixels)
 	end
 	return pixels
 end
+
+
+
+
+--
+--// UTIL:WindowScale(<FLOAT>,<FLOAT>)
+--
+function UTIL:WindowScale(pixels, factor)
+
+	-- catch non set
+	local pixels = pixels or 0
+	local factor = factor or UTIL.Scaling.Window.Factor
+
+	if UTIL.Scaling.Enable and pixels > 0
+	then
+		--print("Window:"..tostring(UTIL.Scaling.Window.Factor))
+		--print("Font:"..tostring(UTIL:ShortenFloat(ImGui.GetFontSize() / 18)))
+
+		--return UTIL:ShortenFloat((UTIL.Scaling.Screen.Factor * UTIL.Scaling.Window.Factor) * pixels)
+		return UTIL:ShortenFloat(UTIL.Scaling.Window.Factor * pixels)
+		--return UTIL:ShortenFloat((ImGui.GetFontSize() / 18) * pixels)
+	end
+	return pixels
+end
+
+--
+--// UTIL:FontScale(<INT>)
+--
+function UTIL:FontScale(pixels)
+
+	-- catch non set
+	local pixels = pixels or 0
+
+	if UTIL.Scaling.Enable and pixels > 0
+	then
+		return UTIL:ShortenFloat((ImGui.GetFontSize() / 18) * pixels)
+	end
+	return pixels
+end
+
 
 --
 --

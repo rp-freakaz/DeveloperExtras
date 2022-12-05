@@ -172,6 +172,9 @@ function CORE:Interface()
 						bottom = UTIL:ScaleSwitch(371)
 					end
 
+					-- make the tabbar thicker, before the child
+					DRAW:SeparatorNew(UTIL:ScaleSwitch(2), "tabbar/bottomline")
+
 					-- start tabchild
 					local _trigger = DRAW:TabchildStart(CORE.Scaling.Window.Width, CORE.Scaling.Window.Height - bottom, CORE.Extras["DeveloperExtras/Scrollbar/Enable"])
 					if _trigger
@@ -260,8 +263,9 @@ function CORE:Interface()
 		end
 		DRAW:TabbarEnd()
 
+		-- tabbar thickness, after the child
+		DRAW:SeparatorNew(UTIL:ScaleSwitch(3), "tabbar/bottomline")
 
-		DRAW:Separator(1,0,0,"Orange")
 
 
 	-- end window
@@ -334,7 +338,9 @@ function CORE:RenderSwitch(pool, render)
 	elseif render.separator
 	then
 		DRAW:Spacer(1,UTIL:ScaleSwitch(10))
-		DRAW:Separator(UTIL:ScaleSwitch(render.separator))
+		DRAW:SeparatorNew(UTIL:ScaleSwitch(render.separator))
+
+		--DRAW:Separator(UTIL:ScaleSwitch(render.separator))
 		DRAW:Spacer(1,UTIL:ScaleSwitch(10))
 	elseif render.spacing
 	then
@@ -1401,7 +1407,7 @@ function CORE:GetInternal(path)
 
 
 	-- ui toggles
-	if path == "DeveloperExtras/Debug/Enable" then return CORE.Extras[path] end
+	if path == "DeveloperExtras/Debug/Enable" then return CORE.isDebug end
 	if path == "DeveloperExtras/Scrollbar/Enable" then return CORE.Extras[path] end
 
 	-- ui scaling
@@ -1439,7 +1445,6 @@ function CORE:SetInternal(path, set)
 
 	-- debug me
 	if path == "DeveloperExtras/Debug/Enable" then
-		CORE.Extras[path] = set
 		CORE.isDebug = set
 		DRAW.isDebug = set
 		UTIL.isDebug = set

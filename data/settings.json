@@ -14,16 +14,6 @@
 					"separator":5
 				},
 				{
-					"name":"Enable Debug",
-					"path":"DeveloperExtras/Debug/Enable",
-					"desc":"Enable Debugging with additional Informations.",
-					"warn":"what",
-					"note":"Required for DLSS or FSR 2.0"
-				},
-				{
-					"separator":5
-				},
-				{
 					"name":"Enable Scrollbar",
 					"path":"DeveloperExtras/Scrollbar/Enable",
 					"desc":"The Scrollbar will be exposed for People without a Wheelmouse!",
@@ -59,7 +49,9 @@
 				},
 				{
 					"name":"Overlay Position",
-					"path":"DeveloperExtras/Graph/Overlay/Position"
+					"path":"DeveloperExtras/Graph/Overlay/Position",
+					"note":"no idea",
+					"rate":"no idea"
 				},
 				{
 					"spacing":10
@@ -90,7 +82,13 @@
 					"path":"DeveloperExtras/Graph/Overlay/Transparency/Text"
 				},
 				{
-					"spacing":10
+					"separator":5
+				},
+				{
+					"name":"Enable Debug",
+					"path":"DeveloperExtras/Debug/Enable",
+
+					"align":true
 				}
 			]
 		}
