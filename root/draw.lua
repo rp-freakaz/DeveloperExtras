@@ -1192,7 +1192,6 @@ function DRAW:Notice(render, demand)
 	-- draw blind button
 	ImGui.PushID("DE_BT"..UTIL:ElementID("Notice"))
 	local _blind = ImGui.Button("", UTIL:ScaleSwitch(6), UTIL:ScaleSwitch(6))
-	--ImGui.SetWindowFontScale(DRAW.Scaling.Font)
 	ImGui.PopID()
 
 	-- add tooltip
