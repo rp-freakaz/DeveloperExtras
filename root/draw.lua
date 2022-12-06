@@ -156,7 +156,7 @@ function DRAW:GetColorNew(theme, color, state)
 		if color == "combobox/header/hovered"			then return DRAW:GetGeneric("generic/orange/normal") end
 
 		-- fallback
-		return DRAW:GetGeneric("generic/red")
+		return DRAW:GetGeneric("fallback")
 	end
 
 	-- theme: white satin
@@ -209,7 +209,7 @@ function DRAW:GetColorNew(theme, color, state)
 		if color == "combobox/header/hovered"			then return DRAW:GetGeneric("generic/orange/normal") end
 
 		-- fallback
-		return DRAW:GetGeneric("generic/red")
+		return DRAW:GetGeneric("fallback")
 	end
 
 
@@ -261,7 +261,7 @@ function DRAW:GetColorNew(theme, color, state)
 		if color == "combobox/header/hovered"			then return DRAW:GetGeneric("generic/orange/normal") end
 
 		-- fallback
-		return DRAW:GetGeneric("generic/red")
+		return DRAW:GetGeneric("fallback")
 	end
 
 
@@ -283,6 +283,7 @@ function DRAW:GetGeneric(color, state)
 
 	-- no color
 	if color == "nocolor"						then return ImGui.GetColorU32(0, 0, 0, 0) end
+	if color == "fallback"						then return ImGui.GetColorU32(1, 0, 0, 0.5) end
 
 	-- solids
 	if color == "generic/white"					then return ImGui.GetColorU32(1, 1, 1, 1) end
@@ -291,7 +292,7 @@ function DRAW:GetGeneric(color, state)
 	if color == "generic/grey"					then return ImGui.GetColorU32(0.5, 0.5, 0.5, 1) end
 	if color == "generic/cyan"					then return ImGui.GetColorU32(0, 0.92, 0.92, 1) end
 	if color == "generic/pink"					then return ImGui.GetColorU32(0.89, 0, 0.98, 1) end
-	if color == "generic/red"					then return ImGui.GetColorU32(1, 0, 0, 0.5) end
+	if color == "generic/red"					then return ImGui.GetColorU32(1, 0, 0, 1) end
 
 	-- variations
 	if color == "generic/white/dark"				then return ImGui.GetColorU32(0.8, 0.8, 0.85, 0.8) end
@@ -316,7 +317,6 @@ function DRAW:GetGeneric(color, state)
 	if color == "generic/orange/light"				then return ImGui.GetColorU32(1, 0.56, 0.13, 1) end
 	if color == "generic/orange/normal"				then return ImGui.GetColorU32(1, 0.56, 0.13, 0.85) end
 
-
 	if color == "generic/grey/dark"					then return ImGui.GetColorU32(0.3, 0.3, 0.33, 0.7) end
 	if color == "generic/grey/darker"				then return ImGui.GetColorU32(0.2, 0.2, 0.23, 0.7) end
 	if color == "generic/grey/darkest"				then return ImGui.GetColorU32(0.1, 0.1, 0.13, 0.7) end
@@ -325,19 +325,6 @@ function DRAW:GetGeneric(color, state)
 	if color == "generic/grey/lightest"				then return ImGui.GetColorU32(0.7, 0.7, 0.73, 0.9) end
 	if color == "generic/grey/normal"				then return ImGui.GetColorU32(0.4, 0.4, 0.43, 0.7) end
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 --
@@ -360,19 +347,9 @@ end
 --
 function DRAW:WindowStart()
 
-
-	--DRAW:CompileColor()
-
 	-- first position
 	ImGui.SetNextWindowPos(100, 100, ImGuiCond.FirstUseEver)
-
-	-- native scaling
-	if DRAW.Scaling.Enable
-	then
-		ImGui.SetNextWindowSizeConstraints(UTIL:ScaleSwitch(456, true), UTIL:ScaleSwitch(600, true), (DRAW.Scaling.Screen.Width / 2) - 50, DRAW.Scaling.Screen.Height - 100)
-	else
-		ImGui.SetNextWindowSizeConstraints(456, 600, 456, DRAW.Scaling.Screen.Height - 100)
-	end
+	ImGui.SetNextWindowSizeConstraints(UTIL:ScreenScale(456), UTIL:ScreenScale(600), (DRAW.Scaling.Screen.Width / 2) - 50, DRAW.Scaling.Screen.Height - 100)
 
 	-- global styles
 	ImGui.PushStyleVar(ImGuiStyleVar.ScrollbarSize, 0)
@@ -380,8 +357,8 @@ function DRAW:WindowStart()
 	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, 0, 0)
 	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, 0)
 	ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, 0, 0)
-	ImGui.PushStyleVar(ImGuiStyleVar.ItemInnerSpacing, UTIL:ScaleSwitch(2), 0)
-	ImGui.PushStyleVar(ImGuiStyleVar.GrabRounding, UTIL:ScaleSwitch(2))
+	ImGui.PushStyleVar(ImGuiStyleVar.ItemInnerSpacing, UTIL:WindowScale(2), 0)
+	ImGui.PushStyleVar(ImGuiStyleVar.GrabRounding, UTIL:WindowScale(2))
 
 	--
 	-- window decoration
@@ -402,10 +379,10 @@ function DRAW:WindowStart()
 	ImGui.PushStyleColor(ImGuiCol.ButtonHovered, DRAW:GetColorNew())
 
 	-- define styles
-	ImGui.PushStyleVar(ImGuiStyleVar.WindowRounding, UTIL:ScaleSwitch(4))
+	ImGui.PushStyleVar(ImGuiStyleVar.WindowRounding, UTIL:WindowScale(4))
 	ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, 0, 0)
-	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:ScaleSwitch(8), UTIL:ScaleSwitch(10))
-	ImGui.PushStyleVar(ImGuiStyleVar.ItemInnerSpacing, UTIL:ScaleSwitch(7), 0)
+	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:WindowScale(8), UTIL:WindowScale(10))
+	ImGui.PushStyleVar(ImGuiStyleVar.ItemInnerSpacing, UTIL:WindowScale(7), 0)
 
 	-- trigger
 	local _trigger
@@ -415,7 +392,7 @@ function DRAW:WindowStart()
 	then
 		-- create window
 		_trigger = ImGui.Begin("~ "..string.upper(DRAW.Project).." ~", ImGuiWindowFlags.NoScrollbar)
-		ImGui.SetWindowFontScale(DRAW.Scaling.Font)
+		ImGui.SetWindowFontScale(DRAW.Scaling.Window.Factor)
 	else
 		-- create window
 		_trigger = ImGui.Begin(UTIL:SpaceBetween(DRAW.Project.." v"..DRAW.Version.String, "CET "..DRAW.Version.Cet.String.." // PATCH "..DRAW.Version.Game.String, ImGui.GetWindowWidth() - 36, UTIL:TextWidth(" ")), ImGuiWindowFlags.NoScrollbar)
@@ -447,7 +424,7 @@ function DRAW:TabbarStart()
 
 	-- add stacks
 	ImGui.PushStyleColor(ImGuiCol.TabActive, DRAW:GetColorNew(DRAW.Runtime.Theme, "tabbar/bottomline"))
-	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:ScaleSwitch(4), UTIL:ScaleSwitch(6))
+	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:WindowScale(4), UTIL:WindowScale(6))
 
 	-- fix left align
 	DRAW:Spacing(1,1)
@@ -482,7 +459,7 @@ function DRAW:TabitemStart(title)
 	ImGui.PushStyleColor(ImGuiCol.Tab, DRAW:GetColorNew(DRAW.Runtime.Theme, "tabbar/tab"))
 	ImGui.PushStyleColor(ImGuiCol.TabActive, DRAW:GetColorNew(DRAW.Runtime.Theme, "tabbar/tab/active"))
 	ImGui.PushStyleColor(ImGuiCol.TabHovered, DRAW:GetColorNew(DRAW.Runtime.Theme, "tabbar/tab/hovered"))
-	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:ScaleSwitch(7), UTIL:ScaleSwitch(6))
+	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:WindowScale(7), UTIL:WindowScale(6))
 
 	-- create tabitem
 	local _trigger = ImGui.BeginTabItem("¨"..title)
@@ -515,7 +492,7 @@ function DRAW:TabchildStart(width, height, scroll)
 	-- add scrollbar
 	if scroll
 	then
-		ImGui.PushStyleVar(ImGuiStyleVar.ScrollbarSize, UTIL:ScaleSwitch(10))
+		ImGui.PushStyleVar(ImGuiStyleVar.ScrollbarSize, UTIL:WindowScale(10))
 	end
 
 	-- child flags
@@ -555,12 +532,12 @@ function DRAW:Collapse(title, scale)
 	ImGui.PushStyleColor(ImGuiCol.HeaderHovered, DRAW:GetColor("Orange","Light"))
 
 	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, 0)
-	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:ScaleSwitch(8), UTIL:ScaleSwitch(11))
+	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:WindowScale(8), UTIL:WindowScale(11))
 
 
 
 	-- space before
-	DRAW:Spacer(1,UTIL:ScaleSwitch(3))
+	DRAW:Spacer(1,UTIL:WindowScale(3))
 
 	-- create collapse
 	local _trigger = ImGui.CollapsingHeader(title)
@@ -617,7 +594,7 @@ function DRAW:CollapseNotice(text)
 	ImGui.PushStyleColor(ImGuiCol.ButtonHovered, DRAW:GetColor("Orange","Normal"))
 
 	ImGui.PushID("Button"..tostring("CollapseNoticeSign"))
-	local _blind = ImGui.Button("", UTIL:ScaleSwitch(5), UTIL:ScaleSwitch(30))
+	local _blind = ImGui.Button("", UTIL:WindowScale(5), UTIL:WindowScale(30))
 	ImGui.PopID()
 
 	-- drop stacks
@@ -632,11 +609,11 @@ function DRAW:CollapseNotice(text)
 	ImGui.PushStyleColor(ImGuiCol.ButtonActive, DRAW:GetColor("Grey","Darkest"))
 	ImGui.PushStyleColor(ImGuiCol.ButtonHovered, DRAW:GetColor("Grey","Darkest"))
 
-	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:ScaleSwitch(6), UTIL:ScaleSwitch(6))
+	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:WindowScale(6), UTIL:WindowScale(6))
 	ImGui.PushStyleVar(ImGuiStyleVar.ButtonTextAlign, 0, 0)
 
 	ImGui.PushID("Button"..tostring("CollapseNoticeText"))
-	local _blind = ImGui.Button(tostring(text), UTIL:ScaleSwitch(456), UTIL:ScaleSwitch(30))
+	local _blind = ImGui.Button(tostring(text), UTIL:WindowScale(456), UTIL:WindowScale(30))
 	ImGui.PopID()
 
 	-- drop stacks
@@ -896,33 +873,33 @@ end
 function DRAW:Slider(render, option, demand, value)
 
 	-- default
-	local _spacing = UTIL:ScaleSwitch(16)
+	local _spacing = UTIL:WindowScale(16)
 
 	-- update
 	if render.spacing
 	then
-		_spacing = UTIL:ScaleSwitch(render.spacing) + _spacing
+		_spacing = UTIL:WindowScale(render.spacing) + _spacing
 	end
 
 	-- top spacer
-	DRAW:Spacer(1,UTIL:ScaleSwitch(5))
+	DRAW:Spacer(1,UTIL:WindowScale(5))
 
 	-- lead spacing
 	DRAW:Spacing(_spacing,1)
 
 	-- deco paint
-	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, UTIL:ScaleSwitch(6))
+	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, UTIL:WindowScale(6))
 	ImGui.PushStyleColor(ImGuiCol.Button, DRAW:GetColorNew(DRAW.Runtime.Theme, "slider/button/decoration"))
 	ImGui.PushStyleColor(ImGuiCol.ButtonActive, DRAW:GetColorNew(DRAW.Runtime.Theme, "slider/button/decoration"))
 	ImGui.PushStyleColor(ImGuiCol.ButtonHovered, DRAW:GetColorNew(DRAW.Runtime.Theme, "slider/button/decoration"))
 
 	-- deco title
-	DRAW:FlexButton(UTIL:ScaleSwitch(5), UTIL:FontScale(11))
+	DRAW:FlexButton(UTIL:WindowScale(5), UTIL:WindowScale(20))
 
 	ImGui.PopStyleColor(3)
 	ImGui.PopStyleVar(1)
 	DRAW:Sameline()
-	DRAW:Spacing(UTIL:ScaleSwitch(5),1)
+	DRAW:Spacing(UTIL:WindowScale(5),1)
 	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "slider/title"))
 	ImGui.Text(render.name)
 	ImGui.PopStyleColor(1)
@@ -931,7 +908,7 @@ function DRAW:Slider(render, option, demand, value)
 	if option.min and option.max
 	then
 		ImGui.SameLine()
-		DRAW:Spacing(UTIL:ScaleSwitch(8),1)
+		DRAW:Spacing(UTIL:WindowScale(8),1)
 		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "slider/minmax"))
 		ImGui.Text(tostring(option.min)..' to '..tostring(option.max))
 		ImGui.PopStyleColor(1)
@@ -943,19 +920,19 @@ function DRAW:Slider(render, option, demand, value)
 		DRAW:Notice(render, demand)
 	else
 		DRAW:Sameline()
-		DRAW:Spacer(1,UTIL:ScaleSwitch(15))
+		DRAW:Spacer(1,UTIL:WindowScale(15))
 	end
 
 
-	DRAW:Spacer(1,UTIL:ScaleSwitch(6))
-	DRAW:Spacing(_spacing + UTIL:ScaleSwitch(10),1)
+	DRAW:Spacer(1,UTIL:WindowScale(6))
+	DRAW:Spacing(_spacing + UTIL:WindowScale(10),1)
 	ImGui.SetNextItemWidth(DRAW.Scaling.Window.Width - ((_spacing * 2)))
 
 	if option.def
 	then
-		ImGui.SetNextItemWidth(DRAW.Scaling.Window.Width - ((_spacing * 2) + UTIL:ButtonWidth("Reset") + UTIL:ScaleSwitch(16)))
+		ImGui.SetNextItemWidth(DRAW.Scaling.Window.Width - ((_spacing * 2) + UTIL:ButtonWidth("Reset") + UTIL:WindowScale(16)))
 	else
-		ImGui.SetNextItemWidth(DRAW.Scaling.Window.Width - ((_spacing * 2) + UTIL:ScaleSwitch(16)))
+		ImGui.SetNextItemWidth(DRAW.Scaling.Window.Width - ((_spacing * 2) + UTIL:WindowScale(16)))
 	end
 
 	-- add stacks
@@ -966,8 +943,8 @@ function DRAW:Slider(render, option, demand, value)
 	ImGui.PushStyleColor(ImGuiCol.FrameBgActive, DRAW:GetColorNew(DRAW.Runtime.Theme, "slider/background/active"))
 	ImGui.PushStyleColor(ImGuiCol.FrameBgHovered, DRAW:GetColorNew(DRAW.Runtime.Theme, "slider/background/hovered"))
 
-	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, UTIL:ScaleSwitch(2))
-	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:ScaleSwitch(2), UTIL:ScaleSwitch(4))
+	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, UTIL:WindowScale(2))
+	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:WindowScale(2), UTIL:WindowScale(4))
 
 	-- make them local before
 	local _return, _trigger
@@ -1037,7 +1014,7 @@ function DRAW:Button(render, option, demand, piece, value)
 
 
 	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("White","Normal",demand))
-	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, UTIL:ScaleSwitch(2))
+	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, UTIL:WindowScale(2))
 
 	-- convert bool
 	if option.type == "Bool"
@@ -1047,7 +1024,7 @@ function DRAW:Button(render, option, demand, piece, value)
 	end
 
 	ImGui.PushID("Button"..tostring(render.path))
-	local _trigger = ImGui.Button(piece, UTIL:ButtonWidth(piece), UTIL:ButtonHeight(piece) + UTIL:ScaleSwitch(1))
+	local _trigger = ImGui.Button(piece, UTIL:ButtonWidth(piece), UTIL:ButtonHeight(piece) + UTIL:WindowScale(1))
 	ImGui.PopID()
 
 	-- drop stacks
@@ -1177,7 +1154,7 @@ function DRAW:Notice(render, demand)
 
 	-- sameline
 	DRAW:Sameline()
-	DRAW:Spacing(UTIL:ScaleSwitch(6), 1)
+	DRAW:Spacing(UTIL:WindowScale(6), 1)
 
 	-- add color stacks
 	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("White","Normal",demand))
@@ -1186,12 +1163,12 @@ function DRAW:Notice(render, demand)
 	ImGui.PushStyleColor(ImGuiCol.ButtonHovered, DRAW:GetColor("Orange","Light",demand))
 
 	-- add style stacks
-	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, UTIL:ScaleSwitch(5))
+	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, UTIL:WindowScale(5))
 	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, 0, 0)
 
 	-- draw blind button
 	ImGui.PushID("DE_BT"..UTIL:ElementID("Notice"))
-	local _blind = ImGui.Button("", UTIL:ScaleSwitch(6), UTIL:ScaleSwitch(6))
+	local _blind = ImGui.Button("", UTIL:WindowScale(6), UTIL:WindowScale(6))
 	ImGui.PopID()
 
 	-- add tooltip
@@ -1263,9 +1240,9 @@ function DRAW:Checkbox(render, option, demand, value)
 		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("White","Normal", demand))
 	end
 
-	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, UTIL:ScaleSwitch(3))
-	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:ScaleSwitch(3), UTIL:ScaleSwitch(3))
-	ImGui.PushStyleVar(ImGuiStyleVar.ItemInnerSpacing, UTIL:ScaleSwitch(8), 0)
+	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, UTIL:WindowScale(3))
+	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:WindowScale(3), UTIL:WindowScale(3))
+	ImGui.PushStyleVar(ImGuiStyleVar.ItemInnerSpacing, UTIL:WindowScale(8), 0)
 
 
 	ImGui.PushID('DE_Checkbox'..tostring(render.path))
@@ -1322,46 +1299,45 @@ end
 function DRAW:Combobox(render, option, demand, names, length, value)
 
 	-- default
-	local _spacing = UTIL:ScaleSwitch(16)
+	local _spacing = UTIL:WindowScale(16)
 
 	-- spacing
 	if render.spacing
 	then
-		_spacing = UTIL:ScaleSwitch(render.spacing + _spacing)
+		_spacing = UTIL:WindowScale(render.spacing + _spacing)
 	end
 
 	-- top spacer
-	DRAW:Spacer(1,UTIL:ScaleSwitch(5))
+	DRAW:Spacer(1,UTIL:WindowScale(5))
 
 	-- lead spacing
-	DRAW:Spacing(_spacing + UTIL:ScaleSwitch(1),1)
+	DRAW:Spacing(_spacing + UTIL:WindowScale(1),1)
 
 	-- deco paint
-	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, UTIL:ScaleSwitch(6))
+	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, UTIL:WindowScale(6))
 	ImGui.PushStyleColor(ImGuiCol.Button, DRAW:GetColorNew(DRAW.Runtime.Theme, "combobox/button/decoration"))
 	ImGui.PushStyleColor(ImGuiCol.ButtonActive, DRAW:GetColorNew(DRAW.Runtime.Theme, "combobox/button/decoration"))
 	ImGui.PushStyleColor(ImGuiCol.ButtonHovered, DRAW:GetColorNew(DRAW.Runtime.Theme, "combobox/button/decoration"))
 
 	-- deco title
-	--DRAW:FlexButton(UTIL:ScaleSwitch(5), UTIL:FontScale(11))
-	DRAW:FlexButton(UTIL:ScaleSwitch(5), UTIL:ScaleSwitch(20))
+	DRAW:FlexButton(UTIL:WindowScale(5), UTIL:WindowScale(20))
 
 	ImGui.PopStyleColor(3)
 	ImGui.PopStyleVar(1)
 	DRAW:Sameline()
-	DRAW:Spacing(UTIL:ScaleSwitch(5),1)
+	DRAW:Spacing(UTIL:WindowScale(5),1)
 	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "combobox/title"))
 	ImGui.Text(render.name)
 	ImGui.PopStyleColor(1)
 
 	-- bottom spacer
-	DRAW:Spacer(1,UTIL:ScaleSwitch(8))
+	DRAW:Spacer(1,UTIL:WindowScale(8))
 
 	-- lead spacing
 	DRAW:Spacing(_spacing,1)
 
 	-- comboboxes have a fixed width
-	ImGui.SetNextItemWidth(DRAW.Scaling.Window.Width - (_spacing * 2) - UTIL:ScaleSwitch(2))
+	ImGui.SetNextItemWidth(DRAW.Scaling.Window.Width - (_spacing * 2) - UTIL:WindowScale(2))
 
 	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "combobox/title"))
 
@@ -1380,12 +1356,12 @@ function DRAW:Combobox(render, option, demand, names, length, value)
 	ImGui.PushStyleColor(ImGuiCol.HeaderHovered, DRAW:GetColorNew(DRAW.Runtime.Theme, "combobox/header/hovered"))
 
 
-	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:ScaleSwitch(8), UTIL:ScaleSwitch(4))
-	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, UTIL:ScaleSwitch(3))
-	ImGui.PushStyleVar(ImGuiStyleVar.FrameBorderSize, UTIL:ScaleSwitch(2))
+	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:WindowScale(8), UTIL:WindowScale(4))
+	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, UTIL:WindowScale(3))
+	ImGui.PushStyleVar(ImGuiStyleVar.FrameBorderSize, UTIL:WindowScale(2))
 
 	ImGui.PushStyleVar(ImGuiStyleVar.PopupRounding, 10)
-	ImGui.PushStyleVar(ImGuiStyleVar.PopupBorderSize, UTIL:ScaleSwitch(1))
+	ImGui.PushStyleVar(ImGuiStyleVar.PopupBorderSize, UTIL:WindowScale(1))
 
 	-- draw combobox
 	ImGui.PushID("DE_CO"..UTIL:ElementID(render.path))
@@ -1397,7 +1373,7 @@ function DRAW:Combobox(render, option, demand, names, length, value)
 	ImGui.PopStyleColor(12)
 
 	-- bottom spacer
-	DRAW:Spacer(1,UTIL:ScaleSwitch(5))
+	DRAW:Spacer(1,UTIL:WindowScale(5))
 
 	-- result
 	return _return, _trigger
@@ -1429,13 +1405,13 @@ end
 function DRAW:Quickshift(render, option, demand, value)
 
 	-- default
-	local _spacing = UTIL:ScaleSwitch(16)
+	local _spacing = UTIL:WindowScale(16)
 
 	-- spacing
-	if render.spacing then _spacing = UTIL:ScaleSwitch(render.spacing) + _spacing end
+	if render.spacing then _spacing = UTIL:WindowScale(render.spacing) + _spacing end
 
 	-- top spacer
-	DRAW:Spacer(1,UTIL:ScaleSwitch(4))
+	DRAW:Spacer(1,UTIL:WindowScale(4))
 
 	-- lead spacing
 	DRAW:Spacing(_spacing,1)
@@ -1450,13 +1426,11 @@ function DRAW:Quickshift(render, option, demand, value)
 		DRAW:Sameline()
 
 		-- fill space between
-		DRAW:Spacing(DRAW.Scaling.Window.Width - (_spacing + UTIL:TextWidth(render.name) + UTIL:ScaleSwitch(50)),1)
+		DRAW:Spacing(DRAW.Scaling.Window.Width - (_spacing + UTIL:TextWidth(render.name) + UTIL:WindowScale(50)),1)
 	end
 
 	-- fixed width to keep aspect ratio
-	ImGui.SetNextItemWidth(UTIL:ScaleSwitch(32))
-
-	--ImGui.SetNextItemWidth(UTIL:FontScale(32))
+	ImGui.SetNextItemWidth(UTIL:WindowScale(32))
 
 	-- add stacks
 	if UTIL:IntToBool(value)
@@ -1475,10 +1449,10 @@ function DRAW:Quickshift(render, option, demand, value)
 	ImGui.PushStyleColor(ImGuiCol.FrameBgActive, DRAW:GetColorNew(DRAW.Runtime.Theme, "quickshift/background/active"))
 	ImGui.PushStyleColor(ImGuiCol.FrameBgHovered, DRAW:GetColorNew(DRAW.Runtime.Theme, "quickshift/background/hovered"))
 
-	ImGui.PushStyleVar(ImGuiStyleVar.GrabRounding, UTIL:FontScale(10))
-	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, UTIL:FontScale(10))
+	ImGui.PushStyleVar(ImGuiStyleVar.GrabRounding, UTIL:WindowScale(10))
+	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, UTIL:WindowScale(10))
 	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, 0, 0)
-	ImGui.PushStyleVar(ImGuiStyleVar.FrameBorderSize, UTIL:FontScale(2))
+	ImGui.PushStyleVar(ImGuiStyleVar.FrameBorderSize, UTIL:WindowScale(2))
 
 	-- draw minified slider
 	ImGui.PushID("DE_QS"..UTIL:ElementID(render.path))
@@ -1493,9 +1467,9 @@ function DRAW:Quickshift(render, option, demand, value)
 	if not render.align
 	then
 		DRAW:Sameline()
-		DRAW:Spacing(UTIL:ScaleSwitch(10),1)
+		DRAW:Spacing(UTIL:WindowScale(10),1)
 		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "quickshift/title"))
-		ImGui.Text(render.name.." Scale: "..tostring(UTIL:WindowScale(32)).." / "..UTIL:FontScale(32))
+		ImGui.Text(render.name)
 		ImGui.PopStyleColor(1)
 	end
 
@@ -1503,7 +1477,7 @@ function DRAW:Quickshift(render, option, demand, value)
 	if render.desc
 	then
 		-- top spacer
-		DRAW:Spacer(1,UTIL:ScaleSwitch(6))
+		DRAW:Spacer(1,UTIL:WindowScale(6))
 
 		-- left spacing
 		DRAW:Spacing(_spacing,1)
@@ -1511,7 +1485,7 @@ function DRAW:Quickshift(render, option, demand, value)
 		-- alignment
 		if not align
 		then
-			DRAW:Spacing(_spacing + UTIL:FontScale(18),1)
+			DRAW:Spacing(_spacing + UTIL:WindowScale(26),1)
 		end
 
 		-- add stacks
@@ -1519,7 +1493,7 @@ function DRAW:Quickshift(render, option, demand, value)
 
 		if not align
 		then
-			ImGui.Text(UTIL:WordWrap(render.desc,_spacing + 42))
+			ImGui.Text(UTIL:WordWrap(render.desc,_spacing + UTIL:WindowScale(26)))
 		else
 			ImGui.Text(UTIL:WordWrap(render.desc,_spacing))
 		end
@@ -1558,7 +1532,7 @@ end
 --
 function DRAW:PageDebug()
 
-	local _spacing = UTIL:ScaleSwitch(14)
+	local _spacing = UTIL:WindowScale(14)
 
 	-- some room
 	DRAW:Spacer(1, _spacing)
@@ -1570,7 +1544,7 @@ function DRAW:PageDebug()
 
 	-- scaling specs
 	DRAW:Spacing(_spacing, 1)
-	ImGui.Text("Fontscale: "..tostring(UTIL:FontScale(32)).." // Effective Scale: "..tostring(UTIL:ScaleSwitch(32)))
+	ImGui.Text("Fontscale: "..tostring(UTIL:WindowScale(32)).." // Effective Scale: "..tostring(UTIL:WindowScale(32)))
 	DRAW:Spacer(1, 3)
 
 	DRAW:Spacing(_spacing, 1)
@@ -1579,7 +1553,7 @@ function DRAW:PageDebug()
 	DRAW:Spacing(_spacing, 1)
 	ImGui.Text("Window Size: "..tostring(DRAW.Scaling.Window.Width).."x"..tostring(DRAW.Scaling.Window.Height).." // Factor: "..tostring(DRAW.Scaling.Window.Factor))
 
-	DRAW:Separator(UTIL:ScaleSwitch(5),14,10)
+	DRAW:Separator(UTIL:WindowScale(5),14,10)
 
 	-- logo animation
 	DRAW:Spacing(_spacing, 1)
@@ -1587,9 +1561,9 @@ function DRAW:PageDebug()
 	DRAW:Spacer(1, 3)
 
 	DRAW:Spacing(_spacing, 1)
-	ImGui.Text("Blocksize: "..tostring(UTIL:ScaleSwitch(6)).." // Rounding: "..tostring(math.floor(UTIL:ScaleSwitch(6))).." // Center: "..tostring(DRAW.Logo.Center).." // Pixels: "..tostring(DRAW.Logo.Pixels))
+	ImGui.Text("Blocksize: "..tostring(UTIL:WindowScale(6)).." // Rounding: "..tostring(math.floor(UTIL:WindowScale(6))).." // Center: "..tostring(DRAW.Logo.Center).." // Pixels: "..tostring(DRAW.Logo.Pixels))
 
-	DRAW:Separator(UTIL:ScaleSwitch(5),14,10)
+	DRAW:Separator(UTIL:WindowScale(5),14,10)
 
 	DRAW:Spacing(_spacing, 1)
 	ImGui.Text("DRAW:TextTitle (no underline)")
@@ -1603,7 +1577,7 @@ function DRAW:PageDebug()
 	ImGui.Text("DRAW:TextTitle (underline window sized)")
 	DRAW:TextTitle("Left", {space=_spacing,underline={paint=true,limit=false}})
 
-	DRAW:Separator(UTIL:ScaleSwitch(5),14,10)
+	DRAW:Separator(UTIL:WindowScale(5),14,10)
 
 	DRAW:Spacing(_spacing, 1)
 	ImGui.Text("DRAW:TextTitle (no underline)")
@@ -1617,7 +1591,7 @@ function DRAW:PageDebug()
 	ImGui.Text("DRAW:TextTitle (underline window sized)")
 	DRAW:TextTitle("Center", {space=_spacing,align="center",underline={paint=true,limit=false}})
 
-	DRAW:Separator(UTIL:ScaleSwitch(5),14,10)
+	DRAW:Separator(UTIL:WindowScale(5),14,10)
 
 	DRAW:Spacing(_spacing, 1)
 	ImGui.Text("DRAW:TextTitle (no underline)")
@@ -1637,21 +1611,21 @@ function DRAW:PageDebug()
 
 
 
-	DRAW:Separator(UTIL:ScaleSwitch(5),14,10)
+	DRAW:Separator(UTIL:WindowScale(5),14,10)
 
 	DRAW:Spacing(_spacing, 1)
 	ImGui.Text("UTIL:WordWrap")
 	DRAW:Spacing(_spacing, 1)
 	ImGui.Text(UTIL:WordWrap("Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.", _spacing))
 
-	DRAW:Separator(UTIL:ScaleSwitch(5),14,10)
+	DRAW:Separator(UTIL:WindowScale(5),14,10)
 
 	DRAW:Spacing(_spacing, 1)
 	ImGui.Text("ImGui.TextWrapped")
 	DRAW:Spacing(_spacing, 1)
 	ImGui.TextWrapped("Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.")
 
-	DRAW:Separator(UTIL:ScaleSwitch(5),14,10)
+	DRAW:Separator(UTIL:WindowScale(5),14,10)
 
 	DRAW:Spacing(_spacing, 1)
 	ImGui.Text("ImGui.BulletText")
@@ -1757,9 +1731,9 @@ function DRAW:TextTitle(input, flags)
 		-- underline size
 		if _underline.limit
 		then
-			local _blind = ImGui.Button("", UTIL:TextWidth(input), UTIL:ScaleSwitch(1))
+			local _blind = ImGui.Button("", UTIL:TextWidth(input), UTIL:WindowScale(1))
 		else
-			local _blind = ImGui.Button("", DRAW.Scaling.Window.Width - (_space * 2), UTIL:ScaleSwitch(1))
+			local _blind = ImGui.Button("", DRAW.Scaling.Window.Width - (_space * 2), UTIL:WindowScale(1))
 		end
 		ImGui.PopID()
 
@@ -1816,7 +1790,7 @@ end
 function DRAW:PageAbout()
 
 	-- make room
-	DRAW:Spacer(1, UTIL:ScaleSwitch(44))
+	DRAW:Spacer(1, UTIL:WindowScale(44))
 
 	-- draw animation
 	DRAW:LogoAnimation()
@@ -1825,7 +1799,7 @@ function DRAW:PageAbout()
 	DRAW:PageAbout_Version("v"..DRAW.Version.String)
 
 	-- make room
-	DRAW:Spacer(1,UTIL:ScaleSwitch(15))
+	DRAW:Spacer(1,UTIL:WindowScale(15))
 
 
 
@@ -1844,7 +1818,7 @@ function DRAW:PageAbout()
 
 
 	-- make room
-	DRAW:Spacer(1,UTIL:ScaleSwitch(10))
+	DRAW:Spacer(1,UTIL:WindowScale(10))
 
 
 
@@ -1859,7 +1833,7 @@ function DRAW:PageAbout()
 	DRAW:PageText("Grey", "Lighter", line)
 
 	-- make room
-	DRAW:Spacer(1,UTIL:ScaleSwitch(3))
+	DRAW:Spacer(1,UTIL:WindowScale(3))
 
 	-- print judy
 	line = "~ FOR JUDY ~"
@@ -1870,7 +1844,7 @@ function DRAW:PageAbout()
 	DRAW:PageText("Grey", "Lighter", " "..part[4], false)
 
 	-- make room
-	DRAW:Spacer(1,UTIL:ScaleSwitch(15))
+	DRAW:Spacer(1,UTIL:WindowScale(15))
 
 	-- print modpage
 	DRAW:Spacing(UTIL:TextCenter(DRAW.Scaling.Window.Width, "https://rootpunk.com/mod"),1)
@@ -1879,7 +1853,7 @@ function DRAW:PageAbout()
 	DRAW:PageText("Orange", "Dark", "mod", false)
 
 	-- make room
-	DRAW:Spacer(1,UTIL:ScaleSwitch(3))
+	DRAW:Spacer(1,UTIL:WindowScale(3))
 
 	-- print github
 	DRAW:Spacing(UTIL:TextCenter(DRAW.Scaling.Window.Width, "https://github.com/rp-freakaz/DeveloperExtras"),1)
@@ -1888,7 +1862,7 @@ function DRAW:PageAbout()
 	DRAW:PageText("Orange", "Dark", "DeveloperExtras", false)
 
 	-- make room
-	DRAW:Spacer(1,UTIL:ScaleSwitch(20))
+	DRAW:Spacer(1,UTIL:WindowScale(20))
 
 
 
@@ -1991,7 +1965,7 @@ end
 function DRAW:PageAbout_Header(text)
 
 	-- make room
-	DRAW:Spacer(1,UTIL:ScaleSwitch(20))
+	DRAW:Spacer(1,UTIL:WindowScale(20))
 
 	-- centering text
 	DRAW:Spacing(UTIL:TextCenter(DRAW.Scaling.Window.Width, text),1)
@@ -1999,10 +1973,10 @@ function DRAW:PageAbout_Header(text)
 	DRAW:PageText("Grey", "Lightest", text)
 
 	-- force underline
-	DRAW:Underline(DRAW.Logo.Pixels,UTIL:ScaleSwitch(1),0,"center")
+	DRAW:Underline(DRAW.Logo.Pixels,UTIL:WindowScale(1),0,"center")
 
 	-- make room
-	DRAW:Spacer(1,UTIL:ScaleSwitch(5))
+	DRAW:Spacer(1,UTIL:WindowScale(5))
 end
 
 
@@ -2012,7 +1986,7 @@ end
 function DRAW:PageAbout_Version(text)
 
 	-- push to the right side of the logo animation
-	DRAW:Spacing((DRAW.Scaling.Window.Width / 2) + ((DRAW.Logo.Pixels / 2) - UTIL:TextWidth(text)) + UTIL:ScaleSwitch(3),1)
+	DRAW:Spacing((DRAW.Scaling.Window.Width / 2) + ((DRAW.Logo.Pixels / 2) - UTIL:TextWidth(text)) + UTIL:WindowScale(3),1)
 
 	-- paint it
 	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("Grey", "Normal"))
@@ -2075,8 +2049,8 @@ function DRAW:Underline(width,height,padding,alignment)
 
 	-- catch unset
 	local width = width or DRAW.Scaling.Window.Width
-	local height = height or UTIL:ScaleSwitch(1)
-	local padding = padding or UTIL:ScaleSwitch(14)
+	local height = height or UTIL:WindowScale(1)
+	local padding = padding or UTIL:WindowScale(14)
 	local alignment = alignment or "left"
 
 	-- padding/aligment only if smaller
@@ -2129,8 +2103,8 @@ end
 function DRAW:FlexButtonOLD(width, height)
 
 	-- catch unset
-	local width = width or UTIL:ScaleSwitch(1)
-	local height = height or UTIL:ScaleSwitch(1)
+	local width = width or UTIL:WindowScale(1)
+	local height = height or UTIL:WindowScale(1)
 
 	-- add stack
 	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, 0, 0)
@@ -2434,7 +2408,7 @@ function DRAW:LogoAnimation()
 	local _blanks = 2000
 
 	-- update pixel size
-	DRAW.Logo.Pixels = (51 * math.floor(UTIL:ScaleSwitch(6))) + 50
+	DRAW.Logo.Pixels = (51 * math.floor(UTIL:WindowScale(6))) + 50
 
 	-- update center spacer
 	DRAW.Logo.Center = (DRAW.Scaling.Window.Width - DRAW.Logo.Pixels) / 2
@@ -2493,7 +2467,7 @@ function DRAW:LogoBlanker(_id)
 
 	-- paint child
 	ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColor())
-	local _blind = ImGui.BeginChildFrame(_id, UTIL:ScaleSwitch(6), UTIL:ScaleSwitch(6), ImGuiWindowFlags.NoScrollbar + ImGuiWindowFlags.NoScrollWithMouse)
+	local _blind = ImGui.BeginChildFrame(_id, UTIL:WindowScale(6), UTIL:WindowScale(6), ImGuiWindowFlags.NoScrollbar + ImGuiWindowFlags.NoScrollWithMouse)
 	ImGui.PopStyleColor(1)
 
 	-- close child
@@ -2527,9 +2501,9 @@ function DRAW:LogoPainter(_id, _transparency)
 	end
 
 	-- paint child
-	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, UTIL:ScaleSwitch(1))
+	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, UTIL:WindowScale(1))
 	ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColor(_color, "Logo", DRAW.Logo.Colors[_transparency]))
-	local _blind = ImGui.BeginChildFrame(_id, UTIL:ScaleSwitch(6), UTIL:ScaleSwitch(6), ImGuiWindowFlags.NoScrollbar + ImGuiWindowFlags.NoScrollWithMouse)
+	local _blind = ImGui.BeginChildFrame(_id, UTIL:WindowScale(6), UTIL:WindowScale(6), ImGuiWindowFlags.NoScrollbar + ImGuiWindowFlags.NoScrollWithMouse)
 	ImGui.PopStyleColor(1)
 	ImGui.PopStyleVar(1)
 

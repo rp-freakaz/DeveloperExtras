@@ -80,6 +80,49 @@ end
 --
 
 --
+--// UTIL:ScreenScale(<FLOAT>,<FLOAT>)
+--
+function UTIL:ScreenScale(pixels, factor)
+
+	-- catch non set
+	local pixels = pixels or 0
+	local factor = factor or UTIL.Scaling.Screen.Factor
+
+	if UTIL.Scaling.Enable and pixels > 0
+	then
+		return UTIL:ShortenFloat(UTIL.Scaling.Screen.Factor * pixels)
+	end
+	return pixels
+end
+
+--
+--// UTIL:WindowScale(<FLOAT>,<FLOAT>)
+--
+function UTIL:WindowScale(pixels, factor)
+
+	-- catch non set
+	local pixels = pixels or 0
+	local factor = factor or UTIL.Scaling.Window.Factor
+
+	if UTIL.Scaling.Enable and pixels > 0
+	then
+		return UTIL:ShortenFloat((UTIL.Scaling.Screen.Factor * UTIL.Scaling.Window.Factor) * pixels)
+	end
+	return pixels
+end
+
+
+
+
+
+
+
+
+
+
+
+
+--
 --// UTIL:ScaleSwitch(<INT>,<BOOL>)
 --
 function UTIL:ScaleSwitch(pixels, screen)
@@ -94,8 +137,8 @@ function UTIL:ScaleSwitch(pixels, screen)
 		then
 			return UTIL:ShortenFloat(UTIL.Scaling.Screen.Factor * pixels)
 		end
-		--return UTIL:ShortenFloat((UTIL.Scaling.Screen.Factor * UTIL.Scaling.Window.Factor) * pixels)
-		return UTIL:ShortenFloat(UTIL.Scaling.Window.Factor * pixels)
+		return UTIL:ShortenFloat((UTIL.Scaling.Screen.Factor * UTIL.Scaling.Window.Factor) * pixels)
+		--return UTIL:ShortenFloat(UTIL.Scaling.Window.Factor * pixels)
 		--return UTIL:ShortenFloat((ImGui.GetFontSize() / 18) * pixels)
 	end
 	return pixels
@@ -104,26 +147,7 @@ end
 
 
 
---
---// UTIL:WindowScale(<FLOAT>,<FLOAT>)
---
-function UTIL:WindowScale(pixels, factor)
 
-	-- catch non set
-	local pixels = pixels or 0
-	local factor = factor or UTIL.Scaling.Window.Factor
-
-	if UTIL.Scaling.Enable and pixels > 0
-	then
-		--print("Window:"..tostring(UTIL.Scaling.Window.Factor))
-		--print("Font:"..tostring(UTIL:ShortenFloat(ImGui.GetFontSize() / 18)))
-
-		--return UTIL:ShortenFloat((UTIL.Scaling.Screen.Factor * UTIL.Scaling.Window.Factor) * pixels)
-		return UTIL:ShortenFloat(UTIL.Scaling.Window.Factor * pixels)
-		--return UTIL:ShortenFloat((ImGui.GetFontSize() / 18) * pixels)
-	end
-	return pixels
-end
 
 --
 --// UTIL:FontScale(<INT>)
@@ -372,7 +396,7 @@ function UTIL:WordWrap(input, space)
 	local space = space or 0
 
 	-- whats left
-	local limit = UTIL.Scaling.Window.Width - (UTIL:ScaleSwitch(space) * 2)
+	local limit = UTIL.Scaling.Window.Width - (space * 2)
 	local lines = ""
 
 	-- split text

@@ -163,17 +163,17 @@ function CORE:Interface()
 				if _trigger
 				then
 					-- default bottom space
-					local bottom = UTIL:ScaleSwitch(116)
+					local bottom = UTIL:WindowScale(116)
 
 					-- add more if graph is enabled
 					if CORE.Extras["DeveloperExtras/Graph/Enable"]
 					and not CORE.Extras["DeveloperExtras/Graph/Overlay/Enable"]
 					then
-						bottom = UTIL:ScaleSwitch(371)
+						bottom = UTIL:WindowScale(371)
 					end
 
 					-- make the tabbar thicker, before the child
-					DRAW:SeparatorNew(UTIL:ScaleSwitch(2), "tabbar/bottomline")
+					DRAW:SeparatorNew(UTIL:WindowScale(2), "tabbar/bottomline")
 
 					-- start tabchild
 					local _trigger = DRAW:TabchildStart(CORE.Scaling.Window.Width, CORE.Scaling.Window.Height - bottom, CORE.Extras["DeveloperExtras/Scrollbar/Enable"])
@@ -264,9 +264,8 @@ function CORE:Interface()
 		DRAW:TabbarEnd()
 
 		-- tabbar thickness, after the child
-		DRAW:SeparatorNew(UTIL:ScaleSwitch(3), "tabbar/bottomline")
-
-
+		DRAW:SeparatorNew(UTIL:WindowScale(2), "tabbar/bottomline")
+		DRAW:SeparatorNew(1, "tabbar/bottomline")
 
 	-- end window
 	end
@@ -337,14 +336,14 @@ function CORE:RenderSwitch(pool, render)
 		end
 	elseif render.separator
 	then
-		DRAW:Spacer(1,UTIL:ScaleSwitch(10))
-		DRAW:SeparatorNew(UTIL:ScaleSwitch(render.separator))
+		DRAW:Spacer(1,UTIL:WindowScale(10))
+		DRAW:SeparatorNew(UTIL:WindowScale(render.separator))
 
-		--DRAW:Separator(UTIL:ScaleSwitch(render.separator))
-		DRAW:Spacer(1,UTIL:ScaleSwitch(10))
+		--DRAW:Separator(UTIL:WindowScale(render.separator))
+		DRAW:Spacer(1,UTIL:WindowScale(10))
 	elseif render.spacing
 	then
-		DRAW:Spacer(1,UTIL:ScaleSwitch(render.spacing))
+		DRAW:Spacer(1,UTIL:WindowScale(render.spacing))
 	else
 		-- something is wrong
 		if CORE.isDebug then
@@ -430,7 +429,7 @@ function CORE:RenderSlider(pool, option, render, demand)
 	then
 		-- always
 		DRAW:Sameline()
-		DRAW:Spacing(UTIL:ScaleSwitch(4),1)
+		DRAW:Spacing(UTIL:WindowScale(4),1)
 		DRAW:Sameline()
 
 		local trigger = DRAW:Button(render, option, demand, "Reset", "Reset")
@@ -444,7 +443,7 @@ function CORE:RenderSlider(pool, option, render, demand)
 	-- has list
 	if option.list
 	then
-		DRAW:Spacer(UTIL:ScaleSwitch(5),UTIL:ScaleSwitch(5))
+		DRAW:Spacer(UTIL:WindowScale(5),UTIL:WindowScale(5))
 
 		if render.spacing
 		then
@@ -1609,12 +1608,8 @@ function CORE:UpdateScreen()
 	-- update screen factor
 	if CORE.Scaling.Enable
 	then
-		-- we don't go below 1, so nothing gets borked
-		if (CORE.Scaling.Screen.Height / 9 * 16) / 1920 >= 1
-		then
-			-- we use the screen height to keep the aspect ratio
-			CORE.Scaling.Screen.Factor = UTIL:ShortenFloat((CORE.Scaling.Screen.Height / 9 * 16) / 1920)
-		end
+		-- we use the screen height to keep the aspect ratio
+		CORE.Scaling.Screen.Factor = UTIL:ShortenFloat((CORE.Scaling.Screen.Height / 9 * 16) / 1920)
 	end
 
 	-- distribute to all
@@ -1637,7 +1632,7 @@ function CORE:UpdateWindow()
 	-- update font size
 	if CORE.Scaling.Enable
 	then
-		CORE.Scaling.Font = CORE.Scaling.Window.Factor
+
 	end
 
 	-- distribute to all
@@ -1748,7 +1743,7 @@ function CORE:Pre()
 	CORE.Project = "Developer Extras"
 	CORE.Authors = "FreakaZ"
 	CORE.Version = {String="3.0.0-161",Numeric=300161,Cet={String=nil,Numeric=0},Game={String=nil,Numeric=0}}
-	CORE.Scaling = {Enable=false,Screen={Width=1920,Height=1080,Factor=1},Window={Width=456,Height=600,Factor=1},Font=1}
+	CORE.Scaling = {Enable=false,Screen={Width=1920,Height=1080,Factor=1},Window={Width=456,Height=600,Factor=1}}
 	CORE.Timings = {Frame=0,Second=0,Millisecond=0}
 	CORE.Runtime = {Theme=0,Themes={"Default","White Satin","Mox Destiny"}}
 
