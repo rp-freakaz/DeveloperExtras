@@ -396,7 +396,7 @@ function UTIL:WordWrap(input, space)
 	local space = space or 0
 
 	-- whats left
-	local limit = UTIL.Scaling.Window.Width - (space * 2)
+	local limit = UTIL.Scaling.Window.Width - space
 	local lines = ""
 
 	-- split text
@@ -502,8 +502,31 @@ end
 
 
 
+--
+--
+--//////////////////// PERFORMANCE ////////////////////
+--
+--
 
 
+
+--
+--// UTIL:FormatFrametime(<FLOAT>)
+--
+function UTIL:FormatFrametime(input)
+
+	-- cap it
+	if input > 99.99 then input = 99.99 end
+
+	-- get length
+	local length = string.len(tostring(input))
+
+	-- expand it
+	if length < 5 then input = "0"..input end
+
+	-- result
+	return input
+end
 
 
 

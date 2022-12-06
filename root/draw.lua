@@ -119,6 +119,7 @@ function DRAW:GetColorNew(theme, color, state)
 		if color == "element/title"				then return DRAW:GetGeneric("generic/white/normal") end
 		if color == "element/notice"				then return DRAW:GetGeneric("generic/white/dark") end
 		if color == "element/description"			then return DRAW:GetGeneric("generic/grey/lighter") end
+		if color == "element/decoration"			then return DRAW:GetGeneric("generic/orange/normal") end
 
 		-- slider
 		if color == "slider/minmax"				then return DRAW:GetGeneric("generic/grey/light") end
@@ -128,7 +129,6 @@ function DRAW:GetColorNew(theme, color, state)
 		if color == "slider/background"				then return DRAW:GetGeneric("generic/grey/darker") end
 		if color == "slider/background/active"			then return DRAW:GetGeneric("generic/grey/darker") end
 		if color == "slider/background/hovered"			then return DRAW:GetGeneric("generic/grey/darker") end
-		if color == "slider/button/decoration"			then return DRAW:GetGeneric("generic/orange/normal") end
 
 		-- quickshift
 		if color == "quickshift/background"			then return DRAW:GetGeneric("generic/grey/darker") end
@@ -148,7 +148,6 @@ function DRAW:GetColorNew(theme, color, state)
 		if color == "combobox/button"				then return DRAW:GetGeneric("generic/orange/normal") end
 		if color == "combobox/button/active"			then return DRAW:GetGeneric("generic/orange/normal") end
 		if color == "combobox/button/hovered"			then return DRAW:GetGeneric("generic/orange/light") end
-		if color == "combobox/button/decoration"		then return DRAW:GetGeneric("generic/orange/normal") end
 		if color == "combobox/header"				then return DRAW:GetGeneric("generic/grey/normal") end
 		if color == "combobox/header/active"			then return DRAW:GetGeneric("generic/orange/light") end
 		if color == "combobox/header/hovered"			then return DRAW:GetGeneric("generic/orange/normal") end
@@ -183,6 +182,17 @@ function DRAW:GetColorNew(theme, color, state)
 		if color == "element/title"				then return DRAW:GetGeneric("generic/black/normal") end
 		if color == "element/notice"				then return DRAW:GetGeneric("generic/black/light") end
 		if color == "element/description"			then return DRAW:GetGeneric("generic/grey/dark") end
+		if color == "element/decoration"			then return DRAW:GetGeneric("generic/grey/dark") end
+
+		-- slider
+		if color == "slider/minmax"				then return DRAW:GetGeneric("generic/grey/light") end
+		if color == "slider/text"				then return DRAW:GetGeneric("generic/white/normal") end
+		if color == "slider/grab"				then return DRAW:GetGeneric("generic/orange/normal") end
+		if color == "slider/grab/active"			then return DRAW:GetGeneric("generic/orange/light") end
+		if color == "slider/background"				then return DRAW:GetGeneric("generic/grey/darker") end
+		if color == "slider/background/active"			then return DRAW:GetGeneric("generic/grey/darker") end
+		if color == "slider/background/hovered"			then return DRAW:GetGeneric("generic/grey/darker") end
+
 
 		-- quickshift
 		if color == "quickshift/background"			then return DRAW:GetGeneric("generic/white/dark") end
@@ -202,7 +212,6 @@ function DRAW:GetColorNew(theme, color, state)
 		if color == "combobox/button"				then return DRAW:GetGeneric("generic/white/normal") end
 		if color == "combobox/button/active"			then return DRAW:GetGeneric("generic/white/normal") end
 		if color == "combobox/button/hovered"			then return DRAW:GetGeneric("generic/white/light") end
-		if color == "combobox/button/decoration"		then return DRAW:GetGeneric("generic/grey/darker") end
 		if color == "combobox/header"				then return DRAW:GetGeneric("generic/grey/normal") end
 		if color == "combobox/header/active"			then return DRAW:GetGeneric("generic/orange/light") end
 		if color == "combobox/header/hovered"			then return DRAW:GetGeneric("generic/orange/normal") end
@@ -859,9 +868,9 @@ function DRAW:Slider(render, option, demand, value)
 
 	-- deco paint
 	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, UTIL:WindowScale(6))
-	ImGui.PushStyleColor(ImGuiCol.Button, DRAW:GetColorNew(DRAW.Runtime.Theme, "slider/button/decoration"))
-	ImGui.PushStyleColor(ImGuiCol.ButtonActive, DRAW:GetColorNew(DRAW.Runtime.Theme, "slider/button/decoration"))
-	ImGui.PushStyleColor(ImGuiCol.ButtonHovered, DRAW:GetColorNew(DRAW.Runtime.Theme, "slider/button/decoration"))
+	ImGui.PushStyleColor(ImGuiCol.Button, DRAW:GetColorNew(DRAW.Runtime.Theme, "element/decoration"))
+	ImGui.PushStyleColor(ImGuiCol.ButtonActive, DRAW:GetColorNew(DRAW.Runtime.Theme, "element/decoration"))
+	ImGui.PushStyleColor(ImGuiCol.ButtonHovered, DRAW:GetColorNew(DRAW.Runtime.Theme, "element/decoration"))
 
 	-- deco title
 	DRAW:FlexButton(UTIL:WindowScale(5), UTIL:WindowScale(19))
@@ -1288,9 +1297,9 @@ function DRAW:Combobox(render, option, demand, names, length, value)
 
 	-- deco paint
 	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, UTIL:WindowScale(6))
-	ImGui.PushStyleColor(ImGuiCol.Button, DRAW:GetColorNew(DRAW.Runtime.Theme, "combobox/button/decoration"))
-	ImGui.PushStyleColor(ImGuiCol.ButtonActive, DRAW:GetColorNew(DRAW.Runtime.Theme, "combobox/button/decoration"))
-	ImGui.PushStyleColor(ImGuiCol.ButtonHovered, DRAW:GetColorNew(DRAW.Runtime.Theme, "combobox/button/decoration"))
+	ImGui.PushStyleColor(ImGuiCol.Button, DRAW:GetColorNew(DRAW.Runtime.Theme, "element/decoration"))
+	ImGui.PushStyleColor(ImGuiCol.ButtonActive, DRAW:GetColorNew(DRAW.Runtime.Theme, "element/decoration"))
+	ImGui.PushStyleColor(ImGuiCol.ButtonHovered, DRAW:GetColorNew(DRAW.Runtime.Theme, "element/decoration"))
 
 	-- deco title
 	DRAW:FlexButton(UTIL:WindowScale(5), UTIL:WindowScale(19))
@@ -1453,22 +1462,29 @@ function DRAW:Quickshift(render, option, state, value)
 		DRAW:Spacer(1,UTIL:WindowScale(4))
 
 		-- left spacing
-		DRAW:Spacing(_spacing,1)
+		--DRAW:Spacing(_spacing,1)
 
 		-- alignment
-		if not render.align
+		if render.align
 		then
-			DRAW:Spacing(_spacing + UTIL:WindowScale(26),1)
+			DRAW:Spacing(_spacing,1)
+		else
+			DRAW:Spacing(_spacing + UTIL:WindowScale(42),1)
 		end
 
 		-- add stacks
 		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "element/description"))
 
-		if not render.align
+		if render.align
 		then
-			ImGui.Text(UTIL:WordWrap(render.desc,_spacing + UTIL:WindowScale(26)))
-		else
 			ImGui.Text(UTIL:WordWrap(render.desc,_spacing))
+		else
+			if render.spacing
+			then
+				ImGui.Text(UTIL:WordWrap(render.desc,UTIL:WindowScale(render.spacing) + UTIL:WindowScale(60)))
+			else
+				ImGui.Text(UTIL:WordWrap(render.desc,_spacing + UTIL:WindowScale(60)))
+			end
 		end
 		ImGui.PopStyleColor(1)
 	end
@@ -1506,6 +1522,11 @@ end
 function DRAW:PageDebug()
 
 	local _spacing = UTIL:WindowScale(14)
+
+	-- some room
+	DRAW:Spacer(1, _spacing)
+
+	DRAW:SaveAnimation("nothing")
 
 	-- some room
 	DRAW:Spacer(1, _spacing)
@@ -2493,6 +2514,137 @@ end
 
 
 
+--
+--// DRAW:SaveAnimation()
+--
+function DRAW:SaveAnimation(text)
+
+	-- needed for logo animation
+	local _timings = UTIL:Get25thSeconds()
+
+	-- only if needed
+	if DRAW.Anim.Cycles ~= _timings
+	then
+		-- update timing
+		DRAW.Anim.Cycles = _timings
+
+		-- get table length
+		local _length = UTIL:TableLength(DRAW.Anim.Colors)
+
+		-- rotate color table
+		table.insert(DRAW.Anim.Colors, DRAW.Anim.Colors[1])
+
+		-- cut to long table
+		if UTIL:TableLength(DRAW.Anim.Colors) > _length
+		then
+			table.remove(DRAW.Anim.Colors,1)
+		end
+	end
+
+	-- frame id's
+	local _frames = 3000
+
+	-- update pixel size
+	--DRAW.Logo.Pixels = (51 * math.floor(UTIL:WindowScale(6))) + 50
+
+	-- update center spacer
+	--DRAW.Logo.Center = (DRAW.Scaling.Window.Width - DRAW.Logo.Pixels) / 2
+
+	-- loop matrix rows
+	for _rn,_rc in pairs(DRAW.Anim.Matrix.Save)
+	do
+		-- centering row
+		--DRAW:Spacing(DRAW.Logo.Center)
+
+		local _fields = UTIL:TableLength(_rc)
+
+		-- loop matrix columns
+		for _cn,_cc in pairs(_rc)
+		do
+			-- inc frames
+			_frames = _frames + 1
+
+			-- seeding so its sticks
+			--math.randomseed(_frames)
+
+			--local _opacity = math.random(1,UTIL:TableLength(DRAW.Anim.Colors))
+
+
+			local _opacity = DRAW.Anim.Colors[1]
+
+
+			--if _num == 1 then _opacity = UTIL:ShortenFloat(math.random(1,UTIL:TableLength(DRAW.Anim.Colors)) / 3) end
+			--if _num == 2 then _opacity = UTIL:ShortenFloat(math.random(1,UTIL:TableLength(DRAW.Anim.Colors)) / 2) end
+			--if _num == 4 then _opacity = UTIL:ShortenFloat(math.random(1,UTIL:TableLength(DRAW.Anim.Colors)) / 2) end
+			--if _num == 5 then _opacity = UTIL:ShortenFloat(math.random(1,UTIL:TableLength(DRAW.Anim.Colors)) / 3) end
+
+			-- seeding so its sticks
+			--math.randomseed(_frames)
+
+			-- call painter
+			DRAW:AnimPainter(_frames, UTIL:WindowScale(15), UTIL:WindowScale(15), _opacity)
+			DRAW:Sameline()
+			DRAW:Spacer(2,1)
+			DRAW:Sameline()
+		end
+
+		-- right end
+		DRAW:Spacer(1,1)
+
+		-- space between
+		--DRAW:Spacing(UTIL:WindowWidth(0.25),UTIL:WindowWidth(0.25))
+		DRAW:Spacer(1,1)
+	end
+
+
+	--ImGui.EndChild()
+
+end
+
+
+
+
+function DRAW:AnimPainter(id, width, height, opacity, rounding)
+
+	-- catch unset
+	local width = width or 1
+	local height = height or 1
+	local opacity = opacity or 0
+	local rounding = rounding or UTIL:WindowScale(1)
+
+	-- paint child
+	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, rounding)
+	ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColor("Orange", "Logo", opacity))
+	local _blind = ImGui.BeginChildFrame(id, width, height, ImGuiWindowFlags.NoScrollbar + ImGuiWindowFlags.NoScrollWithMouse)
+	ImGui.PopStyleColor(1)
+	ImGui.PopStyleVar(1)
+
+	-- close child
+	ImGui.EndChildFrame()
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2525,6 +2677,40 @@ function DRAW:Pre(project, version, runtime, scaling, debug)
 		[3] = "Not supported in this Version of the Cyberpunk 2077.",
 		[9] = "Requires Photomode."
 	}
+
+	-- animations
+	DRAW.Anim = {
+		Cycles = 0,
+		Colors = {0.4,0.5,0.6,0.7,0.8,0.9,0.95,0.97,0.98,0.99,1,1,1,0.99,0.98,0.97,0.95,0.9,0.8,0.7,0.6,0.5},
+		Matrix = {
+			Logo = {
+				{1,1,1,1,1,0,1,1,1,1,1,0,1,1,0,1,1,0,1,1,1,1,1,0,1,1,0,0,1,1,1,1,1,0,1,1,1,1,1,0,1,1,1,1,1,0,1,1,1,1,1},
+				{1,1,0,1,1,0,1,1,0,1,1,0,1,1,0,1,1,0,1,1,0,1,1,0,1,1,0,0,1,1,0,1,1,0,1,1,0,1,1,0,1,1,0,1,1,0,1,1,0,1,1},
+				{1,1,0,1,1,0,1,1,0,1,1,0,1,1,0,1,1,0,1,1,0,1,1,0,1,1,0,0,1,1,0,1,1,0,1,1,0,1,1,0,1,1,0,1,1,0,1,1,0,0,0},
+				{1,1,0,1,1,0,1,1,1,1,1,0,1,1,0,1,1,0,1,1,1,1,1,0,1,1,0,0,1,1,0,1,1,0,1,1,0,1,1,0,1,1,1,1,1,0,1,1,0,0,0},
+				{1,1,0,1,1,0,1,1,0,0,0,0,1,1,0,1,1,0,1,1,0,0,0,0,1,1,0,0,1,1,0,1,1,0,1,1,0,1,1,0,1,1,0,0,0,0,1,1,0,0,0},
+				{1,1,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,0,1,1,1,1,1,0,1,1,1,0,1,1,1,1,1,0,1,1,1,1,1,0,1,1,1,1,1,0,1,1,0,0,0},
+				{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+				{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+				{1,1,1,1,1,0,1,1,0,1,1,0,0,1,1,0,0,1,1,1,1,1,0,0,1,1,1,1,0,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1},
+				{1,1,0,0,0,0,1,1,0,1,1,0,0,1,1,0,0,1,1,0,1,1,0,0,0,0,1,1,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1},
+				{1,1,1,1,0,0,0,1,1,1,0,0,1,1,1,1,0,1,1,0,0,0,0,1,1,1,1,1,0,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1},
+				{1,1,0,0,0,0,1,1,0,1,1,0,0,1,1,0,0,1,1,0,0,0,0,1,1,0,1,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,1,1},
+				{1,1,0,1,1,0,1,1,0,1,1,0,0,1,1,0,0,1,1,0,0,0,0,1,1,0,1,1,0,1,1,0,1,1,0,0,0,0,0,0,0,0,1,0,1,0,1,1,0,1,1},
+				{1,1,1,1,1,0,1,1,0,1,1,0,0,1,1,1,0,1,1,0,0,0,0,1,1,1,1,1,0,1,1,1,1,1,0,0,0,0,0,0,0,0,0,1,1,0,1,1,1,1,1},
+				{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+				{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
+			},
+			Save = {
+				{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+				{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+				{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+				{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+				{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
+			}
+		}
+	}
+
 
 	-- logo definition
 	DRAW.Logo = {

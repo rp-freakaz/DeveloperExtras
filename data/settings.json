@@ -35,13 +35,15 @@
 				{
 					"name":"Background Update",
 					"path":"DeveloperExtras/Graph/BackgroundUpdate",
-					"desc":"Updates the Graph constantly and not only when visible. May has some slight performance impact."
+					"desc":"Updates the Graph constantly and not only when visible. May has some slight performance impact. Has no effect when the Overlay is visible.",
+
+					"spacing":40
 				},
 				{
-					"spacing":10
+					"separator":1
 				},
 				{
-					"name":"Show Overlay",
+					"name":"Show Graph Overlay",
 					"path":"DeveloperExtras/Graph/Overlay/Enable",
 					"desc":"Show's a permanent Overlay of the Performance Graph. Disables the Graph in the Main Window."
 				},
@@ -52,7 +54,9 @@
 					"name":"Overlay Position",
 					"path":"DeveloperExtras/Graph/Overlay/Position",
 					"note":"no idea",
-					"desc":"Places the Graph Overlay on a specific Position. Left to Right and top to bottom."
+					"desc":"Places the Graph Overlay on a specific Position. Left to Right and top to bottom.",
+
+					"spacing":32
 				},
 				{
 					"spacing":10
@@ -62,28 +66,34 @@
 					"path":"DeveloperExtras/Graph/Overlay/Transparency",
 					"desc":"Places the Graph Overlay on a specific Position. Left to Right and top to bottom.",
 
-					"spacing":20
+					"spacing":32
 				},
 				{
 					"spacing":10
 				},
 				{
 					"name":"Bar Transparency",
-					"path":"DeveloperExtras/Graph/Overlay/Transparency/Bar"
+					"path":"DeveloperExtras/Graph/Overlay/Transparency/Bar",
+
+					"spacing":32
 				},
 				{
 					"spacing":10
 				},
 				{
 					"name":"Bar Background Transparency",
-					"path":"DeveloperExtras/Graph/Overlay/Transparency/Bar/Background"
+					"path":"DeveloperExtras/Graph/Overlay/Transparency/Bar/Background",
+
+					"spacing":32
 				},
 				{
 					"spacing":10
 				},
 				{
 					"name":"Text Transparency",
-					"path":"DeveloperExtras/Graph/Overlay/Transparency/Text"
+					"path":"DeveloperExtras/Graph/Overlay/Transparency/Text",
+
+					"spacing":32
 				},
 				{
 					"separator":5
