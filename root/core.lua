@@ -400,7 +400,7 @@ end
 --
 --// CORE:RenderSlider()
 --
-function CORE:RenderSlider(pool, option, render, demand)
+function CORE:RenderSlider(pool, option, render, state)
 
 	-- debug id
 	local __func__ = "CORE:RenderSlider"
@@ -409,13 +409,13 @@ function CORE:RenderSlider(pool, option, render, demand)
 	local value = CORE:GetToggle(render.path, option.type)
 
 	-- create slider
-	local value, trigger = DRAW:Slider(render, option, demand, value)
+	local value, trigger, spacing = DRAW:Slider(render, option, demand, value)
 	if trigger
 	then
 		CORE:SetToggle(render.path, option.type, value)
 
 		-- needs to be enabled
-		--if _state == "enabled"
+		--if state == "enabled"
 		--then
 			--POOL.SetToggle(_entry.path, _entry.type, _value)
 			--if eFlag.Draw ~= nil then
@@ -432,10 +432,9 @@ function CORE:RenderSlider(pool, option, render, demand)
 		DRAW:Spacing(UTIL:WindowScale(4),1)
 		DRAW:Sameline()
 
-		local trigger = DRAW:Button(render, option, demand, "Reset", "Reset")
+		local trigger = DRAW:Button(render, option, state, "Reset", "Reset")
 		if trigger
 		then
-
 
 		end
 	end
@@ -480,6 +479,12 @@ function CORE:RenderSlider(pool, option, render, demand)
 		end
 
 		DRAW:Spacer(1,1) -- clear sameline
+	end
+
+
+	-- description
+	if render.desc then
+		DRAW:Description(render, spacing + UTIL:WindowScale(11), state)
 	end
 
 end

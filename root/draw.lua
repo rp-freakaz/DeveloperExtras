@@ -115,10 +115,13 @@ function DRAW:GetColorNew(theme, color, state)
 		if color == "tabbar/tab/hovered"			then return DRAW:GetGeneric("generic/orange/light") end
 		if color == "tabbar/bottomline"				then return DRAW:GetGeneric("generic/orange/normal") end
 
+		-- elements
+		if color == "element/title"				then return DRAW:GetGeneric("generic/white/normal") end
+		if color == "element/notice"				then return DRAW:GetGeneric("generic/white/dark") end
+		if color == "element/description"			then return DRAW:GetGeneric("generic/grey/lighter") end
+
 		-- slider
-		if color == "slider/title"				then return DRAW:GetGeneric("generic/white/normal") end
-		if color == "slider/minmax"				then return DRAW:GetGeneric("generic/white/dark") end
-		if color == "slider/description"			then return DRAW:GetGeneric("generic/white/dark") end
+		if color == "slider/minmax"				then return DRAW:GetGeneric("generic/grey/light") end
 		if color == "slider/text"				then return DRAW:GetGeneric("generic/white/normal") end
 		if color == "slider/grab"				then return DRAW:GetGeneric("generic/orange/normal") end
 		if color == "slider/grab/active"			then return DRAW:GetGeneric("generic/orange/light") end
@@ -127,10 +130,7 @@ function DRAW:GetColorNew(theme, color, state)
 		if color == "slider/background/hovered"			then return DRAW:GetGeneric("generic/grey/darker") end
 		if color == "slider/button/decoration"			then return DRAW:GetGeneric("generic/orange/normal") end
 
-
 		-- quickshift
-		if color == "quickshift/title"				then return DRAW:GetGeneric("generic/white/normal") end
-		if color == "quickshift/description"			then return DRAW:GetGeneric("generic/white/dark") end
 		if color == "quickshift/background"			then return DRAW:GetGeneric("generic/grey/darker") end
 		if color == "quickshift/background/active"		then return DRAW:GetGeneric("generic/grey/darker") end
 		if color == "quickshift/background/hovered"		then return DRAW:GetGeneric("generic/grey/darker") end
@@ -142,8 +142,6 @@ function DRAW:GetColorNew(theme, color, state)
 		if color == "quickshift/off/grab/active"		then return DRAW:GetGeneric("generic/grey/lighter") end
 
 		-- combobox
-		if color == "combobox/title"				then return DRAW:GetGeneric("generic/white/normal") end
-		if color == "combobox/description"			then return DRAW:GetGeneric("generic/white/dark") end
 		if color == "combobox/border"				then return DRAW:GetGeneric("generic/grey/dark") end
 		if color == "combobox/background"			then return DRAW:GetGeneric("generic/grey/darker") end
 		if color == "combobox/popup/background"			then return DRAW:GetGeneric("generic/grey/darker") end
@@ -181,9 +179,12 @@ function DRAW:GetColorNew(theme, color, state)
 		if color == "tabbar/tab/hovered"			then return DRAW:GetGeneric("generic/grey/lighter") end
 		if color == "tabbar/bottomline"				then return DRAW:GetGeneric("generic/grey/lightest") end
 
+		-- elements
+		if color == "element/title"				then return DRAW:GetGeneric("generic/black/normal") end
+		if color == "element/notice"				then return DRAW:GetGeneric("generic/black/light") end
+		if color == "element/description"			then return DRAW:GetGeneric("generic/grey/dark") end
+
 		-- quickshift
-		if color == "quickshift/title"				then return DRAW:GetGeneric("generic/black/normal") end
-		if color == "quickshift/description"			then return DRAW:GetGeneric("generic/black/light") end
 		if color == "quickshift/background"			then return DRAW:GetGeneric("generic/white/dark") end
 		if color == "quickshift/background/active"		then return DRAW:GetGeneric("generic/white/dark") end
 		if color == "quickshift/background/hovered"		then return DRAW:GetGeneric("generic/white/dark") end
@@ -195,8 +196,6 @@ function DRAW:GetColorNew(theme, color, state)
 		if color == "quickshift/off/grab/active"		then return DRAW:GetGeneric("generic/grey/darker") end
 
 		-- combobox
-		if color == "combobox/title"				then return DRAW:GetGeneric("generic/black/normal") end
-		if color == "combobox/description"			then return DRAW:GetGeneric("generic/black/light") end
 		if color == "combobox/border"				then return DRAW:GetGeneric("generic/grey/lightest") end
 		if color == "combobox/background"			then return DRAW:GetGeneric("generic/white/dark") end
 		if color == "combobox/popup/background"			then return DRAW:GetGeneric("generic/white/dark") end
@@ -349,7 +348,13 @@ function DRAW:WindowStart()
 
 	-- first position
 	ImGui.SetNextWindowPos(100, 100, ImGuiCond.FirstUseEver)
-	ImGui.SetNextWindowSizeConstraints(UTIL:ScreenScale(456), UTIL:ScreenScale(600), (DRAW.Scaling.Screen.Width / 2) - 50, DRAW.Scaling.Screen.Height - 100)
+
+	-- allow window resize
+	if DRAW.isDebug then
+		ImGui.SetNextWindowSizeConstraints(UTIL:ScreenScale(456), UTIL:ScreenScale(600), (DRAW.Scaling.Screen.Width / 2) - 50, DRAW.Scaling.Screen.Height - 100)
+	else
+		ImGui.SetNextWindowSizeConstraints(UTIL:ScreenScale(456), UTIL:ScreenScale(600), UTIL:ScreenScale(456), DRAW.Scaling.Screen.Height - 100)
+	end
 
 	-- global styles
 	ImGui.PushStyleVar(ImGuiStyleVar.ScrollbarSize, 0)
@@ -643,33 +648,11 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+--
+--
+--//////////////////// POSITIONING ////////////////////
+--
+--
 
 --
 --// DRAW:Spacer(<INT>,<INT>)
@@ -753,16 +736,6 @@ function DRAW:Separator(height, top, bot, color, style)
 	ImGui.PopStyleVar(1)
 	ImGui.PopStyleColor(1)
 end
-
-
-
-
-
-
-
-
-
-
 
 
 --
@@ -876,10 +849,7 @@ function DRAW:Slider(render, option, demand, value)
 	local _spacing = UTIL:WindowScale(16)
 
 	-- update
-	if render.spacing
-	then
-		_spacing = UTIL:WindowScale(render.spacing) + _spacing
-	end
+	if render.spacing then _spacing = UTIL:WindowScale(render.spacing) + _spacing end
 
 	-- top spacer
 	DRAW:Spacer(1,UTIL:WindowScale(5))
@@ -894,13 +864,13 @@ function DRAW:Slider(render, option, demand, value)
 	ImGui.PushStyleColor(ImGuiCol.ButtonHovered, DRAW:GetColorNew(DRAW.Runtime.Theme, "slider/button/decoration"))
 
 	-- deco title
-	DRAW:FlexButton(UTIL:WindowScale(5), UTIL:WindowScale(20))
+	DRAW:FlexButton(UTIL:WindowScale(5), UTIL:WindowScale(19))
 
 	ImGui.PopStyleColor(3)
 	ImGui.PopStyleVar(1)
 	DRAW:Sameline()
 	DRAW:Spacing(UTIL:WindowScale(5),1)
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "slider/title"))
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "element/title"))
 	ImGui.Text(render.name)
 	ImGui.PopStyleColor(1)
 
@@ -918,25 +888,14 @@ function DRAW:Slider(render, option, demand, value)
 	if render.note
 	then
 		DRAW:Notice(render, demand)
-	else
-		DRAW:Sameline()
-		DRAW:Spacer(1,UTIL:WindowScale(15))
 	end
-
 
 	DRAW:Spacer(1,UTIL:WindowScale(6))
 	DRAW:Spacing(_spacing + UTIL:WindowScale(10),1)
-	ImGui.SetNextItemWidth(DRAW.Scaling.Window.Width - ((_spacing * 2)))
-
-	if option.def
-	then
-		ImGui.SetNextItemWidth(DRAW.Scaling.Window.Width - ((_spacing * 2) + UTIL:ButtonWidth("Reset") + UTIL:WindowScale(16)))
-	else
-		ImGui.SetNextItemWidth(DRAW.Scaling.Window.Width - ((_spacing * 2) + UTIL:WindowScale(16)))
-	end
+	ImGui.SetNextItemWidth(DRAW.Scaling.Window.Width - (_spacing + UTIL:ButtonWidth("Reset") + UTIL:WindowScale(32)))
 
 	-- add stacks
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "slider/text"))
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "element/title"))
 	ImGui.PushStyleColor(ImGuiCol.SliderGrab, DRAW:GetColorNew(DRAW.Runtime.Theme, "slider/grab"))
 	ImGui.PushStyleColor(ImGuiCol.SliderGrabActive, DRAW:GetColorNew(DRAW.Runtime.Theme, "slider/grab/active"))
 	ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColorNew(DRAW.Runtime.Theme, "slider/background"))
@@ -969,7 +928,7 @@ function DRAW:Slider(render, option, demand, value)
 	ImGui.PopStyleColor(6)
 
 	-- result
-	return _return, _trigger
+	return _return, _trigger, _spacing
 end
 
 
@@ -1143,9 +1102,11 @@ end
 
 
 
-
-
-
+--
+--
+--//////////////////// ADDITIONS ////////////////////
+--
+--
 
 --
 --// DRAW:Notice()
@@ -1157,24 +1118,23 @@ function DRAW:Notice(render, demand)
 	DRAW:Spacing(UTIL:WindowScale(6), 1)
 
 	-- add color stacks
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("White","Normal",demand))
 	ImGui.PushStyleColor(ImGuiCol.Button, DRAW:GetColor("Orange","Normal",demand))
 	ImGui.PushStyleColor(ImGuiCol.ButtonActive, DRAW:GetColor("Orange","Normal",demand))
 	ImGui.PushStyleColor(ImGuiCol.ButtonHovered, DRAW:GetColor("Orange","Light",demand))
 
 	-- add style stacks
-	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, UTIL:WindowScale(5))
+	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, UTIL:WindowScale(6))
 	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, 0, 0)
 
 	-- draw blind button
 	ImGui.PushID("DE_BT"..UTIL:ElementID("Notice"))
-	local _blind = ImGui.Button("", UTIL:WindowScale(6), UTIL:WindowScale(6))
+	local _blind = ImGui.Button("", UTIL:WindowScale(8), UTIL:WindowScale(8))
 	ImGui.PopID()
 
 	-- add tooltip
 	if ImGui.IsItemHovered()
 	then
-		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("White","Normal"))
+		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "element/notice"))
 		ImGui.BeginTooltip()
 		ImGui.SetTooltip(render.note)
 		ImGui.EndTooltip()
@@ -1183,18 +1143,31 @@ function DRAW:Notice(render, demand)
 
 	-- drop stacks
 	ImGui.PopStyleVar(2)
-	ImGui.PopStyleColor(4)
+	ImGui.PopStyleColor(3)
 end
 
 
 
+--
+--// DRAW:Description()
+--
+function DRAW:Description(render, space, state)
 
+	-- catch unset
+	local space = space or 0
+	local state = state or 0
 
+	-- top spacer
+	DRAW:Spacer(1,UTIL:WindowScale(4))
 
+	-- left spacing
+	DRAW:Spacing(space,1)
 
-
-
-
+	-- add stacks
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "element/description"))
+	ImGui.Text(UTIL:WordWrap(render.desc,space))
+	ImGui.PopStyleColor(1)
+end
 
 
 
@@ -1320,13 +1293,13 @@ function DRAW:Combobox(render, option, demand, names, length, value)
 	ImGui.PushStyleColor(ImGuiCol.ButtonHovered, DRAW:GetColorNew(DRAW.Runtime.Theme, "combobox/button/decoration"))
 
 	-- deco title
-	DRAW:FlexButton(UTIL:WindowScale(5), UTIL:WindowScale(20))
+	DRAW:FlexButton(UTIL:WindowScale(5), UTIL:WindowScale(19))
 
 	ImGui.PopStyleColor(3)
 	ImGui.PopStyleVar(1)
 	DRAW:Sameline()
 	DRAW:Spacing(UTIL:WindowScale(5),1)
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "combobox/title"))
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "element/title"))
 	ImGui.Text(render.name)
 	ImGui.PopStyleColor(1)
 
@@ -1339,7 +1312,7 @@ function DRAW:Combobox(render, option, demand, names, length, value)
 	-- comboboxes have a fixed width
 	ImGui.SetNextItemWidth(DRAW.Scaling.Window.Width - (_spacing * 2) - UTIL:WindowScale(2))
 
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "combobox/title"))
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "element/title"))
 
 	ImGui.PushStyleColor(ImGuiCol.PopupBg, DRAW:GetColorNew(DRAW.Runtime.Theme, "combobox/popup/background"))
 	ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColorNew(DRAW.Runtime.Theme, "combobox/background"))
@@ -1402,7 +1375,7 @@ end
 --
 --// DRAW:Quickshift()
 --
-function DRAW:Quickshift(render, option, demand, value)
+function DRAW:Quickshift(render, option, state, value)
 
 	-- default
 	local _spacing = UTIL:WindowScale(16)
@@ -1420,7 +1393,7 @@ function DRAW:Quickshift(render, option, demand, value)
 	if render.align
 	then
 		-- paint title
-		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "quickshift/title"))
+		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "element/title"))
 		ImGui.Text(render.name)
 		ImGui.PopStyleColor(1)
 		DRAW:Sameline()
@@ -1468,7 +1441,7 @@ function DRAW:Quickshift(render, option, demand, value)
 	then
 		DRAW:Sameline()
 		DRAW:Spacing(UTIL:WindowScale(10),1)
-		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "quickshift/title"))
+		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "element/title"))
 		ImGui.Text(render.name)
 		ImGui.PopStyleColor(1)
 	end
@@ -1477,21 +1450,21 @@ function DRAW:Quickshift(render, option, demand, value)
 	if render.desc
 	then
 		-- top spacer
-		DRAW:Spacer(1,UTIL:WindowScale(6))
+		DRAW:Spacer(1,UTIL:WindowScale(4))
 
 		-- left spacing
 		DRAW:Spacing(_spacing,1)
 
 		-- alignment
-		if not align
+		if not render.align
 		then
 			DRAW:Spacing(_spacing + UTIL:WindowScale(26),1)
 		end
 
 		-- add stacks
-		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "quickshift/description"))
+		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "element/description"))
 
-		if not align
+		if not render.align
 		then
 			ImGui.Text(UTIL:WordWrap(render.desc,_spacing + UTIL:WindowScale(26)))
 		else

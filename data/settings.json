@@ -8,7 +8,8 @@
 				},
 				{
 					"name":"Color Preset",
-					"path":"DeveloperExtras/Color/Preset"
+					"path":"DeveloperExtras/Color/Preset",
+					"desc":"choose your prefered color preset"
 				},
 				{
 					"separator":5
@@ -51,14 +52,17 @@
 					"name":"Overlay Position",
 					"path":"DeveloperExtras/Graph/Overlay/Position",
 					"note":"no idea",
-					"rate":"no idea"
+					"desc":"Places the Graph Overlay on a specific Position. Left to Right and top to bottom."
 				},
 				{
 					"spacing":10
 				},
 				{
 					"name":"Window Transparency",
-					"path":"DeveloperExtras/Graph/Overlay/Transparency"
+					"path":"DeveloperExtras/Graph/Overlay/Transparency",
+					"desc":"Places the Graph Overlay on a specific Position. Left to Right and top to bottom.",
+
+					"spacing":20
 				},
 				{
 					"spacing":10
@@ -87,8 +91,11 @@
 				{
 					"name":"Enable Debug",
 					"path":"DeveloperExtras/Debug/Enable",
-
+					"desc":"Enables Debug Mode, also allows resizeing the main window horizontally.",
 					"align":true
+				},
+				{
+					"spacing":20
 				}
 			]
 		}
