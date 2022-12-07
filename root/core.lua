@@ -1891,7 +1891,7 @@ function CORE:Pre()
 
 	CORE.Overlay = {
 		FT={
-			Length=64,
+			Length=128,
 			History={},
 			Current=0,
 			Previous=0,

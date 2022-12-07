@@ -3005,7 +3005,7 @@ function DRAW:FrameTimes(_history, _length, _transparency)
 	local _transparency = _transparency or {1,1,1} -- text, bar, background
 
 
-	DRAW:GraphNew(_history, _length, "%.2f", "FRAME TIMES", 2, 5, 50, false, false, 1, 1, 1)
+	DRAW:GraphNew(_history, "%.2f", "FRAME TIMES", 2, 5, 50, false, false, 1, 1, 1)
 end
 
 
@@ -3013,7 +3013,7 @@ end
 --
 --// DRAW.Graph()
 --
-function DRAW:GraphNew(_history, _length, _format, _title, _space, _width, _height, _scale, _show, _bar, _back, _text)
+function DRAW:GraphNew(_history, _format, _title, _space, _width, _height, _scale, _show, _bar, _back, _text)
 
 	-- child start
 	local childs = 100
@@ -3021,11 +3021,15 @@ function DRAW:GraphNew(_history, _length, _format, _title, _space, _width, _heig
 	-- graph table
 	local display = {}
 
+	-- define history depending on scaling
+	local entries = math.floor((DRAW.Scaling.Window.Width - 10) / (UTIL:ScreenScale(_width + _space))) - 2
+	local history = UTIL:TableEntriesLast(_history,entries)
+
 	-- fill empty spots
-	if UTIL:TableLength(_history) < _length
+	if UTIL:TableLength(history) < entries
 	then
-		local remaining = _length - UTIL:TableLength(_history)
-		for i=1,remaining do table.insert(display, 0) end
+		local remaining = entries - UTIL:TableLength(history)
+		for i=1,remaining do table.insert(history, 0) end
 	end
 
 	-- preset values
@@ -3035,7 +3039,7 @@ function DRAW:GraphNew(_history, _length, _format, _title, _space, _width, _heig
 	local minimum = 1000
 
 	-- fill values
-	for id,value in pairs(_history)
+	for id,value in pairs(history)
 	do
 		-- we round them for display
 		table.insert(display, math.floor(value))
@@ -3047,10 +3051,10 @@ function DRAW:GraphNew(_history, _length, _format, _title, _space, _width, _heig
 	end
 
 	-- calculate and format
-	if UTIL:TableLength(_history) > 0
+	if UTIL:TableLength(history) > 0
 	then
-		current = string.format(_format, _history[#_history])
-		average = string.format(_format, average / UTIL:TableLength(_history))
+		current = string.format(_format, history[#history])
+		average = string.format(_format, average / UTIL:TableLength(history))
 		maximum = string.format(_format, maximum)
 		minimum = string.format(_format, minimum)
 	else
@@ -3081,7 +3085,7 @@ function DRAW:GraphNew(_history, _length, _format, _title, _space, _width, _heig
 		DRAW:GraphPainter(childs, _width, _height, _scale, value, _show, _bar, _back, _text)
 		childs = childs + 1
 		DRAW:Sameline()
-		DRAW:Spacing(_space,1)
+		DRAW:Spacing(UTIL:ScreenScale(_space),1)
 	end
 
 
@@ -3223,7 +3227,7 @@ function DRAW:GraphPainter(_child, _width, _height, _scale, _value, _show, _bar,
 	DRAW.Runtime.Child = DRAW.Runtime.Child + 1
 
 	-- create frame
-	local blind = ImGui.BeginChildFrame(_child, UTIL:WindowScale(_width), UTIL:WindowScale(_height), ImGuiWindowFlags.NoScrollWithMouse)
+	local blind = ImGui.BeginChildFrame(_child, UTIL:ScreenScale(_width), UTIL:ScreenScale(_height), ImGuiWindowFlags.NoScrollWithMouse)
 
 	-- drop stacks
 	ImGui.PopStyleVar(2)
@@ -3236,7 +3240,7 @@ function DRAW:GraphPainter(_child, _width, _height, _scale, _value, _show, _bar,
 		ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColorNew())
 		ImGui.PushStyleColor(ImGuiCol.PlotHistogram, DRAW:GetColorNew(DRAW.Runtime.Theme, "graphbar/progessbar", _bar))
 
-		ImGui.ProgressBar(1, UTIL:WindowScale(_width), UTIL:WindowScale(bar), "")
+		ImGui.ProgressBar(1, UTIL:ScreenScale(_width), bar, "")
 		ImGui.PopStyleColor(2)
 
 		-- draw text if wanted

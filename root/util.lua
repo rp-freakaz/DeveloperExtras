@@ -276,9 +276,9 @@ end
 --
 --// UTIL:TableLength(<TABLE>)
 --
-function UTIL:TableLength(table)
+function UTIL:TableLength(input)
 	local count = 0
-	for _ in pairs(table)
+	for _ in pairs(input)
 	do
 		count = count + 1
 	end
@@ -288,9 +288,9 @@ end
 --
 --// UTIL:TableOption(<TABLE>)
 --
-function UTIL:TableOption(table)
+function UTIL:TableOption(input)
 	local count = 0
-	for i,v in pairs(table)
+	for i,v in pairs(input)
 	do
 		if v.path
 		then
@@ -299,6 +299,52 @@ function UTIL:TableOption(table)
 	end
 	return count
 end
+
+--
+--// UTIL:TableEntriesLast(<TABLE>,<INT>)
+--
+function UTIL:TableEntriesLast(input,num)
+	if UTIL:TableLength(input) > num
+	then
+		local result = {}
+		local startpoint = UTIL:TableLength(input) - num
+
+		for i,v in pairs(input)
+		do
+			if i >= startpoint
+			then
+				table.insert(result, v)
+			end
+		end
+		return result
+	end
+	return input
+end
+
+--
+--// UTIL:TableEntriesFirst(<TABLE>,<INT>)
+--
+function UTIL:TableEntriesFirst(input,num)
+	if UTIL:TableLength(input) > num
+	then
+		local result = {}
+		local endpoint = UTIL:TableLength(input) - num
+
+		for i,v in pairs(input)
+		do
+			if i <= endpoint
+			then
+				table.insert(result, v)
+			end
+		end
+		return result
+	end
+	return input
+end
+
+
+
+
 
 --
 --
