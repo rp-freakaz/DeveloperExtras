@@ -121,6 +121,12 @@ function DRAW:GetColorNew(theme, color, state)
 		if color == "element/description"			then return DRAW:GetGeneric("generic/grey/lighter") end
 		if color == "element/decoration"			then return DRAW:GetGeneric("generic/orange/normal") end
 
+		-- graph
+		if color == "graph/text/name"				then return DRAW:GetGeneric("generic/grey/lighter") end
+		if color == "graph/text/value"				then return DRAW:GetGeneric("generic/white/dark") end
+		if color == "graphbar/background"			then return DRAW:GetGeneric("generic/grey/darkest") end
+		if color == "graphbar/progessbar"			then return DRAW:GetGeneric("generic/orange/normal") end
+
 		-- slider
 		if color == "slider/minmax"				then return DRAW:GetGeneric("generic/grey/light") end
 		if color == "slider/text"				then return DRAW:GetGeneric("generic/white/normal") end
@@ -2632,9 +2638,637 @@ end
 
 
 
+--
+--
+--//////////////////// PERFORMANCE ////////////////////
+--
+--
+
+
+--
+--// DRAW.Graph()
+--
+function DRAW:Graph(_child, _table, _should, _length, _format, _color, _title, _space, _width, _height, _scale, _show, _trans_bar, _trans_barbg, _trans_text)
+
+	-- graph table
+	local _graph = {}
+
+	-- fill empty spots
+	if _length < _should
+	then
+		local _remain = _should - _length
+
+		for i=1,_remain
+		do
+			table.insert(_graph, 0)
+		end
+	end
+
+	-- preset values
+	local _avg = 0
+	local _max = 0
+	local _min = 1000
+
+	-- fill values
+	for _id,_value in pairs(_table)
+	do
+		-- we round them for display
+		table.insert(_graph, math.floor(_value))
+
+		-- collect avg
+		if _value < 1000
+		then
+			_avg = _avg + _value
+		end
+
+		-- get max
+		if _value < 1000
+		then
+			if _value > _max then _max = _value end
+		end
+
+		-- get min
+		if _value < 1000
+		then
+			if _value < _min then _min = _value end
+		end
+	end
+
+	-- calculate and format
+	if _length > 0
+	then
+		_cur = string.format(_format, _table[#_table])
+		_avg = string.format(_format, _avg / _length)
+		_max = string.format(_format, _max)
+		_min = string.format(_format, _min)
+	else
+		_cur = "N/A"
+		_avg = "N/A"
+		_max = "N/A"
+		_min = "N/A"
+	end
+
+
+	-- add stacks
+	if _trans_bar >= 0 and _trans_bar <= 10
+	then
+		_trans_bar = _trans_bar / 10
+	else
+		_trans_bar = 0.75
+	end
+
+	if _trans_barbg >= 0 and _trans_barbg <= 10
+	then
+		_trans_barbg = _trans_barbg / 10
+	else
+		_trans_barbg = 0.35
+	end
+
+	if _trans_text >= 0 and _trans_text <= 10
+	then
+		_trans_text = _trans_text / 10
+	else
+		_trans_text = 0.75
+	end
 
 
 
+
+
+	-- top spacing
+	DRAW:Spacing(5,3)
+
+	-- left spacing
+	DRAW:Spacing(5,1)
+
+	-- print title
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "element/title", _trans_text))
+	ImGui.Text(_title)
+	ImGui.PopStyleColor(1)
+
+
+
+
+
+	-- left spacing
+	DRAW:Spacing(5,1)
+
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "graph/text/name", _trans_text))
+	ImGui.Text("CUR:")
+	ImGui.PopStyleColor(1)
+
+	DRAW:Sameline()
+
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "graph/text/value", _trans_text))
+	ImGui.Text(tostring(_cur))
+	ImGui.PopStyleColor(1)
+
+	DRAW:Sameline()
+
+
+	-- left spacing
+	DRAW:Spacing(10,1)
+
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "graph/text/name", _trans_text))
+	ImGui.Text("AVG:")
+	ImGui.PopStyleColor(1)
+
+	DRAW:Sameline()
+
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "graph/text/value", _trans_text))
+	ImGui.Text(tostring(_avg))
+	ImGui.PopStyleColor(1)
+
+	DRAW:Sameline()
+
+	-- left spacing
+	DRAW:Spacing(10,1)
+
+
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "graph/text/name", _trans_text))
+	ImGui.Text("MIN:")
+	ImGui.PopStyleColor(1)
+
+	DRAW:Sameline()
+
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "graph/text/value", _trans_text))
+	ImGui.Text(tostring(_min))
+	ImGui.PopStyleColor(1)
+
+	DRAW:Sameline()
+
+	-- left spacing
+	DRAW:Spacing(10,1)
+	DRAW:Sameline()
+
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "graph/text/name", _trans_text))
+	ImGui.Text("MAX:")
+	ImGui.PopStyleColor(1)
+
+	DRAW:Sameline()
+
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "graph/text/value", _trans_text))
+	ImGui.Text(tostring(_max))
+	ImGui.PopStyleColor(1)
+
+
+
+
+	DRAW:Spacer(5,1)
+	--DRAW.Sameline()
+
+	-- draw values
+	for _,_value in pairs(_graph)
+	do
+		-- push on line
+		DRAW:Sameline()
+
+		-- draw graph bars
+		DRAW:GraphBar(_child, _width, _height, _scale, _value, _show, _trans_bar, _trans_barbg, _trans_text)
+
+		-- increase child
+		_child = _child + 1
+
+		-- push on line
+		DRAW:Sameline()
+
+		-- some spacing
+		DRAW:Spacer(_space,1)
+	end
+
+	DRAW:Sameline()
+	DRAW:Spacer(5,1)
+
+
+
+	DRAW:Spacer(5,3)
+	--DRAW.Spacing(10,10)
+end
+
+
+
+
+--
+--// DRAW.GraphBar() --- child for painting bars
+--
+function DRAW:GraphBar(_child, _width, _height, _scale, _value, _show, _trans_bar, _trans_barbg, _trans_text)
+
+	-- defaults
+	local _bar = math.floor(_value)
+	local _txt = tostring(_value)
+
+	-- scale if not false
+	if _scale ~= false
+	then
+		_bar = math.floor(_value / _scale)
+	end
+
+	-- calculate remaining
+	local _top = _height - _bar
+
+	-- exception if zero
+	if _bar == 0
+	then
+		_top = _height - 1
+		_bar = 1
+		_txt = "N/A"
+	end
+
+
+	--ImGui.PushStyleColor(ImGuiCol.FrameBg, GetColors("grey_darker", "disabled"))
+
+	ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColorNew(DRAW.Runtime.Theme, "graphbar/background", _trans_barbg))
+	ImGui.PushStyleVar(ImGuiStyleVar.ScrollbarSize, 0)
+	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, 0, 0)
+
+	if _show ~= false
+	then
+		_height = _height + 22
+	end
+
+	-- create frame
+	local _trigger = ImGui.BeginChildFrame(_child, _width, _height, ImGuiWindowFlags.NoScrollWithMouse)
+
+	-- drop stacks
+	ImGui.PopStyleVar(2)
+	ImGui.PopStyleColor(1)
+
+	if _trigger
+	then
+		DRAW:Spacer(1,_top)
+
+		ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColorNew())
+		ImGui.PushStyleColor(ImGuiCol.PlotHistogram, DRAW:GetColorNew(DRAW.Runtime.Theme, "graphbar/progessbar", _trans_bar))
+
+		ImGui.ProgressBar(1, _width, _bar, "")
+		ImGui.PopStyleColor(2)
+
+		-- draw text if wanted
+		if _show ~= false
+		then
+			DRAW:Spacer(1,1)
+
+			DRAW:Spacer(2,1)
+			DRAW:Sameline()
+
+			if string.len(_txt) < 3
+			then
+				DRAW:Spacer(4,1)
+				DRAW:Sameline()
+			end
+
+			if string.len(_txt) < 2
+			then
+				DRAW:Spacer(3,1)
+				DRAW:Sameline()
+			end
+
+			ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "graph/text/value", _trans_text))
+			ImGui.Text(_txt)
+			ImGui.PopStyleColor(1)
+
+			DRAW:Spacer(1,3)
+		end
+
+		ImGui.EndChildFrame()
+	end
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--
+--// DRAW.GraphFT() --- wrapper for DRAW.Graph
+--
+function DRAW:GraphWrapperFT(_table, _should, _length, _bartrans, _barbgtrans, _texttrans)
+
+	--return DRAW.Graph(100, _table, _should, _length, "%.2f", "orange_normal", "FRAME TIMES", 1, 4, 50, false, false)
+
+	-- catch non set
+	local _bartrans =_bartrans or 11
+	local _barbgtrans = _barbgtrans or 11
+	local _texttrans = _texttrans or 11
+
+	DRAW:Graph(100, _table, _should, _length, "%.2f", "orange_normal", "FRAME TIMES", 2, 5, 50, false, false, _bartrans, _barbgtrans, _texttrans)
+end
+
+--
+--// DRAW.GraphFPS() --- wrapper for DRAW.Graph
+--
+function DRAW:GraphWrapperFPS(_table, _should, _length, _bartrans, _barbgtrans, _texttrans)
+
+	-- catch non set
+	local _bartrans =_bartrans or 11
+	local _barbgtrans = _barbgtrans or 11
+	local _texttrans = _texttrans or 11
+
+	DRAW:Graph(200, _table, _should, _length, "%.0f", "grey_normal", "FRAMES PER SECOND", 4, 26, 100, 1.5, true, _bartrans, _barbgtrans, _texttrans)
+
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--
+--// DRAW.FrameTimes(<TABLE>,<INT>,<TABLE>) -- wrapper for DRAW.Graph
+--
+-- <TABLE>	history graph table
+-- <INT>	length it should have
+-- <TABLE>	transparency settings
+--
+function DRAW:FrameTimes(_history, _length, _transparency)
+
+	-- catch non set
+	local _transparency = _transparency or {1,1,1} -- text, bar, background
+
+
+	DRAW:GraphNew(_history, _length, "%.2f", "FRAME TIMES", 2, 5, 50, false, false, 1, 1, 1)
+end
+
+
+
+--
+--// DRAW.Graph()
+--
+function DRAW:GraphNew(_history, _length, _format, _title, _space, _width, _height, _scale, _show, _bar, _back, _text)
+
+	-- child start
+	local childs = 100
+
+	-- graph table
+	local display = {}
+
+	-- fill empty spots
+	if UTIL:TableLength(_history) < _length
+	then
+		local remaining = _length - UTIL:TableLength(_history)
+		for i=1,remaining do table.insert(display, 0) end
+	end
+
+	-- preset values
+	local current = 0
+	local average = 0
+	local maximum = 0
+	local minimum = 1000
+
+	-- fill values
+	for id,value in pairs(_history)
+	do
+		-- we round them for display
+		table.insert(display, math.floor(value))
+
+		-- collect basics / avoid spikes
+		if value < 1000 then average = average + value end
+		if value < 1000 and value > maximum then maximum = value end
+		if value < 1000 and value < minimum then minimum = value end
+	end
+
+	-- calculate and format
+	if UTIL:TableLength(_history) > 0
+	then
+		current = string.format(_format, _history[#_history])
+		average = string.format(_format, average / UTIL:TableLength(_history))
+		maximum = string.format(_format, maximum)
+		minimum = string.format(_format, minimum)
+	else
+		current = "N/A"
+		average = "N/A"
+		maximum = "N/A"
+		minimum = "N/A"
+	end
+
+	-- check transparency
+	local transparency = {bar=0.75,back=0.35,text=0.75}
+	if _bar >= 0 and _bar <= 10 then transparency.bar = _bar / 10 end
+	if _back >= 0 and _back <= 10 then transparency.back = _back / 10 end
+	if _text >= 0 and _text <= 10 then transparency.text = _text / 10 end
+
+	-- start painting
+	DRAW:Spacer(1,UTIL:WindowScale(3))
+	DRAW:GraphHeader(_title, current, average, minimum, maximum, _text)
+
+	-- left spacing
+	DRAW:Spacer(UTIL:WindowScale(5),1)
+	DRAW:Sameline()
+
+	-- draw values
+	for _,value in pairs(display)
+	do
+		--DRAW:Sameline()
+		DRAW:GraphPainter(childs, _width, _height, _scale, value, _show, _bar, _back, _text)
+		childs = childs + 1
+		DRAW:Sameline()
+		DRAW:Spacing(_space,1)
+	end
+
+
+	--DRAW:Sameline()
+	--DRAW:Spacer(5,1)
+
+
+
+	--DRAW:Spacer(5,3)
+	--DRAW.Spacing(10,10)
+end
+
+
+
+--
+--// DRAW.GraphHeader(<STRING>,<FLOAT>,<FLOAT>,<FLOAT>,<FLOAT>,<FLOAT>)
+--
+function DRAW:GraphHeader(_title, _current, _average, _minimum, _maximum, _text)
+
+	-- available space
+	local available = DRAW.Scaling.Window.Width - UTIL:WindowScale(10) - UTIL:TextWidth(_title)
+
+	-- left spacing
+	DRAW:Spacing(UTIL:WindowScale(5),1)
+
+	-- print title
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "element/title", _text))
+	ImGui.Text(_title)
+	ImGui.PopStyleColor(1)
+
+	-- always
+	DRAW:Sameline()
+
+	-- calculate
+	local current = (available / 4) - UTIL:TextWidth("CUR:") - UTIL:TextWidth(tostring(_current))
+
+	-- between spacing
+	DRAW:Spacing(current,1)
+
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "graph/text/name", _text))
+	ImGui.Text("CUR:")
+	ImGui.PopStyleColor(1)
+	DRAW:Sameline()
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "graph/text/value", _text))
+	ImGui.Text(tostring(_current))
+	ImGui.PopStyleColor(1)
+
+	-- always
+	DRAW:Sameline()
+
+	-- calculate
+	local average = (available / 4) - UTIL:TextWidth("AVG:") - UTIL:TextWidth(tostring(_average))
+
+	-- between spacing
+	DRAW:Spacing(average,1)
+
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "graph/text/name", _text))
+	ImGui.Text("AVG:")
+	ImGui.PopStyleColor(1)
+	DRAW:Sameline()
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "graph/text/value", _text))
+	ImGui.Text(tostring(_average))
+	ImGui.PopStyleColor(1)
+
+	-- always
+	DRAW:Sameline()
+
+	-- calculate
+	local minimum = (available / 4) - UTIL:TextWidth("MIN:") - UTIL:TextWidth(tostring(_minimum))
+
+	-- between spacing
+	DRAW:Spacing(minimum,1)
+
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "graph/text/name", _text))
+	ImGui.Text("MIN:")
+	ImGui.PopStyleColor(1)
+	DRAW:Sameline()
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "graph/text/value", _text))
+	ImGui.Text(tostring(_minimum))
+	ImGui.PopStyleColor(1)
+
+	-- always
+	DRAW:Sameline()
+
+	-- calculate
+	local maximum = (available / 4) - UTIL:TextWidth("MAX:") - UTIL:TextWidth(tostring(_maximum))
+
+	-- between spacing
+	DRAW:Spacing(maximum,1)
+
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "graph/text/name", _text))
+	ImGui.Text("MAX:")
+	ImGui.PopStyleColor(1)
+	DRAW:Sameline()
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "graph/text/value", _text))
+	ImGui.Text(tostring(_maximum))
+	ImGui.PopStyleColor(1)
+end
+
+
+
+--
+--// DRAW.GraphPainter() -- child for painting bars
+--
+function DRAW:GraphPainter(_child, _width, _height, _scale, _value, _show, _bar, _back, _text)
+
+	-- defaults
+	local bar = math.floor(_value)
+	local txt = tostring(_value)
+
+	-- scale if not false
+	if _scale ~= false
+	then
+		bar = math.floor(_value / _scale)
+	end
+
+	-- calculate remaining
+	local top = _height - bar
+
+	-- exception if zero
+	if bar == 0
+	then
+		top = _height - 1
+		bar = 1
+		txt = "N/A"
+	end
+
+	-- start painting
+	ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColorNew(DRAW.Runtime.Theme, "graphbar/background", _back))
+	ImGui.PushStyleVar(ImGuiStyleVar.ScrollbarSize, 0)
+	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, 0, 0)
+
+	if _show ~= false
+	then
+		_height = _height + 22
+	end
+
+	-- increase child count
+	DRAW.Runtime.Child = DRAW.Runtime.Child + 1
+
+	-- create frame
+	local blind = ImGui.BeginChildFrame(_child, UTIL:WindowScale(_width), UTIL:WindowScale(_height), ImGuiWindowFlags.NoScrollWithMouse)
+
+	-- drop stacks
+	ImGui.PopStyleVar(2)
+	ImGui.PopStyleColor(1)
+
+	if blind
+	then
+		DRAW:Spacer(1,top)
+
+		ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColorNew())
+		ImGui.PushStyleColor(ImGuiCol.PlotHistogram, DRAW:GetColorNew(DRAW.Runtime.Theme, "graphbar/progessbar", _bar))
+
+		ImGui.ProgressBar(1, UTIL:WindowScale(_width), UTIL:WindowScale(bar), "")
+		ImGui.PopStyleColor(2)
+
+		-- draw text if wanted
+		if _show ~= false
+		then
+			DRAW:Spacer(1,1)
+
+			DRAW:Spacer(2,1)
+			DRAW:Sameline()
+
+			if string.len(txt) < 3
+			then
+				DRAW:Spacer(4,1)
+				DRAW:Sameline()
+			end
+
+			if string.len(txt) < 2
+			then
+				DRAW:Spacer(3,1)
+				DRAW:Sameline()
+			end
+
+			ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "graph/text/value", _text))
+			ImGui.Text(txt)
+			ImGui.PopStyleColor(1)
+
+			DRAW:Spacer(1,3)
+		end
+
+		ImGui.EndChildFrame()
+	end
+end
 
 
 

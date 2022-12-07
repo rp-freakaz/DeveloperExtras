@@ -42,10 +42,8 @@ end)
 registerForEvent("onOverlayOpen", function()
 	if devEx.isReady
 	then
-
-
 		-- reset always
-		--devEx.ResetOverlay()
+		devEx.ResetGraph()
 
 		-- paint interface
 		devEx.isPaint = true
@@ -55,6 +53,8 @@ end)
 registerForEvent("onOverlayClose", function()
 	if devEx.isReady
 	then
+
+
 		devEx.isPaint = false
 	end
 end)

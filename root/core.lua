@@ -132,36 +132,40 @@ function CORE:Cronjobs()
 		-- update frame
 		CORE.Timings.Frame = _timer
 
-		-- update frametime
-		CORE.Overlay.FT.Current = tonumber(string.format("%.2f", ImGui.GetTime() * 1000))
-
-		-- update previous if zero
-		if CORE.Overlay.FT.Previous == 0 then CORE.Overlay.FT.Previous = CORE.Overlay.FT.Current end
-
-		-- calculate frametime
-		if CORE.Overlay.FT.Current > CORE.Overlay.FT.Previous
+		-- frame times
+		if CORE:GetInternal("DeveloperExtras/Graph/Enable")
 		then
 			-- update frametime
-			CORE.Overlay.FT.Difference = CORE.Overlay.FT.Current - CORE.Overlay.FT.Previous
+			CORE.Overlay.FT.Current = tonumber(string.format("%.2f", ImGui.GetTime() * 1000))
 
-			-- update previous
-			CORE.Overlay.FT.Previous = CORE.Overlay.FT.Current
+			-- update previous if zero
+			if CORE.Overlay.FT.Previous == 0 then CORE.Overlay.FT.Previous = CORE.Overlay.FT.Current end
 
-			-- update graph
-			if CORE:GetInternal("DeveloperExtras/Graph/Enable")
+			-- calculate frametime
+			if CORE.Overlay.FT.Current > CORE.Overlay.FT.Previous
 			then
-				-- update table
-				if CORE.Overlay.FT.Difference > 0
-				then
-					table.insert(CORE.Overlay.FT.History, CORE.Overlay.FT.Difference)
-				else
-					table.insert(CORE.Overlay.FT.History, 0)
-				end
+				-- update frametime
+				CORE.Overlay.FT.Difference = CORE.Overlay.FT.Current - CORE.Overlay.FT.Previous
 
-				-- cut to long table
-				if UTIL:TableLength(CORE.Overlay.FT.History) > CORE.Overlay.FT.Length
+				-- update previous
+				CORE.Overlay.FT.Previous = CORE.Overlay.FT.Current
+
+				-- update graph
+				if CORE:GetInternal("DeveloperExtras/Graph/Enable")
 				then
-					table.remove(CORE.Overlay.FT.History,1)
+					-- update table
+					if CORE.Overlay.FT.Difference > 0
+					then
+						table.insert(CORE.Overlay.FT.History, CORE.Overlay.FT.Difference)
+					else
+						table.insert(CORE.Overlay.FT.History, 0)
+					end
+
+					-- cut to long table
+					if UTIL:TableLength(CORE.Overlay.FT.History) > CORE.Overlay.FT.Length
+					then
+						table.remove(CORE.Overlay.FT.History,1)
+					end
 				end
 			end
 		end
@@ -179,10 +183,7 @@ function CORE:Cronjobs()
 		CORE.Overlay.FPS.Current = ImGui.GetFrameCount()
 
 		-- update previous if zero
-		if CORE.Overlay.FPS.Previous == 0
-		then
-			CORE.Overlay.FPS.Current = CORE.Overlay.FPS.Current
-		end
+		if CORE.Overlay.FPS.Previous == 0 then CORE.Overlay.FPS.Previous = CORE.Overlay.FPS.Current end
 
 		-- calculate frames per second
 		if CORE.Overlay.FPS.Current > CORE.Overlay.FPS.Previous
@@ -253,8 +254,8 @@ function CORE:Interface()
 					local bottom = UTIL:WindowScale(116)
 
 					-- add more if graph is enabled
-					if CORE.Extras["DeveloperExtras/Graph/Enable"]
-					and not CORE.Extras["DeveloperExtras/Graph/Overlay/Enable"]
+					if CORE:GetInternal("DeveloperExtras/Graph/Enable")
+					and not CORE:GetInternal("DeveloperExtras/Graph/Overlay/Enable")
 					then
 						bottom = UTIL:WindowScale(371)
 					end
@@ -358,9 +359,10 @@ function CORE:Interface()
 		then
 
 
-			--DRAW.GraphWrapperFT(SELF.GetRecord("graph/ft/history"), SELF.GetRecord("graph/ft/length"), UTIL.TableLength(SELF.GetRecord("graph/ft/history")))
-			--DRAW.GraphWrapperFPS(SELF.GetRecord("graph/fps/history"), SELF.GetRecord("graph/fps/length"), UTIL.TableLength(SELF.GetRecord("graph/fps/history")))
+			--DRAW:GraphWrapperFT(CORE.Overlay.FT.History, CORE.Overlay.FT.Length, UTIL:TableLength(CORE.Overlay.FT.History))
+			--DRAW:GraphWrapperFPS(CORE.Overlay.FPS.History, CORE.Overlay.FPS.Length, UTIL:TableLength(CORE.Overlay.FPS.History))
 
+			DRAW:FrameTimes(CORE.Overlay.FT.History, CORE.Overlay.FT.Length)
 
 
 			-- tabbar thickness, after performance graph
@@ -950,6 +952,39 @@ function CORE:RenderQuickshift(pool, option, render, demand)
 		CORE:SetToggle(render.path, option.type, UTIL:IntToBool(value))
 	end
 end
+
+
+
+
+
+
+
+
+
+
+
+function CORE:ResetGraph()
+
+	-- debug id
+	local __func__ = "CORE:ResetGraph"
+
+	if CORE:GetInternal("DeveloperExtras/Graph/Enable")
+	and not CORE:GetInternal("DeveloperExtras/Graph/Overlay/Enable")
+	and not CORE:GetInternal("DeveloperExtras/Graph/BackgroundUpdate")
+	then
+		CORE.Overlay.FT.Previous = 0
+		CORE.Overlay.FPS.Previous = 0
+		CORE.Overlay.FT.History = {}
+		CORE.Overlay.FPS.History = {}
+
+		-- debug msg
+		CORE:DebugConsole(__func__,"Executed!")
+	end
+end
+
+
+
+
 
 
 
@@ -1852,7 +1887,7 @@ function CORE:Pre()
 	CORE.Version = {String="3.0.0-161",Numeric=300161,Cet={String=nil,Numeric=0},Game={String=nil,Numeric=0}}
 	CORE.Scaling = {Enable=false,Screen={Width=1920,Height=1080,Factor=1},Window={Width=456,Height=600,Factor=1}}
 	CORE.Timings = {Frame=0,Second=0,Millisecond=0}
-	CORE.Runtime = {Theme=0,Themes={"Default","White Satin"}}
+	CORE.Runtime = {Child=0,Theme=0,Themes={"Default","White Satin"}}
 
 	CORE.Overlay = {
 		FT={
