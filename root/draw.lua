@@ -3018,18 +3018,23 @@ function DRAW:GraphNew(_history, _format, _title, _space, _width, _height, _scal
 	-- child start
 	local childs = 100
 
-	-- graph table
-	local display = {}
+	-- display table
+	local history = {}
+
+	-- calculate number of bars
+	local entries = math.floor((DRAW.Scaling.Window.Width - 10) / (UTIL:ScreenScale(_width + _space))) - 1
+
+	-- caluclate remaining space for centering
+	local spacing = math.floor((DRAW.Scaling.Window.Width - 10) - (UTIL:ScreenScale((_width + _space) * entries) - UTIL:ScreenScale(_space))) / 2
 
 	-- define history depending on scaling
-	local entries = math.floor((DRAW.Scaling.Window.Width - 10) / (UTIL:ScreenScale(_width + _space))) - 2
-	local history = UTIL:TableEntriesLast(_history,entries)
+	local limiter = UTIL:TableEntriesLast(_history,entries)
 
 	-- fill empty spots
-	if UTIL:TableLength(history) < entries
+	if UTIL:TableLength(limiter) < entries
 	then
-		local remaining = entries - UTIL:TableLength(history)
-		for i=1,remaining do table.insert(history, 0) end
+		local remaining = entries - UTIL:TableLength(limiter)
+		for i=0,remaining do table.insert(history, 0) end
 	end
 
 	-- preset values
@@ -3039,10 +3044,10 @@ function DRAW:GraphNew(_history, _format, _title, _space, _width, _height, _scal
 	local minimum = 1000
 
 	-- fill values
-	for id,value in pairs(history)
+	for id,value in pairs(limiter)
 	do
 		-- we round them for display
-		table.insert(display, math.floor(value))
+		table.insert(history, math.floor(value))
 
 		-- collect basics / avoid spikes
 		if value < 1000 then average = average + value end
@@ -3075,11 +3080,11 @@ function DRAW:GraphNew(_history, _format, _title, _space, _width, _height, _scal
 	DRAW:GraphHeader(_title, current, average, minimum, maximum, _text)
 
 	-- left spacing
-	DRAW:Spacer(UTIL:WindowScale(5),1)
-	DRAW:Sameline()
+	DRAW:Spacing(5 + spacing,1)
+	--DRAW:Sameline()
 
 	-- draw values
-	for _,value in pairs(display)
+	for _,value in pairs(history)
 	do
 		--DRAW:Sameline()
 		DRAW:GraphPainter(childs, _width, _height, _scale, value, _show, _bar, _back, _text)
@@ -3184,8 +3189,6 @@ function DRAW:GraphHeader(_title, _current, _average, _minimum, _maximum, _text)
 	ImGui.Text(tostring(_maximum))
 	ImGui.PopStyleColor(1)
 end
-
-
 
 --
 --// DRAW.GraphPainter() -- child for painting bars
