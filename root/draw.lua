@@ -1598,7 +1598,7 @@ function DRAW:PageDebug()
 		"Window Border (scaled)",
 		tostring(DRAW.Scaling.Window.Border).." ("..tostring(UTIL:WindowBorder(DRAW.Scaling.Window.Border))..")",
 		"Remaining Pixels (scaled)",
-		tostring(DRAW.Scaling.Window.Width - (DRAW.Scaling.Window.Border * 2)).." ("..tostring(DRAW.Scaling.Window.Width - UTIL:WindowBorder((DRAW.Scaling.Window.Border * 2)))..")"
+		tostring(DRAW.Scaling.Window.Remain).." ("..tostring(UTIL:WindowBorder(DRAW.Scaling.Window.Remain))..")"
 	}
 
 	DRAW:DebugTable(debug,"Debug Scaling #4")
@@ -1608,6 +1608,31 @@ function DRAW:PageDebug()
 		tostring(ImGui.GetFontSize())
 	}
 	DRAW:DebugTable(debug,"Debug Scaling #5")
+
+
+
+	debug = {
+		"FrameTimes",
+		""
+	}
+	DRAW:DebugTable(debug,"Debug FrameTimes #1")
+
+	local temp1 = 7
+	local temp2 = math.floor(DRAW.Scaling.Window.Remain / UTIL:ScreenScale(temp1))
+
+	debug = {
+		"Barsize",
+		tostring(temp1),
+
+		"Calculated Number of Bars",
+		tostring(temp2),
+		"Combined Size",
+		tostring(math.floor(UTIL:ScreenScale((temp1) * temp2))),
+		"Spacing left for centering",
+		tostring(math.floor(((DRAW.Scaling.Window.Remain + 2) - (UTIL:ScreenScale((temp1) * temp2))) / 2))
+	}
+	DRAW:DebugTable(debug,"Debug FrameTimes #1")
+
 
 
 
@@ -3101,10 +3126,10 @@ function DRAW:GraphNew(_history, _format, _title, _space, _width, _height, _scal
 	local history = {}
 
 	-- calculate number of bars
-	local entries = math.floor((DRAW.Scaling.Window.Width - 10 - _space) / UTIL:ScreenScale(_width + _space))
+	local entries = math.floor(DRAW.Scaling.Window.Remain / UTIL:ScreenScale(_width + _space))
 
 	-- caluclate remaining space for centering
-	local spacing = math.floor(((DRAW.Scaling.Window.Width - 2) - (UTIL:ScreenScale((_width + _space) * entries))) / 2)
+	local spacing = math.floor((((DRAW.Scaling.Window.Remain + _space) - (UTIL:ScreenScale((_width + _space) * entries))) / 2) + UTIL:ScreenScale(DRAW.Scaling.Window.Border))
 
 	-- define history depending on scaling
 	local limiter = UTIL:TableEntriesLast(_history,entries)
@@ -3113,7 +3138,7 @@ function DRAW:GraphNew(_history, _format, _title, _space, _width, _height, _scal
 	if UTIL:TableLength(limiter) < entries
 	then
 		local remaining = entries - UTIL:TableLength(limiter)
-		for i=0,remaining do table.insert(history, 0) end
+		for i=1,remaining do table.insert(history, 0) end
 	end
 
 	-- preset values
@@ -3159,7 +3184,7 @@ function DRAW:GraphNew(_history, _format, _title, _space, _width, _height, _scal
 	DRAW:GraphHeader(_title, current, average, minimum, maximum, _text)
 
 	-- left spacing
-	DRAW:Spacing(spacing,1)
+	DRAW:Spacing(UTIL:ScreenScale(spacing),1)
 	--DRAW:Sameline()
 
 	-- draw values

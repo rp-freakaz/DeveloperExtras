@@ -319,16 +319,8 @@ end
 function UTIL:TableEntriesLast(input,num)
 	if UTIL:TableLength(input) > num
 	then
-		local result = {}
-		local startpoint = UTIL:TableLength(input) - num
+		local result = {table.unpack(input,#input-num+1)}
 
-		for i,v in pairs(input)
-		do
-			if i >= startpoint
-			then
-				table.insert(result, v)
-			end
-		end
 		return result
 	end
 	return input

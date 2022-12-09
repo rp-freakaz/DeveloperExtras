@@ -1788,10 +1788,10 @@ function CORE:UpdateWindow()
 		then
 			-- update window factor
 			CORE.Scaling.Window.Factor = UTIL:ShortenFloat(CORE.Scaling.Window.Width / (456 * CORE.Scaling.Screen.Factor))
-
-			-- update remaining space
-			CORE.Scaling.Window.Remain = CORE.Scaling.Window.Width - UTIL:WindowBorder(CORE.Scaling.Window.Border)
 		end
+
+		-- update remaining space
+		CORE.Scaling.Window.Remain = CORE.Scaling.Window.Width - (CORE.Scaling.Window.Border * 2)
 
 		-- distribute to all
 		DRAW.Scaling = CORE.Scaling
@@ -1902,13 +1902,13 @@ function CORE:Pre()
 	CORE.Project = "Developer Extras"
 	CORE.Authors = "FreakaZ"
 	CORE.Version = {String="3.0.0-161",Numeric=300161,Cet={String=nil,Numeric=0},Game={String=nil,Numeric=0}}
-	CORE.Scaling = {Enable=false,Screen={Width=1920,Height=1080,Factor=1},Window={Width=456,Height=600,Factor=1,Remain=0,Border=2}}
+	CORE.Scaling = {Enable=false,Screen={Width=0,Height=0,Factor=1},Window={Width=456,Height=600,Factor=1,Remain=0,Border=2}}
 	CORE.Timings = {Frame=0,Second=0,Millisecond=0}
 	CORE.Runtime = {Child=0,Theme=0,Themes={"Default","White Satin"}}
 
 	CORE.Overlay = {
 		FT={
-			Length=64,
+			Length=256,
 			History={},
 			Current=0,
 			Previous=0,
