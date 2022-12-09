@@ -1885,13 +1885,13 @@ function CORE:Pre()
 	CORE.Project = "Developer Extras"
 	CORE.Authors = "FreakaZ"
 	CORE.Version = {String="3.0.0-161",Numeric=300161,Cet={String=nil,Numeric=0},Game={String=nil,Numeric=0}}
-	CORE.Scaling = {Enable=false,Screen={Width=1920,Height=1080,Factor=1},Window={Width=456,Height=600,Factor=1}}
+	CORE.Scaling = {Enable=false,Screen={Width=1920,Height=1080,Factor=1},Window={Width=456,Height=600,Factor=1,Border=2}}
 	CORE.Timings = {Frame=0,Second=0,Millisecond=0}
 	CORE.Runtime = {Child=0,Theme=0,Themes={"Default","White Satin"}}
 
 	CORE.Overlay = {
 		FT={
-			Length=128,
+			Length=64,
 			History={},
 			Current=0,
 			Previous=0,

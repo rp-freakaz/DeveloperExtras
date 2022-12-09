@@ -98,7 +98,7 @@ function DRAW:GetColorNew(theme, color, state)
 	then
 		-- window
 		if color == "window/main/text"				then return DRAW:GetGeneric("generic/white/light") end
-		if color == "window/main/border"			then return ImGui.GetColorU32(0.2, 0.2, 0.23, 0.5) end
+		if color == "window/main/border"			then return ImGui.GetColorU32(0.2, 0.2, 0.23, 0.3) end
 		if color == "window/main/background"			then return DRAW:GetGeneric("generic/black/dark") end
 		if color == "window/main/title/background"		then return DRAW:GetGeneric("generic/black/dark") end
 		if color == "window/main/title/background/active"	then return DRAW:GetGeneric("generic/black/dark") end
@@ -157,6 +157,10 @@ function DRAW:GetColorNew(theme, color, state)
 		if color == "combobox/header"				then return DRAW:GetGeneric("generic/grey/normal") end
 		if color == "combobox/header/active"			then return DRAW:GetGeneric("generic/orange/light") end
 		if color == "combobox/header/hovered"			then return DRAW:GetGeneric("generic/orange/normal") end
+
+		-- debug
+		if color == "debug/table/background"			then return DRAW:GetGeneric("generic/grey/darker") end
+
 
 		-- fallback
 		return DRAW:GetGeneric("fallback")
@@ -376,9 +380,12 @@ function DRAW:WindowStart()
 	ImGui.PushStyleVar(ImGuiStyleVar.ScrollbarRounding, 0)
 	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, 0, 0)
 	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, 0)
+	ImGui.PushStyleVar(ImGuiStyleVar.FrameBorderSize, 0)
 	ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, 0, 0)
 	ImGui.PushStyleVar(ImGuiStyleVar.ItemInnerSpacing, UTIL:WindowScale(2), 0)
-	ImGui.PushStyleVar(ImGuiStyleVar.GrabRounding, UTIL:WindowScale(2))
+	ImGui.PushStyleVar(ImGuiStyleVar.GrabRounding, UTIL:ScreenScale(2))
+	ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, 0, 0)
+	ImGui.PushStyleVar(ImGuiStyleVar.ChildBorderSize, 0)
 
 	--
 	-- window decoration
@@ -399,7 +406,8 @@ function DRAW:WindowStart()
 	ImGui.PushStyleColor(ImGuiCol.ButtonHovered, DRAW:GetColorNew())
 
 	-- define styles
-	ImGui.PushStyleVar(ImGuiStyleVar.WindowRounding, UTIL:WindowScale(4))
+	ImGui.PushStyleVar(ImGuiStyleVar.WindowBorderSize, UTIL:WindowBorder(DRAW.Scaling.Window.Border))
+	ImGui.PushStyleVar(ImGuiStyleVar.WindowRounding, UTIL:ScreenScale(6))
 	ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, 0, 0)
 	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:WindowScale(8), UTIL:WindowScale(10))
 	ImGui.PushStyleVar(ImGuiStyleVar.ItemInnerSpacing, UTIL:WindowScale(7), 0)
@@ -419,7 +427,7 @@ function DRAW:WindowStart()
 	end
 
 	-- drop stacks
-	ImGui.PopStyleVar(4)
+	ImGui.PopStyleVar(5)
 	ImGui.PopStyleColor(12)
 
 	return _trigger
@@ -431,7 +439,7 @@ end
 function DRAW:WindowEnd()
 
 	-- global styles
-	ImGui.PopStyleVar(7)
+	ImGui.PopStyleVar(10)
 
 	-- end window
 	ImGui.End()
@@ -446,8 +454,11 @@ function DRAW:TabbarStart()
 	ImGui.PushStyleColor(ImGuiCol.TabActive, DRAW:GetColorNew(DRAW.Runtime.Theme, "tabbar/bottomline"))
 	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:WindowScale(4), UTIL:WindowScale(6))
 
-	-- fix left align
-	DRAW:Spacing(1,1)
+	-- fix window border size
+	if UTIL:WindowBorder(DRAW.Scaling.Window.Border) > 0
+	then
+		DRAW:Spacing(UTIL:WindowBorder(DRAW.Scaling.Window.Border),1)
+	end
 
 	-- create tabbar
 	local _trigger = ImGui.BeginTabBar("DE_TB")
@@ -553,7 +564,6 @@ function DRAW:Collapse(title, scale)
 
 	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, 0)
 	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:WindowScale(8), UTIL:WindowScale(11))
-
 
 
 	-- space before
@@ -1519,7 +1529,35 @@ end
 
 
 
+--
+--// DRAW:PageDebug(<TABLE>,<STRING>)
+--
+function DRAW:DebugTable(input,name)
 
+	-- some room
+	DRAW:Spacer(1, 5)
+
+	-- format table
+	ImGui.PushStyleColor(ImGuiCol.TableHeaderBg, DRAW:GetColorNew(DRAW.Runtime.Theme, "debug/table/background"))
+	ImGui.PushStyleColor(ImGuiCol.TableRowBg, DRAW:GetColorNew(DRAW.Runtime.Theme, "debug/table/background"))
+	ImGui.PushStyleVar(ImGuiStyleVar.CellPadding, 6, 5)
+
+	if ImGui.BeginTable(name,2, ImGuiTableFlags.Borders + ImGuiTableFlags.RowBg)
+	then
+		for _,item in pairs(input)
+		do
+			if ImGui.TableNextColumn()
+			then
+				ImGui.Text(item)
+			end
+		end
+		ImGui.EndTable()
+	end
+
+	-- drop colors
+	ImGui.PopStyleVar(1)
+	ImGui.PopStyleColor(2)
+end
 
 
 --
@@ -1527,31 +1565,72 @@ end
 --
 function DRAW:PageDebug()
 
+	-- default
+	local debug
+
+	debug = {
+		"Scaling:",
+		UTIL:FirstToUpper(tostring(DRAW.Scaling.Enable))
+	}
+	DRAW:DebugTable(debug,"Debug Scaling #1")
+
+	debug = {
+		"Screen Width",
+		tostring(DRAW.Scaling.Screen.Width),
+		"Screen Height",
+		tostring(DRAW.Scaling.Screen.Height),
+		"Screen Factor",
+		tostring(DRAW.Scaling.Screen.Factor)
+	}
+	DRAW:DebugTable(debug,"Debug Scaling #2")
+
+	debug = {
+		"Window Width (min · max)",
+		tostring(DRAW.Scaling.Window.Width).." ("..tostring(UTIL:ScreenScale(456)).." · "..tostring((DRAW.Scaling.Screen.Width / 2) - 50)..")",
+		"Window Height (min · max)",
+		tostring(DRAW.Scaling.Window.Height).." ("..tostring(UTIL:ScreenScale(600)).." · "..tostring(DRAW.Scaling.Screen.Height - 100)..")",
+		"Window Factor",
+		tostring(DRAW.Scaling.Window.Factor)
+	}
+	DRAW:DebugTable(debug,"Debug Scaling #3")
+
+	debug = {
+		"Window Border (scaled)",
+		tostring(DRAW.Scaling.Window.Border).." ("..tostring(UTIL:WindowBorder(DRAW.Scaling.Window.Border))..")",
+		"Remaining Pixels (scaled)",
+		tostring(DRAW.Scaling.Window.Width - (DRAW.Scaling.Window.Border * 2)).." ("..tostring(DRAW.Scaling.Window.Width - UTIL:WindowBorder((DRAW.Scaling.Window.Border * 2)))..")"
+	}
+
+	DRAW:DebugTable(debug,"Debug Scaling #4")
+
+	debug = {
+		"Calculated Fontsize",
+		tostring(ImGui.GetFontSize())
+	}
+	DRAW:DebugTable(debug,"Debug Scaling #5")
+
+
+
+
+
+
+
+
+	DRAW:Spacer(1, 5)
+	DRAW:SeparatorNew(1, "tabbar/bottomline")
+	DRAW:Spacer(1, 5)
+
+
+
 	local _spacing = UTIL:WindowScale(14)
 
-	-- some room
-	DRAW:Spacer(1, _spacing)
 
-	DRAW:SaveAnimation("nothing")
+	--DRAW:SaveAnimation("nothing")
 
 	-- some room
 	DRAW:Spacer(1, _spacing)
 
-	-- scaling specs
-	DRAW:Spacing(_spacing, 1)
-	ImGui.Text("Scaling is: "..UTIL:FirstToUpper(tostring(DRAW.Scaling.Enable)).." // Fontsize: "..tostring(ImGui.GetFontSize()))
-	DRAW:Spacer(1, 3)
 
-	-- scaling specs
-	DRAW:Spacing(_spacing, 1)
-	ImGui.Text("Fontscale: "..tostring(UTIL:WindowScale(32)).." // Effective Scale: "..tostring(UTIL:WindowScale(32)))
-	DRAW:Spacer(1, 3)
-
-	DRAW:Spacing(_spacing, 1)
-	ImGui.Text("Screen Size: "..tostring(DRAW.Scaling.Screen.Width).."x"..tostring(DRAW.Scaling.Screen.Height).." // Factor: "..tostring(DRAW.Scaling.Screen.Factor))
-
-	DRAW:Spacing(_spacing, 1)
-	ImGui.Text("Window Size: "..tostring(DRAW.Scaling.Window.Width).."x"..tostring(DRAW.Scaling.Window.Height).." // Factor: "..tostring(DRAW.Scaling.Window.Factor))
 
 	DRAW:Separator(UTIL:WindowScale(5),14,10)
 
@@ -3022,10 +3101,10 @@ function DRAW:GraphNew(_history, _format, _title, _space, _width, _height, _scal
 	local history = {}
 
 	-- calculate number of bars
-	local entries = math.floor((DRAW.Scaling.Window.Width - 10) / (UTIL:ScreenScale(_width + _space))) - 1
+	local entries = math.floor((DRAW.Scaling.Window.Width - 10 - _space) / UTIL:ScreenScale(_width + _space))
 
 	-- caluclate remaining space for centering
-	local spacing = math.floor((DRAW.Scaling.Window.Width - 10) - (UTIL:ScreenScale((_width + _space) * entries) - UTIL:ScreenScale(_space))) / 2
+	local spacing = math.floor(((DRAW.Scaling.Window.Width - 2) - (UTIL:ScreenScale((_width + _space) * entries))) / 2)
 
 	-- define history depending on scaling
 	local limiter = UTIL:TableEntriesLast(_history,entries)
@@ -3080,7 +3159,7 @@ function DRAW:GraphNew(_history, _format, _title, _space, _width, _height, _scal
 	DRAW:GraphHeader(_title, current, average, minimum, maximum, _text)
 
 	-- left spacing
-	DRAW:Spacing(5 + spacing,1)
+	DRAW:Spacing(spacing,1)
 	--DRAW:Sameline()
 
 	-- draw values
@@ -3226,11 +3305,8 @@ function DRAW:GraphPainter(_child, _width, _height, _scale, _value, _show, _bar,
 		_height = _height + 22
 	end
 
-	-- increase child count
-	DRAW.Runtime.Child = DRAW.Runtime.Child + 1
-
 	-- create frame
-	local blind = ImGui.BeginChildFrame(_child, UTIL:ScreenScale(_width), UTIL:ScreenScale(_height), ImGuiWindowFlags.NoScrollWithMouse)
+	local blind = ImGui.BeginChildFrame(_child, _width, _height, ImGuiWindowFlags.NoScrollWithMouse)
 
 	-- drop stacks
 	ImGui.PopStyleVar(2)
@@ -3308,6 +3384,10 @@ function DRAW:Pre(project, version, runtime, scaling, debug)
 	DRAW.Runtime = runtime
 	DRAW.Scaling = scaling
 	DRAW.isDebug = debug
+
+
+
+
 
 	-- messages
 	DRAW.Warning = "Toggle's are disabled, because you are not in Night City yet."

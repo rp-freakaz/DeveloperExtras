@@ -112,7 +112,21 @@ function UTIL:WindowScale(pixels, factor)
 end
 
 
+--
+--// UTIL:WindowScale(<FLOAT>,<FLOAT>)
+--
+function UTIL:WindowBorder(pixels, factor)
 
+	-- catch non set
+	local pixels = pixels or 0
+	local factor = factor or UTIL.Scaling.Window.Factor
+
+	if UTIL.Scaling.Enable and pixels > 0
+	then
+		return math.ceil(UTIL.Scaling.Screen.Factor * pixels)
+	end
+	return pixels
+end
 
 
 
