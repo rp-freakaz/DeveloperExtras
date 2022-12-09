@@ -1744,19 +1744,27 @@ end
 --
 function CORE:UpdateScreen()
 
-	-- update dimension
-	CORE.Scaling.Screen.Width, CORE.Scaling.Screen.Height = GetDisplayResolution()
+	-- get dimension
+	local width, height = GetDisplayResolution()
 
-	-- update screen factor
-	if CORE.Scaling.Enable
+	-- update only if something has changed
+	if CORE.Scaling.Screen.Width ~= width or CORE.Scaling.Screen.Height ~= height
 	then
-		-- we use the screen height to keep the aspect ratio
-		CORE.Scaling.Screen.Factor = UTIL:ShortenFloat((CORE.Scaling.Screen.Height / 9 * 16) / 1920)
-	end
+		-- update dimension
+		CORE.Scaling.Screen.Width = width
+		CORE.Scaling.Screen.Height = height
 
-	-- distribute to all
-	DRAW.Scaling = CORE.Scaling
-	UTIL.Scaling = CORE.Scaling
+		-- scaling enabled?
+		if CORE.Scaling.Enable
+		then
+			-- we use the screen height to keep the aspect ratio
+			CORE.Scaling.Screen.Factor = UTIL:ShortenFloat((CORE.Scaling.Screen.Height / 9 * 16) / 1920)
+		end
+
+		-- distribute to all
+		DRAW.Scaling = CORE.Scaling
+		UTIL.Scaling = CORE.Scaling
+	end
 end
 
 --
@@ -1764,22 +1772,31 @@ end
 --
 function CORE:UpdateWindow()
 
-	-- update dimension
-	CORE.Scaling.Window.Width = ImGui.GetWindowWidth()
-	CORE.Scaling.Window.Height = ImGui.GetWindowHeight()
+	-- get dimension
+	local width = ImGui.GetWindowWidth()
+	local height = ImGui.GetWindowHeight()
 
-	-- update window factor
-	CORE.Scaling.Window.Factor = UTIL:ShortenFloat(CORE.Scaling.Window.Width / (456 * CORE.Scaling.Screen.Factor))
-
-	-- update font size
-	if CORE.Scaling.Enable
+	-- update only if something has changed
+	if CORE.Scaling.Window.Width ~= width or CORE.Scaling.Window.Height ~= height
 	then
+		-- update dimension
+		CORE.Scaling.Window.Width = width
+		CORE.Scaling.Window.Height = height
 
+		-- scaling enabled?
+		if CORE.Scaling.Enable
+		then
+			-- update window factor
+			CORE.Scaling.Window.Factor = UTIL:ShortenFloat(CORE.Scaling.Window.Width / (456 * CORE.Scaling.Screen.Factor))
+
+			-- update remaining space
+			CORE.Scaling.Window.Remain = CORE.Scaling.Window.Width - UTIL:WindowBorder(CORE.Scaling.Window.Border)
+		end
+
+		-- distribute to all
+		DRAW.Scaling = CORE.Scaling
+		UTIL.Scaling = CORE.Scaling
 	end
-
-	-- distribute to all
-	DRAW.Scaling = CORE.Scaling
-	UTIL.Scaling = CORE.Scaling
 end
 
 --
@@ -1885,7 +1902,7 @@ function CORE:Pre()
 	CORE.Project = "Developer Extras"
 	CORE.Authors = "FreakaZ"
 	CORE.Version = {String="3.0.0-161",Numeric=300161,Cet={String=nil,Numeric=0},Game={String=nil,Numeric=0}}
-	CORE.Scaling = {Enable=false,Screen={Width=1920,Height=1080,Factor=1},Window={Width=456,Height=600,Factor=1,Border=2}}
+	CORE.Scaling = {Enable=false,Screen={Width=1920,Height=1080,Factor=1},Window={Width=456,Height=600,Factor=1,Remain=0,Border=2}}
 	CORE.Timings = {Frame=0,Second=0,Millisecond=0}
 	CORE.Runtime = {Child=0,Theme=0,Themes={"Default","White Satin"}}
 

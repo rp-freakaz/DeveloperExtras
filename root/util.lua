@@ -111,7 +111,6 @@ function UTIL:WindowScale(pixels, factor)
 	return pixels
 end
 
-
 --
 --// UTIL:WindowScale(<FLOAT>,<FLOAT>)
 --
