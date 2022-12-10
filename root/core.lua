@@ -129,45 +129,14 @@ function CORE:Cronjobs()
 
 	if CORE.Timings.Frame ~= _timer
 	then
-		-- update frame
+		-- update timing
 		CORE.Timings.Frame = _timer
 
-		-- frame times
+		-- update only if enabled
 		if CORE:GetInternal("DeveloperExtras/Graph/Enable")
 		then
-			-- update frametime
-			CORE.Overlay.FT.Current = tonumber(string.format("%.2f", ImGui.GetTime() * 1000))
-
-			-- update previous if zero
-			if CORE.Overlay.FT.Previous == 0 then CORE.Overlay.FT.Previous = CORE.Overlay.FT.Current end
-
-			-- calculate frametime
-			if CORE.Overlay.FT.Current > CORE.Overlay.FT.Previous
-			then
-				-- update frametime
-				CORE.Overlay.FT.Difference = CORE.Overlay.FT.Current - CORE.Overlay.FT.Previous
-
-				-- update previous
-				CORE.Overlay.FT.Previous = CORE.Overlay.FT.Current
-
-				-- update graph
-				if CORE:GetInternal("DeveloperExtras/Graph/Enable")
-				then
-					-- update table
-					if CORE.Overlay.FT.Difference > 0
-					then
-						table.insert(CORE.Overlay.FT.History, CORE.Overlay.FT.Difference)
-					else
-						table.insert(CORE.Overlay.FT.History, 0)
-					end
-
-					-- cut to long table
-					if UTIL:TableLength(CORE.Overlay.FT.History) > CORE.Overlay.FT.Length
-					then
-						table.remove(CORE.Overlay.FT.History,1)
-					end
-				end
-			end
+			-- frame times
+			CORE.History.Frametime = CORE:UpdateHistory(CORE.History.Frametime, tonumber(string.format("%.2f", ImGui.GetTime() * 1000)))
 		end
 	end
 
@@ -179,38 +148,11 @@ function CORE:Cronjobs()
 		-- update timing
 		CORE.Timings.Second = _timer
 
-		-- update frames per second
-		CORE.Overlay.FPS.Current = ImGui.GetFrameCount()
-
-		-- update previous if zero
-		if CORE.Overlay.FPS.Previous == 0 then CORE.Overlay.FPS.Previous = CORE.Overlay.FPS.Current end
-
-		-- calculate frames per second
-		if CORE.Overlay.FPS.Current > CORE.Overlay.FPS.Previous
+		-- update only if enabled
+		if CORE:GetInternal("DeveloperExtras/Graph/Enable")
 		then
-			-- update frame
-			CORE.Overlay.FPS.Difference = CORE.Overlay.FPS.Current - CORE.Overlay.FPS.Previous
-
-			-- update previous
-			CORE.Overlay.FPS.Previous = CORE.Overlay.FPS.Current
-
-			-- update graph
-			if CORE:GetInternal("DeveloperExtras/Graph/Enable")
-			then
-				-- update table
-				if CORE.Overlay.FPS.Difference > 0
-				then
-					table.insert(CORE.Overlay.FPS.History, CORE.Overlay.FPS.Difference)
-				else
-					table.insert(CORE.Overlay.FPS.History, 0)
-				end
-
-				-- cut to long table
-				if UTIL:TableLength(CORE.Overlay.FPS.History) > CORE.Overlay.FPS.Length
-				then
-					table.remove(CORE.Overlay.FPS.History,1)
-				end
-			end
+			-- frame rates
+			CORE.History.Framerate = CORE:UpdateHistory(CORE.History.Framerate, ImGui.GetFrameCount())
 		end
 	end
 end
@@ -362,8 +304,15 @@ function CORE:Interface()
 			--DRAW:GraphWrapperFT(CORE.Overlay.FT.History, CORE.Overlay.FT.Length, UTIL:TableLength(CORE.Overlay.FT.History))
 			--DRAW:GraphWrapperFPS(CORE.Overlay.FPS.History, CORE.Overlay.FPS.Length, UTIL:TableLength(CORE.Overlay.FPS.History))
 
-			DRAW:FrameTimes(CORE.Overlay.FT.History, CORE.Overlay.FT.Length)
+			--DRAW:FrameTimes(CORE.History.Frametime.Store, CORE.History.Frametime.Limit)
 
+
+			--print(UTIL:DebugDump(ImGui.GetWindowDrawList()))
+
+			--ImGui.ImDrawListAddRect(100,100,200,200, DRAW:GetColorNew(0,"something"))
+
+
+			--draw_list->AddRect(ImVec2(x, y), ImVec2(x+sz, y+sz), col32, 0.0f,  ImDrawCornerFlags_All, th); x += sz+spacing; 
 
 			-- tabbar thickness, after performance graph
 			DRAW:SeparatorNew(UTIL:WindowScale(2), "tabbar/bottomline")
@@ -921,11 +870,12 @@ function CORE:RenderCombobox(pool, option, render, demand)
 	local value = CORE:GetToggle(render.path, option.type)
 
 	-- call draw
-	local value, trigger = DRAW:Combobox(render, option, demand, CORE.Runtime.Themes, UTIL:TableLength(CORE.Runtime.Themes), value)
+	local value, trigger = DRAW:Combobox(render, option, demand, CORE.Runtime.Themes.Listing, UTIL:TableLength(CORE.Runtime.Themes.Listing), value)
 	if trigger
 	then
 		--print(tostring(value))
 		CORE:SetToggle(render.path, option.type, value)
+
 
 		--print(UTIL:DebugDump(DRAW.Profile["window/main/background"]))
 	end
@@ -1594,9 +1544,9 @@ function CORE:SetInternal(path, set)
 	-- color theme
 	if path == "DeveloperExtras/Color/Preset" then
 		CORE.Extras[path] = set
-		CORE.Runtime.Theme = set
-		DRAW.Runtime.Theme = set
-		UTIL.Runtime.Theme = set
+		CORE.Runtime.Themes.Select = set
+		DRAW.Runtime.Themes.Select = set
+		UTIL.Runtime.Themes.Select = set
 	end
 
 	-- ui toggles
@@ -1689,17 +1639,46 @@ end
 
 
 
+--
+--// CORE:UpdateHistory(<TABLE>,<INT>)
+--
+function CORE:UpdateHistory(t,v)
 
+	-- catch non set
+	local t = t or nil
+	local v = v or nil
 
+	-- catch wrong call
+	if t ~= nil and v ~= nil
+	then
+		t.Current = v
+		if t.Previous == 0 then t.Previous = t.Current end
 
+		-- update everything else
+		if t.Current > t.Previous
+		then
+			t.Difference = t.Current - t.Previous
+			t.Previous = t.Current
 
+			-- update table
+			if t.Difference > 0
+			then
+				table.insert(t.Store, t.Difference)
+			else
+				table.insert(t.Store, 0)
+			end
 
+			-- trim to long table
+			if UTIL:TableLength(t.Store) > t.Limit
+			then
+				table.remove(t.Store,1)
+			end
+		end
 
-
-
-
-
-
+		-- result
+		return t
+	end
+end
 
 
 
@@ -1753,6 +1732,7 @@ function CORE:UpdateScreen()
 		-- update dimension
 		CORE.Scaling.Screen.Width = width
 		CORE.Scaling.Screen.Height = height
+		CORE.Scaling.Screen.Usable = math.floor(width / 2.5)
 
 		-- scaling enabled?
 		if CORE.Scaling.Enable
@@ -1782,6 +1762,7 @@ function CORE:UpdateWindow()
 		-- update dimension
 		CORE.Scaling.Window.Width = width
 		CORE.Scaling.Window.Height = height
+		CORE.Scaling.Window.Usable = width - (CORE.Runtime.Window.Border * 2)
 
 		-- scaling enabled?
 		if CORE.Scaling.Enable
@@ -1789,9 +1770,6 @@ function CORE:UpdateWindow()
 			-- update window factor
 			CORE.Scaling.Window.Factor = UTIL:ShortenFloat(CORE.Scaling.Window.Width / (456 * CORE.Scaling.Screen.Factor))
 		end
-
-		-- update remaining space
-		CORE.Scaling.Window.Remain = CORE.Scaling.Window.Width - (CORE.Scaling.Window.Border * 2)
 
 		-- distribute to all
 		DRAW.Scaling = CORE.Scaling
@@ -1898,36 +1876,23 @@ function CORE:Pre()
 	setmetatable(o, self)
 	self.__index = self
 
-	-- identity
+	-- who i am
 	CORE.Project = "Developer Extras"
 	CORE.Authors = "FreakaZ"
 	CORE.Version = {String="3.0.0-161",Numeric=300161,Cet={String=nil,Numeric=0},Game={String=nil,Numeric=0}}
-	CORE.Scaling = {Enable=false,Screen={Width=0,Height=0,Factor=1},Window={Width=456,Height=600,Factor=1,Remain=0,Border=2}}
-	CORE.Timings = {Frame=0,Second=0,Millisecond=0}
-	CORE.Runtime = {Child=0,Theme=0,Themes={"Default","White Satin"}}
 
-	CORE.Overlay = {
-		FT={
-			Length=256,
-			History={},
-			Current=0,
-			Previous=0,
-			Difference=0
-		},
-		FPS={
-			Length=15,
-			History={},
-			Current=0,
-			Previous=0,
-			Difference=0
-		}
+	-- shared var
+	CORE.Scaling = {Enable=false,Screen={Width=0,Height=0,Factor=1,Usable=0},Window={Width=456,Height=600,Factor=1,Usable=0}}
+	CORE.Runtime = {Window={Border=2,Padding=10},Themes={Select=0,Listing={"Default","White Satin"}}}
+
+	-- non shared
+	CORE.Timings = {Frame=0,Second=0,Millisecond=0}
+	CORE.Trigger = {Saving=0,Export=0,Redraw=0}
+	CORE.History = {
+		Frametime = {Store={},Limit=256,Current=0,Previous=0,Difference=0},
+		Framerate = {Store={},Limit=64,Current=0,Previous=0,Difference=0}
 	}
 
-
-
-
-	-- new form
-	CORE.Trigger = {Saving=0,Export=0,Redraw=0}
 
 
 

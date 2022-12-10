@@ -83,10 +83,9 @@ end
 --
 --// DRAW:GetColor(<STRING>,<STRING>,<INT>)
 --
-function DRAW:GetColorNew(theme, color, state)
+function DRAW:GetColorNew(color, state)
 
 	-- catch unset
-	local theme = theme or 0
 	local color = color or "nocolor"
 	local state = state or 0
 
@@ -94,7 +93,7 @@ function DRAW:GetColorNew(theme, color, state)
 	if color == "nocolor"						then return ImGui.GetColorU32(0, 0, 0, 0) end
 
 	-- theme: default
-	if theme == 0
+	if DRAW.Runtime.Themes.Select == 0
 	then
 		-- window
 		if color == "window/main/text"				then return DRAW:GetGeneric("generic/white/light") end
@@ -161,13 +160,12 @@ function DRAW:GetColorNew(theme, color, state)
 		-- debug
 		if color == "debug/table/background"			then return DRAW:GetGeneric("generic/grey/darker") end
 
-
 		-- fallback
 		return DRAW:GetGeneric("fallback")
 	end
 
 	-- theme: white satin
-	if theme == 1
+	if DRAW.Runtime.Themes.Select == 1
 	then
 		-- window
 		if color == "window/main/text"				then return DRAW:GetGeneric("generic/grey/darker") end
@@ -232,7 +230,7 @@ function DRAW:GetColorNew(theme, color, state)
 
 
 	-- theme: mox destiny
-	if theme == 2
+	if DRAW.Runtime.Themes.Select == 2
 	then
 		-- window
 		if color == "window/main/text"				then return DRAW:GetGeneric("generic/pink") end
@@ -370,7 +368,7 @@ function DRAW:WindowStart()
 
 	-- allow window resize
 	if DRAW.isDebug then
-		ImGui.SetNextWindowSizeConstraints(UTIL:ScreenScale(456), UTIL:ScreenScale(600), (DRAW.Scaling.Screen.Width / 2) - 50, DRAW.Scaling.Screen.Height - 100)
+		ImGui.SetNextWindowSizeConstraints(UTIL:ScreenScale(456), UTIL:ScreenScale(600), DRAW.Scaling.Screen.Usable, DRAW.Scaling.Screen.Height - 100)
 	else
 		ImGui.SetNextWindowSizeConstraints(UTIL:ScreenScale(456), UTIL:ScreenScale(600), UTIL:ScreenScale(456), DRAW.Scaling.Screen.Height - 100)
 	end
@@ -392,15 +390,15 @@ function DRAW:WindowStart()
 	--
 
 	-- define colors
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "window/main/text"))
-	ImGui.PushStyleColor(ImGuiCol.Border, DRAW:GetColorNew(DRAW.Runtime.Theme, "window/main/border"))
-	ImGui.PushStyleColor(ImGuiCol.WindowBg, DRAW:GetColorNew(DRAW.Runtime.Theme, "window/main/background"))
-	ImGui.PushStyleColor(ImGuiCol.TitleBg, DRAW:GetColorNew(DRAW.Runtime.Theme, "window/main/title/background"))
-	ImGui.PushStyleColor(ImGuiCol.TitleBgActive, DRAW:GetColorNew(DRAW.Runtime.Theme, "window/main/title/background/active"))
-	ImGui.PushStyleColor(ImGuiCol.TitleBgCollapsed, DRAW:GetColorNew(DRAW.Runtime.Theme, "window/main/title/background/collapsed"))
-	ImGui.PushStyleColor(ImGuiCol.ResizeGrip, DRAW:GetColorNew(DRAW.Runtime.Theme, "window/main/resize"))
-	ImGui.PushStyleColor(ImGuiCol.ResizeGripActive, DRAW:GetColorNew(DRAW.Runtime.Theme, "window/main/resize/active"))
-	ImGui.PushStyleColor(ImGuiCol.ResizeGripHovered, DRAW:GetColorNew(DRAW.Runtime.Theme, "window/main/resize/hovered"))
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew("window/main/text"))
+	ImGui.PushStyleColor(ImGuiCol.Border, DRAW:GetColorNew("window/main/border"))
+	ImGui.PushStyleColor(ImGuiCol.WindowBg, DRAW:GetColorNew("window/main/background"))
+	ImGui.PushStyleColor(ImGuiCol.TitleBg, DRAW:GetColorNew("window/main/title/background"))
+	ImGui.PushStyleColor(ImGuiCol.TitleBgActive, DRAW:GetColorNew("window/main/title/background/active"))
+	ImGui.PushStyleColor(ImGuiCol.TitleBgCollapsed, DRAW:GetColorNew("window/main/title/background/collapsed"))
+	ImGui.PushStyleColor(ImGuiCol.ResizeGrip, DRAW:GetColorNew("window/main/resize"))
+	ImGui.PushStyleColor(ImGuiCol.ResizeGripActive, DRAW:GetColorNew("window/main/resize/active"))
+	ImGui.PushStyleColor(ImGuiCol.ResizeGripHovered, DRAW:GetColorNew("window/main/resize/hovered"))
 	ImGui.PushStyleColor(ImGuiCol.Button, DRAW:GetColorNew())
 	ImGui.PushStyleColor(ImGuiCol.ButtonActive, DRAW:GetColorNew())
 	ImGui.PushStyleColor(ImGuiCol.ButtonHovered, DRAW:GetColorNew())
@@ -451,7 +449,7 @@ end
 function DRAW:TabbarStart()
 
 	-- add stacks
-	ImGui.PushStyleColor(ImGuiCol.TabActive, DRAW:GetColorNew(DRAW.Runtime.Theme, "tabbar/bottomline"))
+	ImGui.PushStyleColor(ImGuiCol.TabActive, DRAW:GetColorNew("tabbar/bottomline"))
 	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:WindowScale(4), UTIL:WindowScale(6))
 
 	-- fix window border size
@@ -486,10 +484,10 @@ function DRAW:TabitemStart(title)
 	local title = title or "Unknown"
 
 	-- add stacks
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "tabbar/text"))
-	ImGui.PushStyleColor(ImGuiCol.Tab, DRAW:GetColorNew(DRAW.Runtime.Theme, "tabbar/tab"))
-	ImGui.PushStyleColor(ImGuiCol.TabActive, DRAW:GetColorNew(DRAW.Runtime.Theme, "tabbar/tab/active"))
-	ImGui.PushStyleColor(ImGuiCol.TabHovered, DRAW:GetColorNew(DRAW.Runtime.Theme, "tabbar/tab/hovered"))
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew("tabbar/text"))
+	ImGui.PushStyleColor(ImGuiCol.Tab, DRAW:GetColorNew("tabbar/tab"))
+	ImGui.PushStyleColor(ImGuiCol.TabActive, DRAW:GetColorNew("tabbar/tab/active"))
+	ImGui.PushStyleColor(ImGuiCol.TabHovered, DRAW:GetColorNew("tabbar/tab/hovered"))
 	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:WindowScale(7), UTIL:WindowScale(6))
 
 	-- create tabitem
@@ -772,7 +770,7 @@ function DRAW:SeparatorNew(height, color)
 	local color = color or "window/main/separator"
 
 	-- needed for display
-	ImGui.PushStyleColor(ImGuiCol.Separator, DRAW:GetColorNew(DRAW.Runtime.Theme, color))
+	ImGui.PushStyleColor(ImGuiCol.Separator, DRAW:GetColorNew(color))
 	ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, 0, 1)
 
 	-- multiple if wanted
@@ -884,9 +882,9 @@ function DRAW:Slider(render, option, demand, value)
 
 	-- deco paint
 	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, UTIL:WindowScale(6))
-	ImGui.PushStyleColor(ImGuiCol.Button, DRAW:GetColorNew(DRAW.Runtime.Theme, "element/decoration"))
-	ImGui.PushStyleColor(ImGuiCol.ButtonActive, DRAW:GetColorNew(DRAW.Runtime.Theme, "element/decoration"))
-	ImGui.PushStyleColor(ImGuiCol.ButtonHovered, DRAW:GetColorNew(DRAW.Runtime.Theme, "element/decoration"))
+	ImGui.PushStyleColor(ImGuiCol.Button, DRAW:GetColorNew("element/decoration"))
+	ImGui.PushStyleColor(ImGuiCol.ButtonActive, DRAW:GetColorNew("element/decoration"))
+	ImGui.PushStyleColor(ImGuiCol.ButtonHovered, DRAW:GetColorNew("element/decoration"))
 
 	-- deco title
 	DRAW:FlexButton(UTIL:WindowScale(5), UTIL:WindowScale(19))
@@ -895,7 +893,7 @@ function DRAW:Slider(render, option, demand, value)
 	ImGui.PopStyleVar(1)
 	DRAW:Sameline()
 	DRAW:Spacing(UTIL:WindowScale(5),1)
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "element/title"))
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew("element/title"))
 	ImGui.Text(render.name)
 	ImGui.PopStyleColor(1)
 
@@ -904,7 +902,7 @@ function DRAW:Slider(render, option, demand, value)
 	then
 		ImGui.SameLine()
 		DRAW:Spacing(UTIL:WindowScale(8),1)
-		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "slider/minmax"))
+		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew("slider/minmax"))
 		ImGui.Text(tostring(option.min)..' to '..tostring(option.max))
 		ImGui.PopStyleColor(1)
 	end
@@ -920,12 +918,12 @@ function DRAW:Slider(render, option, demand, value)
 	ImGui.SetNextItemWidth(DRAW.Scaling.Window.Width - (_spacing + UTIL:ButtonWidth("Reset") + UTIL:WindowScale(32)))
 
 	-- add stacks
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "element/title"))
-	ImGui.PushStyleColor(ImGuiCol.SliderGrab, DRAW:GetColorNew(DRAW.Runtime.Theme, "slider/grab"))
-	ImGui.PushStyleColor(ImGuiCol.SliderGrabActive, DRAW:GetColorNew(DRAW.Runtime.Theme, "slider/grab/active"))
-	ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColorNew(DRAW.Runtime.Theme, "slider/background"))
-	ImGui.PushStyleColor(ImGuiCol.FrameBgActive, DRAW:GetColorNew(DRAW.Runtime.Theme, "slider/background/active"))
-	ImGui.PushStyleColor(ImGuiCol.FrameBgHovered, DRAW:GetColorNew(DRAW.Runtime.Theme, "slider/background/hovered"))
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew("element/title"))
+	ImGui.PushStyleColor(ImGuiCol.SliderGrab, DRAW:GetColorNew("slider/grab"))
+	ImGui.PushStyleColor(ImGuiCol.SliderGrabActive, DRAW:GetColorNew("slider/grab/active"))
+	ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColorNew("slider/background"))
+	ImGui.PushStyleColor(ImGuiCol.FrameBgActive, DRAW:GetColorNew("slider/background/active"))
+	ImGui.PushStyleColor(ImGuiCol.FrameBgHovered, DRAW:GetColorNew("slider/background/hovered"))
 
 	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, UTIL:WindowScale(2))
 	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:WindowScale(2), UTIL:WindowScale(4))
@@ -1159,7 +1157,7 @@ function DRAW:Notice(render, demand)
 	-- add tooltip
 	if ImGui.IsItemHovered()
 	then
-		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "element/notice"))
+		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew("element/notice"))
 		ImGui.BeginTooltip()
 		ImGui.SetTooltip(render.note)
 		ImGui.EndTooltip()
@@ -1189,7 +1187,7 @@ function DRAW:Description(render, space, state)
 	DRAW:Spacing(space,1)
 
 	-- add stacks
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "element/description"))
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew("element/description"))
 	ImGui.Text(UTIL:WordWrap(render.desc,space))
 	ImGui.PopStyleColor(1)
 end
@@ -1313,9 +1311,9 @@ function DRAW:Combobox(render, option, demand, names, length, value)
 
 	-- deco paint
 	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, UTIL:WindowScale(6))
-	ImGui.PushStyleColor(ImGuiCol.Button, DRAW:GetColorNew(DRAW.Runtime.Theme, "element/decoration"))
-	ImGui.PushStyleColor(ImGuiCol.ButtonActive, DRAW:GetColorNew(DRAW.Runtime.Theme, "element/decoration"))
-	ImGui.PushStyleColor(ImGuiCol.ButtonHovered, DRAW:GetColorNew(DRAW.Runtime.Theme, "element/decoration"))
+	ImGui.PushStyleColor(ImGuiCol.Button, DRAW:GetColorNew("element/decoration"))
+	ImGui.PushStyleColor(ImGuiCol.ButtonActive, DRAW:GetColorNew("element/decoration"))
+	ImGui.PushStyleColor(ImGuiCol.ButtonHovered, DRAW:GetColorNew("element/decoration"))
 
 	-- deco title
 	DRAW:FlexButton(UTIL:WindowScale(5), UTIL:WindowScale(19))
@@ -1324,7 +1322,7 @@ function DRAW:Combobox(render, option, demand, names, length, value)
 	ImGui.PopStyleVar(1)
 	DRAW:Sameline()
 	DRAW:Spacing(UTIL:WindowScale(5),1)
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "element/title"))
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew("element/title"))
 	ImGui.Text(render.name)
 	ImGui.PopStyleColor(1)
 
@@ -1337,21 +1335,21 @@ function DRAW:Combobox(render, option, demand, names, length, value)
 	-- comboboxes have a fixed width
 	ImGui.SetNextItemWidth(DRAW.Scaling.Window.Width - (_spacing * 2) - UTIL:WindowScale(2))
 
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "element/title"))
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew("element/title"))
 
-	ImGui.PushStyleColor(ImGuiCol.PopupBg, DRAW:GetColorNew(DRAW.Runtime.Theme, "combobox/popup/background"))
-	ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColorNew(DRAW.Runtime.Theme, "combobox/background"))
-	ImGui.PushStyleColor(ImGuiCol.FrameBgActive, DRAW:GetColorNew(DRAW.Runtime.Theme, "combobox/background"))
-	ImGui.PushStyleColor(ImGuiCol.FrameBgHovered, DRAW:GetColorNew(DRAW.Runtime.Theme, "combobox/background"))
+	ImGui.PushStyleColor(ImGuiCol.PopupBg, DRAW:GetColorNew("combobox/popup/background"))
+	ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColorNew("combobox/background"))
+	ImGui.PushStyleColor(ImGuiCol.FrameBgActive, DRAW:GetColorNew("combobox/background"))
+	ImGui.PushStyleColor(ImGuiCol.FrameBgHovered, DRAW:GetColorNew("combobox/background"))
 
-	ImGui.PushStyleColor(ImGuiCol.Border, DRAW:GetColorNew(DRAW.Runtime.Theme, "combobox/border"))
-	ImGui.PushStyleColor(ImGuiCol.Button, DRAW:GetColorNew(DRAW.Runtime.Theme, "combobox/button"))
-	ImGui.PushStyleColor(ImGuiCol.ButtonActive, DRAW:GetColorNew(DRAW.Runtime.Theme, "combobox/button/active"))
-	ImGui.PushStyleColor(ImGuiCol.ButtonHovered, DRAW:GetColorNew(DRAW.Runtime.Theme, "combobox/button/hovered"))
+	ImGui.PushStyleColor(ImGuiCol.Border, DRAW:GetColorNew("combobox/border"))
+	ImGui.PushStyleColor(ImGuiCol.Button, DRAW:GetColorNew("combobox/button"))
+	ImGui.PushStyleColor(ImGuiCol.ButtonActive, DRAW:GetColorNew("combobox/button/active"))
+	ImGui.PushStyleColor(ImGuiCol.ButtonHovered, DRAW:GetColorNew("combobox/button/hovered"))
 
-	ImGui.PushStyleColor(ImGuiCol.Header, DRAW:GetColorNew(DRAW.Runtime.Theme, "combobox/header"))
-	ImGui.PushStyleColor(ImGuiCol.HeaderActive, DRAW:GetColorNew(DRAW.Runtime.Theme, "combobox/header/active"))
-	ImGui.PushStyleColor(ImGuiCol.HeaderHovered, DRAW:GetColorNew(DRAW.Runtime.Theme, "combobox/header/hovered"))
+	ImGui.PushStyleColor(ImGuiCol.Header, DRAW:GetColorNew("combobox/header"))
+	ImGui.PushStyleColor(ImGuiCol.HeaderActive, DRAW:GetColorNew("combobox/header/active"))
+	ImGui.PushStyleColor(ImGuiCol.HeaderHovered, DRAW:GetColorNew("combobox/header/hovered"))
 
 
 	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:WindowScale(8), UTIL:WindowScale(4))
@@ -1418,7 +1416,7 @@ function DRAW:Quickshift(render, option, state, value)
 	if render.align
 	then
 		-- paint title
-		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "element/title"))
+		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew("element/title"))
 		ImGui.Text(render.name)
 		ImGui.PopStyleColor(1)
 		DRAW:Sameline()
@@ -1433,19 +1431,19 @@ function DRAW:Quickshift(render, option, state, value)
 	-- add stacks
 	if UTIL:IntToBool(value)
 	then
-		ImGui.PushStyleColor(ImGuiCol.Border, DRAW:GetColorNew(DRAW.Runtime.Theme, "quickshift/on/border"))
-		ImGui.PushStyleColor(ImGuiCol.SliderGrab, DRAW:GetColorNew(DRAW.Runtime.Theme, "quickshift/on/grab/normal"))
-		ImGui.PushStyleColor(ImGuiCol.SliderGrabActive, DRAW:GetColorNew(DRAW.Runtime.Theme, "quickshift/on/grab/active"))
+		ImGui.PushStyleColor(ImGuiCol.Border, DRAW:GetColorNew("quickshift/on/border"))
+		ImGui.PushStyleColor(ImGuiCol.SliderGrab, DRAW:GetColorNew("quickshift/on/grab/normal"))
+		ImGui.PushStyleColor(ImGuiCol.SliderGrabActive, DRAW:GetColorNew("quickshift/on/grab/active"))
 	else
-		ImGui.PushStyleColor(ImGuiCol.Border, DRAW:GetColorNew(DRAW.Runtime.Theme, "quickshift/off/border"))
-		ImGui.PushStyleColor(ImGuiCol.SliderGrab, DRAW:GetColorNew(DRAW.Runtime.Theme, "quickshift/off/grab/normal"))
-		ImGui.PushStyleColor(ImGuiCol.SliderGrabActive, DRAW:GetColorNew(DRAW.Runtime.Theme, "quickshift/off/grab/active"))
+		ImGui.PushStyleColor(ImGuiCol.Border, DRAW:GetColorNew("quickshift/off/border"))
+		ImGui.PushStyleColor(ImGuiCol.SliderGrab, DRAW:GetColorNew("quickshift/off/grab/normal"))
+		ImGui.PushStyleColor(ImGuiCol.SliderGrabActive, DRAW:GetColorNew("quickshift/off/grab/active"))
 	end
 
 	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor())
-	ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColorNew(DRAW.Runtime.Theme, "quickshift/background"))
-	ImGui.PushStyleColor(ImGuiCol.FrameBgActive, DRAW:GetColorNew(DRAW.Runtime.Theme, "quickshift/background/active"))
-	ImGui.PushStyleColor(ImGuiCol.FrameBgHovered, DRAW:GetColorNew(DRAW.Runtime.Theme, "quickshift/background/hovered"))
+	ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColorNew("quickshift/background"))
+	ImGui.PushStyleColor(ImGuiCol.FrameBgActive, DRAW:GetColorNew("quickshift/background/active"))
+	ImGui.PushStyleColor(ImGuiCol.FrameBgHovered, DRAW:GetColorNew("quickshift/background/hovered"))
 
 	ImGui.PushStyleVar(ImGuiStyleVar.GrabRounding, UTIL:WindowScale(10))
 	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, UTIL:WindowScale(10))
@@ -1466,7 +1464,7 @@ function DRAW:Quickshift(render, option, state, value)
 	then
 		DRAW:Sameline()
 		DRAW:Spacing(UTIL:WindowScale(10),1)
-		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "element/title"))
+		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew("element/title"))
 		ImGui.Text(render.name)
 		ImGui.PopStyleColor(1)
 	end
@@ -1489,7 +1487,7 @@ function DRAW:Quickshift(render, option, state, value)
 		end
 
 		-- add stacks
-		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "element/description"))
+		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew("element/description"))
 
 		if render.align
 		then
@@ -1538,8 +1536,8 @@ function DRAW:DebugTable(input,name)
 	DRAW:Spacer(1, 5)
 
 	-- format table
-	ImGui.PushStyleColor(ImGuiCol.TableHeaderBg, DRAW:GetColorNew(DRAW.Runtime.Theme, "debug/table/background"))
-	ImGui.PushStyleColor(ImGuiCol.TableRowBg, DRAW:GetColorNew(DRAW.Runtime.Theme, "debug/table/background"))
+	ImGui.PushStyleColor(ImGuiCol.TableHeaderBg, DRAW:GetColorNew("debug/table/background"))
+	ImGui.PushStyleColor(ImGuiCol.TableRowBg, DRAW:GetColorNew("debug/table/background"))
 	ImGui.PushStyleVar(ImGuiStyleVar.CellPadding, 6, 5)
 
 	if ImGui.BeginTable(name,2, ImGuiTableFlags.Borders + ImGuiTableFlags.RowBg)
@@ -1580,25 +1578,29 @@ function DRAW:PageDebug()
 		"Screen Height",
 		tostring(DRAW.Scaling.Screen.Height),
 		"Screen Factor",
-		tostring(DRAW.Scaling.Screen.Factor)
+		tostring(DRAW.Scaling.Screen.Factor),
+		"Screen Usable",
+		tostring(DRAW.Scaling.Screen.Usable)
 	}
 	DRAW:DebugTable(debug,"Debug Scaling #2")
 
 	debug = {
 		"Window Width (min · max)",
-		tostring(DRAW.Scaling.Window.Width).." ("..tostring(UTIL:ScreenScale(456)).." · "..tostring((DRAW.Scaling.Screen.Width / 2) - 50)..")",
+		tostring(DRAW.Scaling.Window.Width).." ("..tostring(UTIL:ScreenScale(456)).." · "..tostring(DRAW.Scaling.Screen.Usable)..")",
 		"Window Height (min · max)",
 		tostring(DRAW.Scaling.Window.Height).." ("..tostring(UTIL:ScreenScale(600)).." · "..tostring(DRAW.Scaling.Screen.Height - 100)..")",
 		"Window Factor",
-		tostring(DRAW.Scaling.Window.Factor)
+		tostring(DRAW.Scaling.Window.Factor),
+		"Window Usable",
+		tostring(DRAW.Scaling.Window.Usable)
 	}
 	DRAW:DebugTable(debug,"Debug Scaling #3")
 
 	debug = {
 		"Window Border (scaled)",
-		tostring(DRAW.Scaling.Window.Border).." ("..tostring(UTIL:WindowBorder(DRAW.Scaling.Window.Border))..")",
+		tostring(DRAW.Runtime.Window.Border).." ("..tostring(UTIL:ScreenScale(DRAW.Runtime.Window.Border))..")",
 		"Remaining Pixels (scaled)",
-		tostring(DRAW.Scaling.Window.Remain).." ("..tostring(UTIL:WindowBorder(DRAW.Scaling.Window.Remain))..")"
+		tostring(DRAW.Scaling.Window.Usable).." ("..tostring(UTIL:ScreenScale(DRAW.Scaling.Window.Usable))..")"
 	}
 
 	DRAW:DebugTable(debug,"Debug Scaling #4")
@@ -1618,7 +1620,7 @@ function DRAW:PageDebug()
 	DRAW:DebugTable(debug,"Debug FrameTimes #1")
 
 	local temp1 = 7
-	local temp2 = math.floor(DRAW.Scaling.Window.Remain / UTIL:ScreenScale(temp1))
+	local temp2 = math.floor(DRAW.Scaling.Window.Usable / UTIL:ScreenScale(temp1))
 
 	debug = {
 		"Barsize",
@@ -1629,7 +1631,7 @@ function DRAW:PageDebug()
 		"Combined Size",
 		tostring(math.floor(UTIL:ScreenScale((temp1) * temp2))),
 		"Spacing left for centering",
-		tostring(math.floor(((DRAW.Scaling.Window.Remain + 2) - (UTIL:ScreenScale((temp1) * temp2))) / 2))
+		tostring(math.floor(((DRAW.Scaling.Window.Usable + 2) - (UTIL:ScreenScale((temp1) * temp2))) / 2))
 	}
 	DRAW:DebugTable(debug,"Debug FrameTimes #1")
 
@@ -2846,7 +2848,7 @@ function DRAW:Graph(_child, _table, _should, _length, _format, _color, _title, _
 	DRAW:Spacing(5,1)
 
 	-- print title
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "element/title", _trans_text))
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew("element/title", _trans_text))
 	ImGui.Text(_title)
 	ImGui.PopStyleColor(1)
 
@@ -2857,13 +2859,13 @@ function DRAW:Graph(_child, _table, _should, _length, _format, _color, _title, _
 	-- left spacing
 	DRAW:Spacing(5,1)
 
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "graph/text/name", _trans_text))
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew("graph/text/name", _trans_text))
 	ImGui.Text("CUR:")
 	ImGui.PopStyleColor(1)
 
 	DRAW:Sameline()
 
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "graph/text/value", _trans_text))
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew("graph/text/value", _trans_text))
 	ImGui.Text(tostring(_cur))
 	ImGui.PopStyleColor(1)
 
@@ -2873,13 +2875,13 @@ function DRAW:Graph(_child, _table, _should, _length, _format, _color, _title, _
 	-- left spacing
 	DRAW:Spacing(10,1)
 
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "graph/text/name", _trans_text))
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew("graph/text/name", _trans_text))
 	ImGui.Text("AVG:")
 	ImGui.PopStyleColor(1)
 
 	DRAW:Sameline()
 
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "graph/text/value", _trans_text))
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew("graph/text/value", _trans_text))
 	ImGui.Text(tostring(_avg))
 	ImGui.PopStyleColor(1)
 
@@ -2889,13 +2891,13 @@ function DRAW:Graph(_child, _table, _should, _length, _format, _color, _title, _
 	DRAW:Spacing(10,1)
 
 
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "graph/text/name", _trans_text))
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew("graph/text/name", _trans_text))
 	ImGui.Text("MIN:")
 	ImGui.PopStyleColor(1)
 
 	DRAW:Sameline()
 
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "graph/text/value", _trans_text))
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew("graph/text/value", _trans_text))
 	ImGui.Text(tostring(_min))
 	ImGui.PopStyleColor(1)
 
@@ -2905,13 +2907,13 @@ function DRAW:Graph(_child, _table, _should, _length, _format, _color, _title, _
 	DRAW:Spacing(10,1)
 	DRAW:Sameline()
 
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "graph/text/name", _trans_text))
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew("graph/text/name", _trans_text))
 	ImGui.Text("MAX:")
 	ImGui.PopStyleColor(1)
 
 	DRAW:Sameline()
 
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "graph/text/value", _trans_text))
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew("graph/text/value", _trans_text))
 	ImGui.Text(tostring(_max))
 	ImGui.PopStyleColor(1)
 
@@ -2981,7 +2983,7 @@ function DRAW:GraphBar(_child, _width, _height, _scale, _value, _show, _trans_ba
 
 	--ImGui.PushStyleColor(ImGuiCol.FrameBg, GetColors("grey_darker", "disabled"))
 
-	ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColorNew(DRAW.Runtime.Theme, "graphbar/background", _trans_barbg))
+	ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColorNew("graphbar/background", _trans_barbg))
 	ImGui.PushStyleVar(ImGuiStyleVar.ScrollbarSize, 0)
 	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, 0, 0)
 
@@ -3002,7 +3004,7 @@ function DRAW:GraphBar(_child, _width, _height, _scale, _value, _show, _trans_ba
 		DRAW:Spacer(1,_top)
 
 		ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColorNew())
-		ImGui.PushStyleColor(ImGuiCol.PlotHistogram, DRAW:GetColorNew(DRAW.Runtime.Theme, "graphbar/progessbar", _trans_bar))
+		ImGui.PushStyleColor(ImGuiCol.PlotHistogram, DRAW:GetColorNew("graphbar/progessbar", _trans_bar))
 
 		ImGui.ProgressBar(1, _width, _bar, "")
 		ImGui.PopStyleColor(2)
@@ -3027,7 +3029,7 @@ function DRAW:GraphBar(_child, _width, _height, _scale, _value, _show, _trans_ba
 				DRAW:Sameline()
 			end
 
-			ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "graph/text/value", _trans_text))
+			ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew("graph/text/value", _trans_text))
 			ImGui.Text(_txt)
 			ImGui.PopStyleColor(1)
 
@@ -3118,6 +3120,12 @@ end
 --// DRAW.Graph()
 --
 function DRAW:GraphNew(_history, _format, _title, _space, _width, _height, _scale, _show, _bar, _back, _text)
+
+	-- defaults
+	local remaining = UTIL:RemainingPixels(DRAW.Scaling.Window.Width, DRAW.Runtime.Window.Border)
+
+
+
 
 	-- child start
 	local childs = 100
@@ -3221,7 +3229,7 @@ function DRAW:GraphHeader(_title, _current, _average, _minimum, _maximum, _text)
 	DRAW:Spacing(UTIL:WindowScale(5),1)
 
 	-- print title
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "element/title", _text))
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew("element/title", _text))
 	ImGui.Text(_title)
 	ImGui.PopStyleColor(1)
 
@@ -3234,11 +3242,11 @@ function DRAW:GraphHeader(_title, _current, _average, _minimum, _maximum, _text)
 	-- between spacing
 	DRAW:Spacing(current,1)
 
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "graph/text/name", _text))
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew("graph/text/name", _text))
 	ImGui.Text("CUR:")
 	ImGui.PopStyleColor(1)
 	DRAW:Sameline()
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "graph/text/value", _text))
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew("graph/text/value", _text))
 	ImGui.Text(tostring(_current))
 	ImGui.PopStyleColor(1)
 
@@ -3251,11 +3259,11 @@ function DRAW:GraphHeader(_title, _current, _average, _minimum, _maximum, _text)
 	-- between spacing
 	DRAW:Spacing(average,1)
 
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "graph/text/name", _text))
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew("graph/text/name", _text))
 	ImGui.Text("AVG:")
 	ImGui.PopStyleColor(1)
 	DRAW:Sameline()
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "graph/text/value", _text))
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew("graph/text/value", _text))
 	ImGui.Text(tostring(_average))
 	ImGui.PopStyleColor(1)
 
@@ -3268,11 +3276,11 @@ function DRAW:GraphHeader(_title, _current, _average, _minimum, _maximum, _text)
 	-- between spacing
 	DRAW:Spacing(minimum,1)
 
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "graph/text/name", _text))
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew("graph/text/name", _text))
 	ImGui.Text("MIN:")
 	ImGui.PopStyleColor(1)
 	DRAW:Sameline()
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "graph/text/value", _text))
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew("graph/text/value", _text))
 	ImGui.Text(tostring(_minimum))
 	ImGui.PopStyleColor(1)
 
@@ -3285,11 +3293,11 @@ function DRAW:GraphHeader(_title, _current, _average, _minimum, _maximum, _text)
 	-- between spacing
 	DRAW:Spacing(maximum,1)
 
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "graph/text/name", _text))
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew("graph/text/name", _text))
 	ImGui.Text("MAX:")
 	ImGui.PopStyleColor(1)
 	DRAW:Sameline()
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "graph/text/value", _text))
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew("graph/text/value", _text))
 	ImGui.Text(tostring(_maximum))
 	ImGui.PopStyleColor(1)
 end
@@ -3321,7 +3329,7 @@ function DRAW:GraphPainter(_child, _width, _height, _scale, _value, _show, _bar,
 	end
 
 	-- start painting
-	ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColorNew(DRAW.Runtime.Theme, "graphbar/background", _back))
+	ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColorNew("graphbar/background", _back))
 	ImGui.PushStyleVar(ImGuiStyleVar.ScrollbarSize, 0)
 	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, 0, 0)
 
@@ -3342,7 +3350,7 @@ function DRAW:GraphPainter(_child, _width, _height, _scale, _value, _show, _bar,
 		DRAW:Spacer(1,top)
 
 		ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColorNew())
-		ImGui.PushStyleColor(ImGuiCol.PlotHistogram, DRAW:GetColorNew(DRAW.Runtime.Theme, "graphbar/progessbar", _bar))
+		ImGui.PushStyleColor(ImGuiCol.PlotHistogram, DRAW:GetColorNew("graphbar/progessbar", _bar))
 
 		ImGui.ProgressBar(1, UTIL:ScreenScale(_width), bar, "")
 		ImGui.PopStyleColor(2)
@@ -3367,7 +3375,7 @@ function DRAW:GraphPainter(_child, _width, _height, _scale, _value, _show, _bar,
 				DRAW:Sameline()
 			end
 
-			ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew(DRAW.Runtime.Theme, "graph/text/value", _text))
+			ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew("graph/text/value", _text))
 			ImGui.Text(txt)
 			ImGui.PopStyleColor(1)
 
@@ -3391,8 +3399,14 @@ end
 
 
 
-
-
+local function capture(table, key, rest)
+	return function(...)
+		local args = {...}
+		print(string.format("call to %s with key %s and arg[1] %s",
+                                   tostring(table), tostring(key),
+                                   tostring(args[1])))
+	end
+end
 
 
 --

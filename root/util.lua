@@ -111,6 +111,13 @@ function UTIL:WindowScale(pixels, factor)
 	return pixels
 end
 
+
+
+
+
+
+
+
 --
 --// UTIL:WindowScale(<FLOAT>,<FLOAT>)
 --
@@ -238,7 +245,7 @@ end
 --// UTIL:ThemeToInt(<STRING>)
 --
 function UTIL:ThemeToInt(input)
-	for k,v in pairs(UTIL.Runtime.Themes)
+	for k,v in pairs(UTIL.Runtime.Themes.Listing)
 	do
 		if v == input then return (k - 1) end
 	end
@@ -249,7 +256,7 @@ end
 --// UTIL:ThemeToInt(<INT>)
 --
 function UTIL:IntToTheme(input)
-	for k,v in pairs(UTIL.Runtime.Themes)
+	for k,v in pairs(UTIL.Runtime.Themes.Listing)
 	do
 		if (k - 1) == input then return v end
 	end
@@ -319,9 +326,7 @@ end
 function UTIL:TableEntriesLast(input,num)
 	if UTIL:TableLength(input) > num
 	then
-		local result = {table.unpack(input,#input-num+1)}
-
-		return result
+		return {table.unpack(input,#input-num+1)}
 	end
 	return input
 end
