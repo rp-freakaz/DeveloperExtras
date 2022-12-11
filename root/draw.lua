@@ -6,226 +6,267 @@
 -- https://github.com/rp-freakaz/DeveloperExtras
 -- hello@rootpunk.com
 --
+-- CHILD FLAGS "ImGuiWindowFlags.NoTitleBar + ImGuiWindowFlags.NoScrollbar + ImGuiWindowFlags.NoResize + ImGuiWindowFlags.NoCollapse + ImGuiWindowFlags.NoMove + ImGuiWindowFlags.NoBackground + ImGuiWindowFlags.AlwaysAutoResize"
+--
 local DRAW = {}
 
 -- libraries
 local UTIL = require("root/util.lua"):Pre()
 
 --
---// DRAW:GetColor(<STRING>,<STRING>,<INT>)
 --
-function DRAW:GetColor(color, style, state)
+--//////////////////// COLORS ////////////////////
+--
+--
+
+--
+--// DRAW:GetColor(<STRING>,<INT>)
+--
+function DRAW:GetColor(color, state)
 
 	-- catch unset
-	local color = color or "Transparent"
-	local style = style or "Normal"
+	local color = color or false
 	local state = state or 0
 
-	if color == "Alarm" 	 				then return ImGui.GetColorU32(1, 0, 0, 1) end
+	--
+	--// GetStatus(<BOOL>,<FLOAT>)
+	--
+	local function GetStatus(state, value)
+		if state > 0 then return UTIL:ShortenFloat(value / 1.75) end
+		return value
+	end
 
-	-- transparency
-	if color == "Transparent" 	 			then return ImGui.GetColorU32(0, 0, 0, 0) end
+	--
+	--// GetShared(<STRING>,<INT>)
+	--
+	local function GetShared(color, state)
 
-	-- black
-	if color == "Black" and style == "Normal"		then return ImGui.GetColorU32(0.04, 0.04, 0.06, DRAW:GetState(state, 0.85)) end
-	if color == "Black" and style == "Light"		then return ImGui.GetColorU32(0.1, 0.1, 0.12, DRAW:GetState(state, 0.5)) end
-	if color == "Black" and style == "Dark"			then return ImGui.GetColorU32(0.01, 0.01, 0.03, DRAW:GetState(state, 0.9)) end
+		-- fallback
+		if color == "fallback"						then return ImGui.GetColorU32(1, 0, 0, 0.5) end
+		if color == "transparency"					then return ImGui.GetColorU32(0, 0, 0, 0) end
 
-	-- white
-	if color == "White" and style == "Normal"		then return ImGui.GetColorU32(0.9, 0.9, 1, DRAW:GetState(state, 0.9)) end
-	if color == "White" and style == "Light"		then return ImGui.GetColorU32(0.9, 0.9, 1, DRAW:GetState(state, 1)) end
-	if color == "White" and style == "Dark"			then return ImGui.GetColorU32(0.8, 0.8, 0.85, DRAW:GetState(state, 0.8)) end
+		-- solids
+		if color == "generic/white"					then return ImGui.GetColorU32(1, 1, 1, GetStatus(state, 1)) end
+		if color == "generic/black"					then return ImGui.GetColorU32(0, 0, 0, GetStatus(state, 1)) end
+		if color == "generic/orange"					then return ImGui.GetColorU32(1, 0.56, 0.13, GetStatus(state, 1)) end
+		if color == "generic/grey"					then return ImGui.GetColorU32(0.5, 0.5, 0.5, GetStatus(state, 1)) end
+		if color == "generic/cyan"					then return ImGui.GetColorU32(0, 0.92, 0.92, GetStatus(state, 1)) end
+		if color == "generic/pink"					then return ImGui.GetColorU32(0.89, 0, 0.98, GetStatus(state, 1)) end
+		if color == "generic/red"					then return ImGui.GetColorU32(1, 0, 0, GetStatus(state, 1)) end
 
-	-- orange
-	if color == "Orange" and style == "Normal"		then return ImGui.GetColorU32(1, 0.56, 0.13, DRAW:GetState(state, 0.85)) end
-	if color == "Orange" and style == "Light"		then return ImGui.GetColorU32(1, 0.56, 0.13, DRAW:GetState(state, 1)) end
-	if color == "Orange" and style == "Dark"		then return ImGui.GetColorU32(1, 0.56, 0.13, DRAW:GetState(state, 0.70)) end
+		-- variations
+		if color == "generic/white/dark"				then return ImGui.GetColorU32(0.8, 0.8, 0.85, GetStatus(state, 0.8)) end
+		if color == "generic/white/light"				then return ImGui.GetColorU32(0.9, 0.9, 1, GetStatus(state, 1)) end
+		if color == "generic/white/normal"				then return ImGui.GetColorU32(0.9, 0.9, 1, GetStatus(state, 0.9)) end
 
-	if color == "Orange" and style == "Border"		then return ImGui.GetColorU32(0.2, 0.2, 0.23, 0.5) end
+		if color == "generic/black/dark"				then return ImGui.GetColorU32(0.01, 0.01, 0.03, GetStatus(state, 0.9)) end
+		if color == "generic/black/light"				then return ImGui.GetColorU32(0.1, 0.1, 0.12, GetStatus(state, 0.5)) end
+		if color == "generic/black/normal"				then return ImGui.GetColorU32(0.04, 0.04, 0.06, GetStatus(state, 0.85)) end
 
+		if color == "generic/cyan/dark"					then return ImGui.GetColorU32(0, 0.52, 0.52, GetStatus(state, 1)) end
+		if color == "generic/cyan/light"				then return ImGui.GetColorU32(0, 0.72, 0.72, GetStatus(state, 1)) end
+		if color == "generic/cyan/normal"				then return ImGui.GetColorU32(0, 0.92, 0.92, GetStatus(state, 1)) end
 
-	-- grey
-	if color == "Grey" and style == "Normal"		then return ImGui.GetColorU32(0.4, 0.4, 0.43, DRAW:GetState(state, 0.7)) end
+		if color == "generic/pink/dark"					then return ImGui.GetColorU32(0.69, 0, 0.78, GetStatus(state, 1)) end
+		if color == "generic/pink/light"				then return ImGui.GetColorU32(0.69, 0, 0.78, GetStatus(state, 1)) end
+		if color == "generic/pink/normal"				then return ImGui.GetColorU32(0.69, 0, 0.78, GetStatus(state, 1)) end
 
-	if color == "Grey" and style == "Light"			then return ImGui.GetColorU32(0.5, 0.5, 0.53, DRAW:GetState(state, 0.7)) end
-	if color == "Grey" and style == "Lighter"		then return ImGui.GetColorU32(0.6, 0.6, 0.63, DRAW:GetState(state, 0.8)) end
-	if color == "Grey" and style == "Lightest"		then return ImGui.GetColorU32(0.7, 0.7, 0.73, DRAW:GetState(state, 0.9)) end
+		if color == "generic/orange/dark"				then return ImGui.GetColorU32(1, 0.56, 0.13, GetStatus(state, 0.7)) end
+		if color == "generic/orange/darker"				then return ImGui.GetColorU32(1, 0.56, 0.13, GetStatus(state, 0.5)) end
+		if color == "generic/orange/darkest"				then return ImGui.GetColorU32(1, 0.56, 0.13, GetStatus(state, 0.3)) end
+		if color == "generic/orange/light"				then return ImGui.GetColorU32(1, 0.56, 0.13, GetStatus(state, 1)) end
+		if color == "generic/orange/normal"				then return ImGui.GetColorU32(1, 0.56, 0.13, GetStatus(state, 0.85)) end
 
-	if color == "Grey" and style == "Dark"			then return ImGui.GetColorU32(0.3, 0.3, 0.33, DRAW:GetState(state, 0.7)) end
-	if color == "Grey" and style == "Darker"		then return ImGui.GetColorU32(0.2, 0.2, 0.23, DRAW:GetState(state, 0.7)) end
-	if color == "Grey" and style == "Darkest"		then return ImGui.GetColorU32(0.1, 0.1, 0.13, DRAW:GetState(state, 0.7)) end
-
-
-	-- logo
-	if color == "Orange" and style == "Logo"		then return ImGui.GetColorU32(1, 0.56, 0.13, state) end
-	if color == "White" and style == "Logo"			then return ImGui.GetColorU32(0.9, 0.9, 1, state) end
-	if color == "Grey" and style == "Logo"			then return ImGui.GetColorU32(0.4, 0.4, 0.43, state) end
-
-	-- graph overlay definitions
-	--if color == "graph_black"				then return ImGui.GetColorU32(0, 0, 0.03, state) end
-	--if color == "graph_white"				then return ImGui.GetColorU32(1, 1, 1, state) end
-	--if color == "graph_orange"				then return ImGui.GetColorU32(1, 0.56, 0.13, state) end
-
-	--if color == "graph_grey_normal"				then return ImGui.GetColorU32(0.5, 0.5, 0.52, state) end
-	--if color == "graph_grey_dark"				then return ImGui.GetColorU32(0.2, 0.2, 0.22, state) end
-	--if color == "graph_grey_light"				then return ImGui.GetColorU32(0.7, 0.7, 0.72, state) end
-
-	-- logo animation definitions
-	--if color == "logo_orange"				then return ImGui.GetColorU32(1, 0.56, 0.13, state) end
-	--if color == "logo_white"				then return ImGui.GetColorU32(1, 1, 1, state) end
-	--if color == "logo_grey"					then return ImGui.GetColorU32(0.4, 0.4, 0.43, state) end
-end
-
-
-
-
-
---
---// DRAW:GetColor(<STRING>,<STRING>,<INT>)
---
-function DRAW:GetColorNew(color, state)
-
-	-- catch unset
-	local color = color or "nocolor"
-	local state = state or 0
+		if color == "generic/grey/dark"					then return ImGui.GetColorU32(0.3, 0.3, 0.33, GetStatus(state, 0.7)) end
+		if color == "generic/grey/darker"				then return ImGui.GetColorU32(0.2, 0.2, 0.23, GetStatus(state, 0.7)) end
+		if color == "generic/grey/darkest"				then return ImGui.GetColorU32(0.1, 0.1, 0.13, GetStatus(state, 0.7)) end
+		if color == "generic/grey/light"				then return ImGui.GetColorU32(0.5, 0.5, 0.53, GetStatus(state, 0.7)) end
+		if color == "generic/grey/lighter"				then return ImGui.GetColorU32(0.6, 0.6, 0.63, GetStatus(state, 0.8)) end
+		if color == "generic/grey/lightest"				then return ImGui.GetColorU32(0.7, 0.7, 0.73, GetStatus(state, 0.9)) end
+		if color == "generic/grey/normal"				then return ImGui.GetColorU32(0.4, 0.4, 0.43, GetStatus(state, 0.7)) end
+	end
 
 	-- no color
-	if color == "nocolor"						then return ImGui.GetColorU32(0, 0, 0, 0) end
+	if not color							then return ImGui.GetColorU32(0, 0, 0, 0) end
 
 	-- theme: default
 	if DRAW.Runtime.Themes.Select == 0
 	then
 		-- window
-		if color == "window/main/text"				then return DRAW:GetGeneric("generic/white/light") end
+		if color == "window/main/text"				then return GetShared("generic/white/light", state) end
 		if color == "window/main/border"			then return ImGui.GetColorU32(0.2, 0.2, 0.23, 0.3) end
-		if color == "window/main/background"			then return DRAW:GetGeneric("generic/black/dark") end
-		if color == "window/main/title/background"		then return DRAW:GetGeneric("generic/black/dark") end
-		if color == "window/main/title/background/active"	then return DRAW:GetGeneric("generic/black/dark") end
-		if color == "window/main/title/background/collapsed"	then return DRAW:GetGeneric("generic/black/dark") end
-		if color == "window/main/resize"			then return DRAW:GetGeneric("generic/grey/dark") end
-		if color == "window/main/resize/active"			then return DRAW:GetGeneric("generic/orange/normal") end
-		if color == "window/main/resize/hovered"		then return DRAW:GetGeneric("generic/orange/light") end
-		if color == "window/main/separator"			then return DRAW:GetGeneric("generic/grey/darkest") end
+		if color == "window/main/background"			then return GetShared("generic/black/dark", state) end
+		if color == "window/main/title/background"		then return GetShared("generic/black/dark", state) end
+		if color == "window/main/title/background/active"	then return GetShared("generic/black/dark", state) end
+		if color == "window/main/title/background/collapsed"	then return GetShared("generic/black/dark", state) end
+		if color == "window/main/resize"			then return GetShared("generic/grey/dark", state) end
+		if color == "window/main/resize/active"			then return GetShared("generic/orange/normal", state) end
+		if color == "window/main/resize/hovered"		then return GetShared("generic/orange/light", state) end
+		if color == "window/main/separator"			then return GetShared("generic/grey/darkest", state) end
+		if color == "window/main/scrollbar"			then return GetShared("generic/orange/dark", state) end
+		if color == "window/main/scrollbar/hovered"		then return GetShared("generic/orange/normal", state) end
+		if color == "window/main/scrollbar/background"		then return GetShared("transparency", state) end
 
 		-- tabbar
-		if color == "tabbar/text"				then return DRAW:GetGeneric("generic/white/normal") end
-		if color == "tabbar/tab"				then return DRAW:GetGeneric("generic/grey/darker") end
-		if color == "tabbar/tab/active"				then return DRAW:GetGeneric("generic/orange/normal") end
-		if color == "tabbar/tab/hovered"			then return DRAW:GetGeneric("generic/orange/light") end
-		if color == "tabbar/bottomline"				then return DRAW:GetGeneric("generic/orange/normal") end
+		if color == "tabbar/text"				then return GetShared("generic/white/normal", state) end
+		if color == "tabbar/tab"				then return GetShared("generic/grey/darker", state) end
+		if color == "tabbar/tab/active"				then return GetShared("generic/orange/normal", state) end
+		if color == "tabbar/tab/hovered"			then return GetShared("generic/orange/light", state) end
+		if color == "tabbar/bottomline"				then return GetShared("generic/orange/normal", state) end
+
+		-- collapse
+		if color == "collapse/text"				then return GetShared("generic/white/normal", state) end
+		if color == "collapse/header"				then return GetShared("generic/grey/darker", state) end
+		if color == "collapse/header/active"			then return GetShared("generic/orange/normal", state) end
+		if color == "collapse/header/hovered"			then return GetShared("generic/orange/light", state) end
 
 		-- elements
-		if color == "element/title"				then return DRAW:GetGeneric("generic/white/normal") end
-		if color == "element/notice"				then return DRAW:GetGeneric("generic/white/dark") end
-		if color == "element/description"			then return DRAW:GetGeneric("generic/grey/lighter") end
-		if color == "element/decoration"			then return DRAW:GetGeneric("generic/orange/normal") end
+		if color == "element/title"				then return GetShared("generic/white/normal", state) end
+		if color == "element/notice"				then return GetShared("generic/white/dark", state) end
+		if color == "element/description"			then return GetShared("generic/grey/lighter", state) end
+		if color == "element/decoration"			then return GetShared("generic/orange/normal", state) end
 
 		-- graph
-		if color == "graph/text/name"				then return DRAW:GetGeneric("generic/grey/lighter") end
-		if color == "graph/text/value"				then return DRAW:GetGeneric("generic/white/dark") end
-		if color == "graphbar/background"			then return DRAW:GetGeneric("generic/grey/darkest") end
-		if color == "graphbar/progessbar"			then return DRAW:GetGeneric("generic/orange/normal") end
+		if color == "graph/text/name"				then return GetShared("generic/grey/lighter", state) end
+		if color == "graph/text/value"				then return GetShared("generic/white/dark", state) end
+		if color == "graphbar/background"			then return GetShared("generic/grey/darkest", state) end
+		if color == "graphbar/progessbar"			then return GetShared("generic/orange/normal", state) end
 
 		-- slider
-		if color == "slider/minmax"				then return DRAW:GetGeneric("generic/grey/light") end
-		if color == "slider/text"				then return DRAW:GetGeneric("generic/white/normal") end
-		if color == "slider/grab"				then return DRAW:GetGeneric("generic/orange/normal") end
-		if color == "slider/grab/active"			then return DRAW:GetGeneric("generic/orange/light") end
-		if color == "slider/background"				then return DRAW:GetGeneric("generic/grey/darker") end
-		if color == "slider/background/active"			then return DRAW:GetGeneric("generic/grey/darker") end
-		if color == "slider/background/hovered"			then return DRAW:GetGeneric("generic/grey/darker") end
+		if color == "slider/minmax"				then return GetShared("generic/grey/light", state) end
+		if color == "slider/text"				then return GetShared("generic/white/normal", state) end
+		if color == "slider/grab"				then return GetShared("generic/orange/normal", state) end
+		if color == "slider/grab/active"			then return GetShared("generic/orange/light", state) end
+		if color == "slider/background"				then return GetShared("generic/grey/darker", state) end
+		if color == "slider/background/active"			then return GetShared("generic/grey/darker", state) end
+		if color == "slider/background/hovered"			then return GetShared("generic/grey/darker", state) end
+
+		-- checkbox
+		if color == "checkbox/checkmark"			then return GetShared("generic/white/normal", state) end
+		if color == "checkbox/on/text"				then return GetShared("generic/orange/normal", state) end
+		if color == "checkbox/on/background"			then return GetShared("generic/grey/darker", state) end
+		if color == "checkbox/on/background/active"		then return GetShared("generic/grey/darker", state) end
+		if color == "checkbox/on/background/hovered"		then return GetShared("generic/grey/darker", state) end
+		if color == "checkbox/off/text"				then return GetShared("generic/white/normal", state) end
+		if color == "checkbox/off/background"			then return GetShared("generic/grey/darker", state) end
+		if color == "checkbox/off/background/active"		then return GetShared("generic/grey/darker", state) end
+		if color == "checkbox/off/background/hovered"		then return GetShared("generic/grey/darker", state) end
 
 		-- quickshift
-		if color == "quickshift/background"			then return DRAW:GetGeneric("generic/grey/darker") end
-		if color == "quickshift/background/active"		then return DRAW:GetGeneric("generic/grey/darker") end
-		if color == "quickshift/background/hovered"		then return DRAW:GetGeneric("generic/grey/darker") end
-		if color == "quickshift/on/border"			then return DRAW:GetGeneric("generic/orange/darkest") end
-		if color == "quickshift/on/grab/normal"			then return DRAW:GetGeneric("generic/orange/normal") end
-		if color == "quickshift/on/grab/active"			then return DRAW:GetGeneric("generic/orange/light") end
-		if color == "quickshift/off/border"			then return DRAW:GetGeneric("generic/grey/dark") end
-		if color == "quickshift/off/grab/normal"		then return DRAW:GetGeneric("generic/grey/light") end
-		if color == "quickshift/off/grab/active"		then return DRAW:GetGeneric("generic/grey/lighter") end
+		if color == "quickshift/background"			then return GetShared("generic/grey/darker", state) end
+		if color == "quickshift/background/active"		then return GetShared("generic/grey/darker", state) end
+		if color == "quickshift/background/hovered"		then return GetShared("generic/grey/darker", state) end
+		if color == "quickshift/on/border"			then return GetShared("generic/orange/darkest", state) end
+		if color == "quickshift/on/grab/normal"			then return GetShared("generic/orange/normal", state) end
+		if color == "quickshift/on/grab/active"			then return GetShared("generic/orange/light", state) end
+		if color == "quickshift/off/border"			then return GetShared("generic/grey/dark", state) end
+		if color == "quickshift/off/grab/normal"		then return GetShared("generic/grey/light", state) end
+		if color == "quickshift/off/grab/active"		then return GetShared("generic/grey/lighter", state) end
 
 		-- combobox
-		if color == "combobox/border"				then return DRAW:GetGeneric("generic/grey/dark") end
-		if color == "combobox/background"			then return DRAW:GetGeneric("generic/grey/darker") end
-		if color == "combobox/popup/background"			then return DRAW:GetGeneric("generic/grey/darker") end
-		if color == "combobox/button"				then return DRAW:GetGeneric("generic/orange/normal") end
-		if color == "combobox/button/active"			then return DRAW:GetGeneric("generic/orange/normal") end
-		if color == "combobox/button/hovered"			then return DRAW:GetGeneric("generic/orange/light") end
-		if color == "combobox/header"				then return DRAW:GetGeneric("generic/grey/normal") end
-		if color == "combobox/header/active"			then return DRAW:GetGeneric("generic/orange/light") end
-		if color == "combobox/header/hovered"			then return DRAW:GetGeneric("generic/orange/normal") end
+		if color == "combobox/border"				then return GetShared("generic/grey/dark", state) end
+		if color == "combobox/background"			then return GetShared("generic/grey/darker", state) end
+		if color == "combobox/popup/background"			then return GetShared("generic/grey/darker", state) end
+		if color == "combobox/button"				then return GetShared("generic/orange/normal", state) end
+		if color == "combobox/button/active"			then return GetShared("generic/orange/normal", state) end
+		if color == "combobox/button/hovered"			then return GetShared("generic/orange/light", state) end
+		if color == "combobox/header"				then return GetShared("generic/grey/normal", state) end
+		if color == "combobox/header/active"			then return GetShared("generic/orange/light", state) end
+		if color == "combobox/header/hovered"			then return GetShared("generic/orange/normal", state) end
+
+		-- notification
+		if color == "notification/text"				then return GetShared("generic/white/dark", state) end
+		if color == "notification/background"			then return GetShared("generic/grey/darkest", state) end
+		if color == "notification/decoration"			then return GetShared("generic/orange/normal", state) end
+
+		-- animations
+		if color == "animations/logo/default"			then return ImGui.GetColorU32(1, 0.56, 0.13, state) end
+		if color == "animations/logo/highlight"			then return ImGui.GetColorU32(0.9, 0.9, 1, state) end
+		if color == "animations/logo/decoration"		then return ImGui.GetColorU32(0.4, 0.4, 0.43, state) end
 
 		-- debug
-		if color == "debug/table/background"			then return DRAW:GetGeneric("generic/grey/darker") end
+		if color == "debug/table/background"			then return GetShared("generic/grey/darker", state) end
+
+
+
+
+
+
 
 		-- fallback
-		return DRAW:GetGeneric("fallback")
+		return GetShared("fallback")
 	end
 
 	-- theme: white satin
 	if DRAW.Runtime.Themes.Select == 1
 	then
 		-- window
-		if color == "window/main/text"				then return DRAW:GetGeneric("generic/grey/darker") end
-		if color == "window/main/border"			then return ImGui.GetColorU32(0.95, 0.95, 1, 1) end
-		if color == "window/main/background"			then return ImGui.GetColorU32(0.95, 0.95, 1, 0.85) end
-		if color == "window/main/title/background"		then return ImGui.GetColorU32(0.95, 0.95, 1, 0.85) end
-		if color == "window/main/title/background/active"	then return ImGui.GetColorU32(0.95, 0.95, 1, 0.85) end
-		if color == "window/main/title/background/collapsed"	then return ImGui.GetColorU32(0.95, 0.95, 1, 0.85) end
-		if color == "window/main/resize"			then return DRAW:GetGeneric("generic/grey/light") end
-		if color == "window/main/resize/active"			then return DRAW:GetGeneric("generic/grey/normal") end
-		if color == "window/main/resize/hovered"		then return DRAW:GetGeneric("generic/grey/dark") end
-		if color == "window/main/separator"			then return DRAW:GetGeneric("generic/white/dark") end
+		if color == "window/main/text"				then return GetShared("generic/grey/darker") end
+		if color == "window/main/border"			then return ImGui.GetColorU32(0.95, 0.95, 1, GetStatus(state, 1)) end
+		if color == "window/main/background"			then return ImGui.GetColorU32(0.95, 0.95, 1, GetStatus(state, 0.85)) end
+		if color == "window/main/title/background"		then return ImGui.GetColorU32(0.95, 0.95, 1, GetStatus(state, 0.85)) end
+		if color == "window/main/title/background/active"	then return ImGui.GetColorU32(0.95, 0.95, 1, GetStatus(state, 0.85)) end
+		if color == "window/main/title/background/collapsed"	then return ImGui.GetColorU32(0.95, 0.95, 1, GetStatus(state, 0.85)) end
+		if color == "window/main/resize"			then return GetShared("generic/grey/light") end
+		if color == "window/main/resize/active"			then return GetShared("generic/grey/normal") end
+		if color == "window/main/resize/hovered"		then return GetShared("generic/grey/dark") end
+		if color == "window/main/separator"			then return GetShared("generic/white/dark") end
 
 		-- tabbar
-		if color == "tabbar/text"				then return DRAW:GetGeneric("generic/black/normal") end
-		if color == "tabbar/tab"				then return DRAW:GetGeneric("generic/white/dark") end
-		if color == "tabbar/tab/active"				then return DRAW:GetGeneric("generic/grey/lightest") end
-		if color == "tabbar/tab/hovered"			then return DRAW:GetGeneric("generic/grey/lighter") end
-		if color == "tabbar/bottomline"				then return DRAW:GetGeneric("generic/grey/lightest") end
+		if color == "tabbar/text"				then return GetShared("generic/black/normal") end
+		if color == "tabbar/tab"				then return GetShared("generic/white/dark") end
+		if color == "tabbar/tab/active"				then return GetShared("generic/grey/lightest") end
+		if color == "tabbar/tab/hovered"			then return GetShared("generic/grey/lighter") end
+		if color == "tabbar/bottomline"				then return GetShared("generic/grey/lightest") end
 
 		-- elements
-		if color == "element/title"				then return DRAW:GetGeneric("generic/black/normal") end
-		if color == "element/notice"				then return DRAW:GetGeneric("generic/black/light") end
-		if color == "element/description"			then return DRAW:GetGeneric("generic/grey/dark") end
-		if color == "element/decoration"			then return DRAW:GetGeneric("generic/grey/dark") end
+		if color == "element/title"				then return GetShared("generic/black/normal") end
+		if color == "element/notice"				then return GetShared("generic/black/light") end
+		if color == "element/description"			then return GetShared("generic/grey/dark") end
+		if color == "element/decoration"			then return GetShared("generic/grey/dark") end
 
 		-- slider
-		if color == "slider/minmax"				then return DRAW:GetGeneric("generic/grey/light") end
-		if color == "slider/text"				then return DRAW:GetGeneric("generic/white/normal") end
-		if color == "slider/grab"				then return DRAW:GetGeneric("generic/orange/normal") end
-		if color == "slider/grab/active"			then return DRAW:GetGeneric("generic/orange/light") end
-		if color == "slider/background"				then return DRAW:GetGeneric("generic/grey/darker") end
-		if color == "slider/background/active"			then return DRAW:GetGeneric("generic/grey/darker") end
-		if color == "slider/background/hovered"			then return DRAW:GetGeneric("generic/grey/darker") end
+		if color == "slider/minmax"				then return GetShared("generic/grey/light") end
+		if color == "slider/text"				then return GetShared("generic/white/normal") end
+		if color == "slider/grab"				then return GetShared("generic/orange/normal") end
+		if color == "slider/grab/active"			then return GetShared("generic/orange/light") end
+		if color == "slider/background"				then return GetShared("generic/grey/darker") end
+		if color == "slider/background/active"			then return GetShared("generic/grey/darker") end
+		if color == "slider/background/hovered"			then return GetShared("generic/grey/darker") end
 
 
 		-- quickshift
-		if color == "quickshift/background"			then return DRAW:GetGeneric("generic/white/dark") end
-		if color == "quickshift/background/active"		then return DRAW:GetGeneric("generic/white/dark") end
-		if color == "quickshift/background/hovered"		then return DRAW:GetGeneric("generic/white/dark") end
-		if color == "quickshift/on/border"			then return DRAW:GetGeneric("generic/grey/lightest") end
-		if color == "quickshift/on/grab/normal"			then return DRAW:GetGeneric("generic/white/light") end
-		if color == "quickshift/on/grab/active"			then return DRAW:GetGeneric("generic/white/light") end
-		if color == "quickshift/off/border"			then return DRAW:GetGeneric("generic/grey/lightest") end
-		if color == "quickshift/off/grab/normal"		then return DRAW:GetGeneric("generic/grey/darker") end
-		if color == "quickshift/off/grab/active"		then return DRAW:GetGeneric("generic/grey/darker") end
+		if color == "quickshift/background"			then return GetShared("generic/white/dark") end
+		if color == "quickshift/background/active"		then return GetShared("generic/white/dark") end
+		if color == "quickshift/background/hovered"		then return GetShared("generic/white/dark") end
+		if color == "quickshift/on/border"			then return GetShared("generic/grey/lightest") end
+		if color == "quickshift/on/grab/normal"			then return GetShared("generic/white/light") end
+		if color == "quickshift/on/grab/active"			then return GetShared("generic/white/light") end
+		if color == "quickshift/off/border"			then return GetShared("generic/grey/lightest") end
+		if color == "quickshift/off/grab/normal"		then return GetShared("generic/grey/darker") end
+		if color == "quickshift/off/grab/active"		then return GetShared("generic/grey/darker") end
 
 		-- combobox
-		if color == "combobox/border"				then return DRAW:GetGeneric("generic/grey/lightest") end
-		if color == "combobox/background"			then return DRAW:GetGeneric("generic/white/dark") end
-		if color == "combobox/popup/background"			then return DRAW:GetGeneric("generic/white/dark") end
-		if color == "combobox/button"				then return DRAW:GetGeneric("generic/white/normal") end
-		if color == "combobox/button/active"			then return DRAW:GetGeneric("generic/white/normal") end
-		if color == "combobox/button/hovered"			then return DRAW:GetGeneric("generic/white/light") end
-		if color == "combobox/header"				then return DRAW:GetGeneric("generic/grey/normal") end
-		if color == "combobox/header/active"			then return DRAW:GetGeneric("generic/orange/light") end
-		if color == "combobox/header/hovered"			then return DRAW:GetGeneric("generic/orange/normal") end
+		if color == "combobox/border"				then return GetShared("generic/grey/lightest") end
+		if color == "combobox/background"			then return GetShared("generic/white/dark") end
+		if color == "combobox/popup/background"			then return GetShared("generic/white/dark") end
+		if color == "combobox/button"				then return GetShared("generic/white/normal") end
+		if color == "combobox/button/active"			then return GetShared("generic/white/normal") end
+		if color == "combobox/button/hovered"			then return GetShared("generic/white/light") end
+		if color == "combobox/header"				then return GetShared("generic/grey/normal") end
+		if color == "combobox/header/active"			then return GetShared("generic/orange/light") end
+		if color == "combobox/header/hovered"			then return GetShared("generic/orange/normal") end
+
+
+
+		-- animations
+		if color == "animations/logo/default"			then return ImGui.GetColorU32(0, 0.5, 0.75, state) end
+		if color == "animations/logo/highlight"			then return ImGui.GetColorU32(0.3, 0.3, 0.33, state) end
+		if color == "animations/logo/decoration"		then return ImGui.GetColorU32(0.5, 0.5, 0.53, state) end
+
 
 		-- fallback
-		return DRAW:GetGeneric("fallback")
+		return GetShared("fallback")
 	end
 
 
@@ -233,130 +274,59 @@ function DRAW:GetColorNew(color, state)
 	if DRAW.Runtime.Themes.Select == 2
 	then
 		-- window
-		if color == "window/main/text"				then return DRAW:GetGeneric("generic/pink") end
-		if color == "window/main/border"			then return DRAW:GetGeneric("generic/cyan") end
-		if color == "window/main/background"			then return ImGui.GetColorU32(0.15, 0.15, 0.2, 0.85) end
-		if color == "window/main/title/background"		then return ImGui.GetColorU32(0.15, 0.15, 0.2, 0.85) end
-		if color == "window/main/title/background/active"	then return ImGui.GetColorU32(0.15, 0.15, 0.2, 0.85) end
-		if color == "window/main/title/background/collapsed"	then return ImGui.GetColorU32(0.15, 0.15, 0.2, 0.85) end
-		if color == "window/main/resize"			then return DRAW:GetGeneric("generic/grey/light") end
-		if color == "window/main/resize/active"			then return DRAW:GetGeneric("generic/grey/normal") end
-		if color == "window/main/resize/hovered"		then return DRAW:GetGeneric("generic/grey/dark") end
-		if color == "window/main/separator"			then return DRAW:GetGeneric("generic/white/dark") end
+		if color == "window/main/text"				then return GetShared("generic/pink") end
+		if color == "window/main/border"			then return GetShared("generic/cyan") end
+		if color == "window/main/background"			then return ImGui.GetColorU32(0.15, 0.15, 0.2, GetStatus(state, 0.85)) end
+		if color == "window/main/title/background"		then return ImGui.GetColorU32(0.15, 0.15, 0.2, GetStatus(state, 0.85)) end
+		if color == "window/main/title/background/active"	then return ImGui.GetColorU32(0.15, 0.15, 0.2, GetStatus(state, 0.85)) end
+		if color == "window/main/title/background/collapsed"	then return ImGui.GetColorU32(0.15, 0.15, 0.2, GetStatus(state, 0.85)) end
+		if color == "window/main/resize"			then return GetShared("generic/grey/light") end
+		if color == "window/main/resize/active"			then return GetShared("generic/grey/normal") end
+		if color == "window/main/resize/hovered"		then return GetShared("generic/grey/dark") end
+		if color == "window/main/separator"			then return GetShared("generic/white/dark") end
 
 		-- tabbar
-		if color == "tabbar/text"				then return DRAW:GetGeneric("generic/black/normal") end
-		if color == "tabbar/tab"				then return DRAW:GetGeneric("generic/white/dark") end
-		if color == "tabbar/tab/active"				then return DRAW:GetGeneric("generic/grey/lightest") end
-		if color == "tabbar/tab/hovered"			then return DRAW:GetGeneric("generic/grey/lighter") end
-		if color == "tabbar/bottomline"				then return DRAW:GetGeneric("generic/grey/lightest") end
+		if color == "tabbar/text"				then return GetShared("generic/black/normal") end
+		if color == "tabbar/tab"				then return GetShared("generic/white/dark") end
+		if color == "tabbar/tab/active"				then return GetShared("generic/grey/lightest") end
+		if color == "tabbar/tab/hovered"			then return GetShared("generic/grey/lighter") end
+		if color == "tabbar/bottomline"				then return GetShared("generic/grey/lightest") end
 
-		if color == "quickshift/title"				then return DRAW:GetGeneric("generic/black/normal") end
-		if color == "quickshift/description"			then return DRAW:GetGeneric("generic/black/light") end
-		if color == "quickshift/background"			then return DRAW:GetGeneric("generic/white/dark") end
-		if color == "quickshift/background/active"		then return DRAW:GetGeneric("generic/white/dark") end
-		if color == "quickshift/background/hovered"		then return DRAW:GetGeneric("generic/white/dark") end
-		if color == "quickshift/on/border"			then return DRAW:GetGeneric("generic/grey/lightest") end
-		if color == "quickshift/on/grab/normal"			then return DRAW:GetGeneric("generic/white/light") end
-		if color == "quickshift/on/grab/active"			then return DRAW:GetGeneric("generic/white/light") end
-		if color == "quickshift/off/border"			then return DRAW:GetGeneric("generic/grey/lightest") end
-		if color == "quickshift/off/grab/normal"		then return DRAW:GetGeneric("generic/grey/darker") end
-		if color == "quickshift/off/grab/active"		then return DRAW:GetGeneric("generic/grey/darker") end
+		if color == "quickshift/title"				then return GetShared("generic/black/normal") end
+		if color == "quickshift/description"			then return GetShared("generic/black/light") end
+		if color == "quickshift/background"			then return GetShared("generic/white/dark") end
+		if color == "quickshift/background/active"		then return GetShared("generic/white/dark") end
+		if color == "quickshift/background/hovered"		then return GetShared("generic/white/dark") end
+		if color == "quickshift/on/border"			then return GetShared("generic/grey/lightest") end
+		if color == "quickshift/on/grab/normal"			then return GetShared("generic/white/light") end
+		if color == "quickshift/on/grab/active"			then return GetShared("generic/white/light") end
+		if color == "quickshift/off/border"			then return GetShared("generic/grey/lightest") end
+		if color == "quickshift/off/grab/normal"		then return GetShared("generic/grey/darker") end
+		if color == "quickshift/off/grab/active"		then return GetShared("generic/grey/darker") end
 
-		if color == "combobox/title"				then return DRAW:GetGeneric("generic/black/normal") end
-		if color == "combobox/description"			then return DRAW:GetGeneric("generic/black/light") end
-		if color == "combobox/border"				then return DRAW:GetGeneric("generic/grey/lightest") end
-		if color == "combobox/background"			then return DRAW:GetGeneric("generic/white/dark") end
-		if color == "combobox/popup/background"			then return DRAW:GetGeneric("generic/white/dark") end
-		if color == "combobox/button"				then return DRAW:GetGeneric("generic/white/normal") end
-		if color == "combobox/button/active"			then return DRAW:GetGeneric("generic/white/normal") end
-		if color == "combobox/button/hovered"			then return DRAW:GetGeneric("generic/white/light") end
-		if color == "combobox/button/decoration"		then return DRAW:GetGeneric("generic/grey/darker") end
-		if color == "combobox/header"				then return DRAW:GetGeneric("generic/grey/normal") end
-		if color == "combobox/header/active"			then return DRAW:GetGeneric("generic/orange/light") end
-		if color == "combobox/header/hovered"			then return DRAW:GetGeneric("generic/orange/normal") end
+		if color == "combobox/title"				then return GetShared("generic/black/normal") end
+		if color == "combobox/description"			then return GetShared("generic/black/light") end
+		if color == "combobox/border"				then return GetShared("generic/grey/lightest") end
+		if color == "combobox/background"			then return GetShared("generic/white/dark") end
+		if color == "combobox/popup/background"			then return GetShared("generic/white/dark") end
+		if color == "combobox/button"				then return GetShared("generic/white/normal") end
+		if color == "combobox/button/active"			then return GetShared("generic/white/normal") end
+		if color == "combobox/button/hovered"			then return GetShared("generic/white/light") end
+		if color == "combobox/button/decoration"		then return GetShared("generic/grey/darker") end
+		if color == "combobox/header"				then return GetShared("generic/grey/normal") end
+		if color == "combobox/header/active"			then return GetShared("generic/orange/light") end
+		if color == "combobox/header/hovered"			then return GetShared("generic/orange/normal") end
 
 		-- fallback
-		return DRAW:GetGeneric("fallback")
-	end
-
-
-
-
-end
-
-
-
-
---
---// DRAW:GetGeneric(<STRING>,<INT>)
---
-function DRAW:GetGeneric(color, state)
-
-	-- catch unset
-	local color = color or "nocolor"
-	local state = state or 0
-
-	-- no color
-	if color == "nocolor"						then return ImGui.GetColorU32(0, 0, 0, 0) end
-	if color == "fallback"						then return ImGui.GetColorU32(1, 0, 0, 0.5) end
-
-	-- solids
-	if color == "generic/white"					then return ImGui.GetColorU32(1, 1, 1, 1) end
-	if color == "generic/black"					then return ImGui.GetColorU32(0, 0, 0, 1) end
-	if color == "generic/orange"					then return ImGui.GetColorU32(1, 0.56, 0.13, 1) end
-	if color == "generic/grey"					then return ImGui.GetColorU32(0.5, 0.5, 0.5, 1) end
-	if color == "generic/cyan"					then return ImGui.GetColorU32(0, 0.92, 0.92, 1) end
-	if color == "generic/pink"					then return ImGui.GetColorU32(0.89, 0, 0.98, 1) end
-	if color == "generic/red"					then return ImGui.GetColorU32(1, 0, 0, 1) end
-
-	-- variations
-	if color == "generic/white/dark"				then return ImGui.GetColorU32(0.8, 0.8, 0.85, 0.8) end
-	if color == "generic/white/light"				then return ImGui.GetColorU32(0.9, 0.9, 1, 1) end
-	if color == "generic/white/normal"				then return ImGui.GetColorU32(0.9, 0.9, 1, 0.9) end
-
-	if color == "generic/black/dark"				then return ImGui.GetColorU32(0.01, 0.01, 0.03, 0.9) end
-	if color == "generic/black/light"				then return ImGui.GetColorU32(0.1, 0.1, 0.12, 0.5) end
-	if color == "generic/black/normal"				then return ImGui.GetColorU32(0.04, 0.04, 0.06, 0.85) end
-
-	if color == "generic/cyan/dark"					then return ImGui.GetColorU32(0, 0.52, 0.52, 1) end
-	if color == "generic/cyan/light"				then return ImGui.GetColorU32(0, 0.72, 0.72, 1) end
-	if color == "generic/cyan/normal"				then return ImGui.GetColorU32(0, 0.92, 0.92, 1) end
-
-	if color == "generic/pink/dark"					then return ImGui.GetColorU32(0.69, 0, 0.78, 1) end
-	if color == "generic/pink/light"				then return ImGui.GetColorU32(0.69, 0, 0.78, 1) end
-	if color == "generic/pink/normal"				then return ImGui.GetColorU32(0.69, 0, 0.78, 1) end
-
-	if color == "generic/orange/dark"				then return ImGui.GetColorU32(1, 0.56, 0.13, 0.7) end
-	if color == "generic/orange/darker"				then return ImGui.GetColorU32(1, 0.56, 0.13, 0.5) end
-	if color == "generic/orange/darkest"				then return ImGui.GetColorU32(1, 0.56, 0.13, 0.3) end
-	if color == "generic/orange/light"				then return ImGui.GetColorU32(1, 0.56, 0.13, 1) end
-	if color == "generic/orange/normal"				then return ImGui.GetColorU32(1, 0.56, 0.13, 0.85) end
-
-	if color == "generic/grey/dark"					then return ImGui.GetColorU32(0.3, 0.3, 0.33, 0.7) end
-	if color == "generic/grey/darker"				then return ImGui.GetColorU32(0.2, 0.2, 0.23, 0.7) end
-	if color == "generic/grey/darkest"				then return ImGui.GetColorU32(0.1, 0.1, 0.13, 0.7) end
-	if color == "generic/grey/light"				then return ImGui.GetColorU32(0.5, 0.5, 0.53, 0.7) end
-	if color == "generic/grey/lighter"				then return ImGui.GetColorU32(0.6, 0.6, 0.63, 0.8) end
-	if color == "generic/grey/lightest"				then return ImGui.GetColorU32(0.7, 0.7, 0.73, 0.9) end
-	if color == "generic/grey/normal"				then return ImGui.GetColorU32(0.4, 0.4, 0.43, 0.7) end
-end
-
-
---
---// DRAW:GetState(<INT>,<FLOAT>)
---
-function DRAW:GetState(state, trans)
-	if state > 0 then
-		return UTIL:ShortenFloat(trans / 1.5)
-	else
-		return trans
+		return GetShared("fallback")
 	end
 end
 
-
-
-
+--
+--
+--//////////////////// BASE ELEMENTS ////////////////////
+--
+--
 
 --
 --// DRAW:WindowStart()
@@ -373,7 +343,7 @@ function DRAW:WindowStart()
 		ImGui.SetNextWindowSizeConstraints(UTIL:ScreenScale(456), UTIL:ScreenScale(600), UTIL:ScreenScale(456), DRAW.Scaling.Screen.Height - 100)
 	end
 
-	-- global styles
+	-- add stacks (global)
 	ImGui.PushStyleVar(ImGuiStyleVar.ScrollbarSize, 0)
 	ImGui.PushStyleVar(ImGuiStyleVar.ScrollbarRounding, 0)
 	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, 0, 0)
@@ -385,26 +355,20 @@ function DRAW:WindowStart()
 	ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, 0, 0)
 	ImGui.PushStyleVar(ImGuiStyleVar.ChildBorderSize, 0)
 
-	--
-	-- window decoration
-	--
-
-	-- define colors
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew("window/main/text"))
-	ImGui.PushStyleColor(ImGuiCol.Border, DRAW:GetColorNew("window/main/border"))
-	ImGui.PushStyleColor(ImGuiCol.WindowBg, DRAW:GetColorNew("window/main/background"))
-	ImGui.PushStyleColor(ImGuiCol.TitleBg, DRAW:GetColorNew("window/main/title/background"))
-	ImGui.PushStyleColor(ImGuiCol.TitleBgActive, DRAW:GetColorNew("window/main/title/background/active"))
-	ImGui.PushStyleColor(ImGuiCol.TitleBgCollapsed, DRAW:GetColorNew("window/main/title/background/collapsed"))
-	ImGui.PushStyleColor(ImGuiCol.ResizeGrip, DRAW:GetColorNew("window/main/resize"))
-	ImGui.PushStyleColor(ImGuiCol.ResizeGripActive, DRAW:GetColorNew("window/main/resize/active"))
-	ImGui.PushStyleColor(ImGuiCol.ResizeGripHovered, DRAW:GetColorNew("window/main/resize/hovered"))
-	ImGui.PushStyleColor(ImGuiCol.Button, DRAW:GetColorNew())
-	ImGui.PushStyleColor(ImGuiCol.ButtonActive, DRAW:GetColorNew())
-	ImGui.PushStyleColor(ImGuiCol.ButtonHovered, DRAW:GetColorNew())
-
-	-- define styles
-	ImGui.PushStyleVar(ImGuiStyleVar.WindowBorderSize, UTIL:WindowBorder(DRAW.Scaling.Window.Border))
+	-- add stacks (window)
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("window/main/text"))
+	ImGui.PushStyleColor(ImGuiCol.Border, DRAW:GetColor("window/main/border"))
+	ImGui.PushStyleColor(ImGuiCol.WindowBg, DRAW:GetColor("window/main/background"))
+	ImGui.PushStyleColor(ImGuiCol.TitleBg, DRAW:GetColor("window/main/title/background"))
+	ImGui.PushStyleColor(ImGuiCol.TitleBgActive, DRAW:GetColor("window/main/title/background/active"))
+	ImGui.PushStyleColor(ImGuiCol.TitleBgCollapsed, DRAW:GetColor("window/main/title/background/collapsed"))
+	ImGui.PushStyleColor(ImGuiCol.ResizeGrip, DRAW:GetColor("window/main/resize"))
+	ImGui.PushStyleColor(ImGuiCol.ResizeGripActive, DRAW:GetColor("window/main/resize/active"))
+	ImGui.PushStyleColor(ImGuiCol.ResizeGripHovered, DRAW:GetColor("window/main/resize/hovered"))
+	ImGui.PushStyleColor(ImGuiCol.Button, DRAW:GetColor())
+	ImGui.PushStyleColor(ImGuiCol.ButtonActive, DRAW:GetColor())
+	ImGui.PushStyleColor(ImGuiCol.ButtonHovered, DRAW:GetColor())
+	ImGui.PushStyleVar(ImGuiStyleVar.WindowBorderSize, UTIL:BorderScale(DRAW.Runtime.Window.Border))
 	ImGui.PushStyleVar(ImGuiStyleVar.WindowRounding, UTIL:ScreenScale(6))
 	ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, 0, 0)
 	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:WindowScale(8), UTIL:WindowScale(10))
@@ -424,7 +388,7 @@ function DRAW:WindowStart()
 		_trigger = ImGui.Begin(UTIL:SpaceBetween(DRAW.Project.." v"..DRAW.Version.String, "CET "..DRAW.Version.Cet.String.." // PATCH "..DRAW.Version.Game.String, ImGui.GetWindowWidth() - 36, UTIL:TextWidth(" ")), ImGuiWindowFlags.NoScrollbar)
 	end
 
-	-- drop stacks
+	-- drop stacks (window)
 	ImGui.PopStyleVar(5)
 	ImGui.PopStyleColor(12)
 
@@ -436,7 +400,7 @@ end
 --
 function DRAW:WindowEnd()
 
-	-- global styles
+	-- drop stacks (global)
 	ImGui.PopStyleVar(10)
 
 	-- end window
@@ -448,20 +412,20 @@ end
 --
 function DRAW:TabbarStart()
 
-	-- add stacks
-	ImGui.PushStyleColor(ImGuiCol.TabActive, DRAW:GetColorNew("tabbar/bottomline"))
+	-- add stacks (tabbar)
+	ImGui.PushStyleColor(ImGuiCol.TabActive, DRAW:GetColor("tabbar/bottomline"))
 	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:WindowScale(4), UTIL:WindowScale(6))
 
-	-- fix window border size
-	if UTIL:WindowBorder(DRAW.Scaling.Window.Border) > 0
+	-- fix left border size
+	if UTIL:BorderScale(DRAW.Runtime.Window.Border) > 0
 	then
-		DRAW:Spacing(UTIL:WindowBorder(DRAW.Scaling.Window.Border),1)
+		DRAW:Spacing(UTIL:BorderScale(DRAW.Runtime.Window.Border),1)
 	end
 
 	-- create tabbar
 	local _trigger = ImGui.BeginTabBar("DE_TB")
 
-	-- drop stacks
+	-- drop stacks (tabbar)
 	ImGui.PopStyleVar(1)
 	ImGui.PopStyleColor(1)
 
@@ -480,20 +444,17 @@ end
 --
 function DRAW:TabitemStart(title)
 
-	-- catch unset
-	local title = title or "Unknown"
-
-	-- add stacks
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew("tabbar/text"))
-	ImGui.PushStyleColor(ImGuiCol.Tab, DRAW:GetColorNew("tabbar/tab"))
-	ImGui.PushStyleColor(ImGuiCol.TabActive, DRAW:GetColorNew("tabbar/tab/active"))
-	ImGui.PushStyleColor(ImGuiCol.TabHovered, DRAW:GetColorNew("tabbar/tab/hovered"))
+	-- add stacks (tabitem)
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("tabbar/text"))
+	ImGui.PushStyleColor(ImGuiCol.Tab, DRAW:GetColor("tabbar/tab"))
+	ImGui.PushStyleColor(ImGuiCol.TabActive, DRAW:GetColor("tabbar/tab/active"))
+	ImGui.PushStyleColor(ImGuiCol.TabHovered, DRAW:GetColor("tabbar/tab/hovered"))
 	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:WindowScale(7), UTIL:WindowScale(6))
 
 	-- create tabitem
 	local _trigger = ImGui.BeginTabItem("¨"..title)
 
-	-- drop stacks
+	-- drop stacks (tabitem)
 	ImGui.PopStyleVar(1)
 	ImGui.PopStyleColor(4)
 
@@ -504,7 +465,6 @@ end
 --// DRAW:TabitemEnd()
 --
 function DRAW:TabitemEnd()
-
 	ImGui.EndTabItem()
 end
 
@@ -513,30 +473,19 @@ end
 --
 function DRAW:TabchildStart(width, height, scroll)
 
-	-- add stacks
-	ImGui.PushStyleColor(ImGuiCol.ScrollbarBg, DRAW:GetColor())
-	ImGui.PushStyleColor(ImGuiCol.ScrollbarGrab, DRAW:GetColor("Orange","Dark"))
-	ImGui.PushStyleColor(ImGuiCol.ScrollbarGrabHovered, DRAW:GetColor("Orange","Normal"))
+	-- add stacks (tabchild)
+	ImGui.PushStyleColor(ImGuiCol.ScrollbarBg, DRAW:GetColor("window/main/scrollbar/background"))
+	ImGui.PushStyleColor(ImGuiCol.ScrollbarGrab, DRAW:GetColor("window/main/scrollbar"))
+	ImGui.PushStyleColor(ImGuiCol.ScrollbarGrabHovered, DRAW:GetColor("window/main/scrollbar/hovered"))
+	-- add stacks (conditional)
+	if scroll then ImGui.PushStyleVar(ImGuiStyleVar.ScrollbarSize, UTIL:WindowScale(10)) end
 
-	-- add scrollbar
-	if scroll
-	then
-		ImGui.PushStyleVar(ImGuiStyleVar.ScrollbarSize, UTIL:WindowScale(10))
-	end
+	-- create tabchild
+	local _trigger = ImGui.BeginChild("DE_TC", width, height, false, ImGuiWindowFlags.AlwaysVerticalScrollbar + ImGuiWindowFlags.NoBackground)
 
-	-- child flags
-	--local _flags = "ImGuiWindowFlags.NoTitleBar + ImGuiWindowFlags.NoScrollbar + ImGuiWindowFlags.NoResize + ImGuiWindowFlags.NoCollapse + ImGuiWindowFlags.NoMove + ImGuiWindowFlags.NoBackground + ImGuiWindowFlags.AlwaysAutoResize"
-
-	-- create child
-	local _trigger = ImGui.BeginChild("DE_Tabchild", width, height, false, ImGuiWindowFlags.AlwaysVerticalScrollbar + ImGuiWindowFlags.NoBackground)
-
-	-- del scroll
-	if scroll
-	then
-		ImGui.PopStyleVar(1)
-	end
-
-	-- del stacks
+	-- drop stacks (conditional)
+	if scroll then ImGui.PopStyleVar(1) end
+	-- drop stacks (tabchild)
 	ImGui.PopStyleColor(3)
 
 	return _trigger
@@ -552,128 +501,32 @@ end
 --
 --// DRAW:Collapse()
 --
-function DRAW:Collapse(title, scale)
+function DRAW:Collapse(title)
 
-	-- add stacks
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("White","Normal"))
-	ImGui.PushStyleColor(ImGuiCol.Header, DRAW:GetColor("Grey","Darker"))
-	ImGui.PushStyleColor(ImGuiCol.HeaderActive, DRAW:GetColor("Orange","Normal"))
-	ImGui.PushStyleColor(ImGuiCol.HeaderHovered, DRAW:GetColor("Orange","Light"))
-
+	-- add stacks (collapse)
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("collapse/text"))
+	ImGui.PushStyleColor(ImGuiCol.Header, DRAW:GetColor("collapse/header"))
+	ImGui.PushStyleColor(ImGuiCol.HeaderActive, DRAW:GetColor("collapse/header/active"))
+	ImGui.PushStyleColor(ImGuiCol.HeaderHovered, DRAW:GetColor("collapse/header/hovered"))
 	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, 0)
 	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:WindowScale(8), UTIL:WindowScale(11))
 
-
-	-- space before
+	-- top space
 	DRAW:Spacer(1,UTIL:WindowScale(3))
 
 	-- create collapse
 	local _trigger = ImGui.CollapsingHeader(title)
 
-	-- drop stacks
+	-- drop stacks (collapse)
 	ImGui.PopStyleVar(2)
 	ImGui.PopStyleColor(4)
 
 	return _trigger
 end
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
---
---// DRAW:CollapseNotice()
---
-function DRAW:CollapseNotice(text)
-
-	-- add stacks
-	ImGui.PushStyleColor(ImGuiCol.Button, DRAW:GetColor("Orange","Normal"))
-	ImGui.PushStyleColor(ImGuiCol.ButtonActive, DRAW:GetColor("Orange","Normal"))
-	ImGui.PushStyleColor(ImGuiCol.ButtonHovered, DRAW:GetColor("Orange","Normal"))
-
-	ImGui.PushID("Button"..tostring("CollapseNoticeSign"))
-	local _blind = ImGui.Button("", UTIL:WindowScale(5), UTIL:WindowScale(30))
-	ImGui.PopID()
-
-	-- drop stacks
-	ImGui.PopStyleColor(3)
-
-	-- sameline
-	DRAW:Sameline()
-
-	-- add stacks
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("White","Dark"))
-	ImGui.PushStyleColor(ImGuiCol.Button, DRAW:GetColor("Grey","Darkest"))
-	ImGui.PushStyleColor(ImGuiCol.ButtonActive, DRAW:GetColor("Grey","Darkest"))
-	ImGui.PushStyleColor(ImGuiCol.ButtonHovered, DRAW:GetColor("Grey","Darkest"))
-
-	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:WindowScale(6), UTIL:WindowScale(6))
-	ImGui.PushStyleVar(ImGuiStyleVar.ButtonTextAlign, 0, 0)
-
-	ImGui.PushID("Button"..tostring("CollapseNoticeText"))
-	local _blind = ImGui.Button(tostring(text), UTIL:WindowScale(456), UTIL:WindowScale(30))
-	ImGui.PopID()
-
-	-- drop stacks
-	ImGui.PopStyleVar(2)
-	ImGui.PopStyleColor(4)
-end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 --
 --
---//////////////////// POSITIONING ////////////////////
+--//////////////////// STYLE ELEMENTS ////////////////////
 --
 --
 
@@ -712,65 +565,13 @@ end
 --
 --// DRAW:Separator()
 --
-function DRAW:Separator(height, top, bot, color, style)
-
-	-- catch unset
-	local top = top or 0
-	local bot = bot or 0
-	local color = color or false
-	local style = style or false
-
-	-- select color
-	if color
-	then
-		-- select style
-		if style
-		then
-			ImGui.PushStyleColor(ImGuiCol.Separator, DRAW:GetColor(color, style))
-		else
-			ImGui.PushStyleColor(ImGuiCol.Separator, DRAW:GetColor(color, "Normal"))
-		end
-	else
-		ImGui.PushStyleColor(ImGuiCol.Separator, DRAW:GetColor("Grey", "Darkest"))
-	end
-
-	-- needed for display
-	ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, 0, 1)
-
-	-- top spacing
-	if top > 0 then
-		ImGui.Dummy(10, top)
-	end
-
-	-- multiple if wanted
-	if height > 0 then
-		for i=1, height do
-			ImGui.Separator()
-		end
-	end
-
-	if bot > 0 then
-		ImGui.Dummy(10, bot)
-	end
-
-	-- needed somehow
-	--ImGui.Dummy(10, 3)
-
-	ImGui.PopStyleVar(1)
-	ImGui.PopStyleColor(1)
-end
-
-
---
---// DRAW:Separator()
---
-function DRAW:SeparatorNew(height, color)
+function DRAW:Separator(height, color)
 
 	-- catch unset
 	local color = color or "window/main/separator"
 
-	-- needed for display
-	ImGui.PushStyleColor(ImGuiCol.Separator, DRAW:GetColorNew(color))
+	-- add stacks (separator)
+	ImGui.PushStyleColor(ImGuiCol.Separator, DRAW:GetColor(color))
 	ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, 0, 1)
 
 	-- multiple if wanted
@@ -780,10 +581,16 @@ function DRAW:SeparatorNew(height, color)
 		end
 	end
 
+	-- drop stacks (separator)
 	ImGui.PopStyleVar(1)
 	ImGui.PopStyleColor(1)
 end
 
+--
+--
+--//////////////////// RENDER ELEMENTS ////////////////////
+--
+--
 
 
 
@@ -797,8 +604,48 @@ end
 
 
 
+--
+--
+--//////////////////// HELPER ELEMENTS ////////////////////
+--
+--
 
+--
+--// DRAW:Notification(<STRING>)
+--
+function DRAW:Notification(text)
 
+	-- add stacks (decoration)
+	ImGui.PushStyleColor(ImGuiCol.Button, DRAW:GetColor("notification/decoration"))
+	ImGui.PushStyleColor(ImGuiCol.ButtonActive, DRAW:GetColor("notification/decoration"))
+	ImGui.PushStyleColor(ImGuiCol.ButtonHovered, DRAW:GetColor("notification/decoration"))
+
+	ImGui.PushID("Button"..tostring("NotificationSign"))
+	local _blind = ImGui.Button("", UTIL:WindowScale(5), UTIL:TextHeight(text) + (UTIL:WindowScale(6) * 2))
+	ImGui.PopID()
+
+	-- drop stacks (decoration)
+	ImGui.PopStyleColor(3)
+
+	-- sameline
+	DRAW:Sameline()
+
+	-- add stacks (notification)
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("notification/text"))
+	ImGui.PushStyleColor(ImGuiCol.Button, DRAW:GetColor("notification/background"))
+	ImGui.PushStyleColor(ImGuiCol.ButtonActive, DRAW:GetColor("notification/background"))
+	ImGui.PushStyleColor(ImGuiCol.ButtonHovered, DRAW:GetColor("notification/background"))
+	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:WindowScale(6), UTIL:WindowScale(6))
+	ImGui.PushStyleVar(ImGuiStyleVar.ButtonTextAlign, 0, 0)
+
+	ImGui.PushID("Button"..tostring("NotificationText"))
+	local _blind = ImGui.Button(tostring(text), UTIL:WindowScale(456), UTIL:TextHeight(text) + (UTIL:WindowScale(6) * 2))
+	ImGui.PopID()
+
+	-- drop stacks (notification)
+	ImGui.PopStyleVar(2)
+	ImGui.PopStyleColor(4)
+end
 
 
 
@@ -841,28 +688,6 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 --
 --// DRAW:Slider()
 --
@@ -882,9 +707,9 @@ function DRAW:Slider(render, option, demand, value)
 
 	-- deco paint
 	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, UTIL:WindowScale(6))
-	ImGui.PushStyleColor(ImGuiCol.Button, DRAW:GetColorNew("element/decoration"))
-	ImGui.PushStyleColor(ImGuiCol.ButtonActive, DRAW:GetColorNew("element/decoration"))
-	ImGui.PushStyleColor(ImGuiCol.ButtonHovered, DRAW:GetColorNew("element/decoration"))
+	ImGui.PushStyleColor(ImGuiCol.Button, DRAW:GetColor("element/decoration"))
+	ImGui.PushStyleColor(ImGuiCol.ButtonActive, DRAW:GetColor("element/decoration"))
+	ImGui.PushStyleColor(ImGuiCol.ButtonHovered, DRAW:GetColor("element/decoration"))
 
 	-- deco title
 	DRAW:FlexButton(UTIL:WindowScale(5), UTIL:WindowScale(19))
@@ -893,7 +718,7 @@ function DRAW:Slider(render, option, demand, value)
 	ImGui.PopStyleVar(1)
 	DRAW:Sameline()
 	DRAW:Spacing(UTIL:WindowScale(5),1)
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew("element/title"))
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("element/title"))
 	ImGui.Text(render.name)
 	ImGui.PopStyleColor(1)
 
@@ -902,7 +727,7 @@ function DRAW:Slider(render, option, demand, value)
 	then
 		ImGui.SameLine()
 		DRAW:Spacing(UTIL:WindowScale(8),1)
-		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew("slider/minmax"))
+		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("slider/minmax"))
 		ImGui.Text(tostring(option.min)..' to '..tostring(option.max))
 		ImGui.PopStyleColor(1)
 	end
@@ -918,12 +743,12 @@ function DRAW:Slider(render, option, demand, value)
 	ImGui.SetNextItemWidth(DRAW.Scaling.Window.Width - (_spacing + UTIL:ButtonWidth("Reset") + UTIL:WindowScale(32)))
 
 	-- add stacks
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew("element/title"))
-	ImGui.PushStyleColor(ImGuiCol.SliderGrab, DRAW:GetColorNew("slider/grab"))
-	ImGui.PushStyleColor(ImGuiCol.SliderGrabActive, DRAW:GetColorNew("slider/grab/active"))
-	ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColorNew("slider/background"))
-	ImGui.PushStyleColor(ImGuiCol.FrameBgActive, DRAW:GetColorNew("slider/background/active"))
-	ImGui.PushStyleColor(ImGuiCol.FrameBgHovered, DRAW:GetColorNew("slider/background/hovered"))
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("element/title"))
+	ImGui.PushStyleColor(ImGuiCol.SliderGrab, DRAW:GetColor("slider/grab"))
+	ImGui.PushStyleColor(ImGuiCol.SliderGrabActive, DRAW:GetColor("slider/grab/active"))
+	ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColor("slider/background"))
+	ImGui.PushStyleColor(ImGuiCol.FrameBgActive, DRAW:GetColor("slider/background/active"))
+	ImGui.PushStyleColor(ImGuiCol.FrameBgHovered, DRAW:GetColor("slider/background/hovered"))
 
 	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, UTIL:WindowScale(2))
 	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:WindowScale(2), UTIL:WindowScale(4))
@@ -1134,18 +959,16 @@ end
 --
 --// DRAW:Notice()
 --
-function DRAW:Notice(render, demand)
+function DRAW:Notice(render, state)
 
 	-- sameline
 	DRAW:Sameline()
 	DRAW:Spacing(UTIL:WindowScale(6), 1)
 
-	-- add color stacks
-	ImGui.PushStyleColor(ImGuiCol.Button, DRAW:GetColor("Orange","Normal",demand))
-	ImGui.PushStyleColor(ImGuiCol.ButtonActive, DRAW:GetColor("Orange","Normal",demand))
-	ImGui.PushStyleColor(ImGuiCol.ButtonHovered, DRAW:GetColor("Orange","Light",demand))
-
-	-- add style stacks
+	-- add stacks (notice)
+	ImGui.PushStyleColor(ImGuiCol.Button, DRAW:GetColor("element/decoration", state))
+	ImGui.PushStyleColor(ImGuiCol.ButtonActive, DRAW:GetColor("element/decoration", state))
+	ImGui.PushStyleColor(ImGuiCol.ButtonHovered, DRAW:GetColor("element/decoration", state))
 	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, UTIL:WindowScale(6))
 	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, 0, 0)
 
@@ -1157,14 +980,16 @@ function DRAW:Notice(render, demand)
 	-- add tooltip
 	if ImGui.IsItemHovered()
 	then
-		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew("element/notice"))
+		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("element/notice"))
+		ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, UTIL:WindowScale(6), UTIL:WindowScale(6))
 		ImGui.BeginTooltip()
 		ImGui.SetTooltip(render.note)
 		ImGui.EndTooltip()
+		ImGui.PopStyleVar(1)
 		ImGui.PopStyleColor(1)
 	end
 
-	-- drop stacks
+	-- drop stacks (notice)
 	ImGui.PopStyleVar(2)
 	ImGui.PopStyleColor(3)
 end
@@ -1187,7 +1012,7 @@ function DRAW:Description(render, space, state)
 	DRAW:Spacing(space,1)
 
 	-- add stacks
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew("element/description"))
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("element/description"))
 	ImGui.Text(UTIL:WordWrap(render.desc,space))
 	ImGui.PopStyleColor(1)
 end
@@ -1210,38 +1035,44 @@ end
 
 
 --
---// DRAW:Checkbox()
+--// DRAW:Checkbox(<TABLE>,<TABLE>,<BOOL>,<BOOL>)
 --
-function DRAW:Checkbox(render, option, demand, value)
+function DRAW:Checkbox(render, option, state, value)
 
-	-- add stacks
-	ImGui.PushStyleColor(ImGuiCol.CheckMark, DRAW:GetColor("White", "Normal", demand))
-	ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColor("Grey","Darker", demand))
+	-- default spacing
+	local _left = UTIL:WindowScale(10)
+	local _right = UTIL:WindowScale(10)
 
-	if UTIL:IntToBool(demand)
-	then
-		ImGui.PushStyleColor(ImGuiCol.FrameBgActive, DRAW:GetColor("Orange","Normal", demand))
-		ImGui.PushStyleColor(ImGuiCol.FrameBgHovered, DRAW:GetColor("Orange","Light", demand))
+	-- add spacing to left
+	if render.spacing then _left = UTIL:WindowScale(render.spacing) end
+	if render.sameline then DRAW:Sameline() end
+	if render.sameline then _left = UTIL:WindowScale(render.sameline) end
+
+	-- paint spacing
+	DRAW:Spacing(_left,1)
+
+	-- add stacks (checkbox)
+	ImGui.PushStyleColor(ImGuiCol.CheckMark, DRAW:GetColor("checkbox/checkmark", state))
+
+	-- add stacks (conditional)
+	if value then
+		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("checkbox/on/text", state))
+		ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColor("checkbox/on/background", state))
+		ImGui.PushStyleColor(ImGuiCol.FrameBgActive, DRAW:GetColor("checkbox/on/background/active", state))
+		ImGui.PushStyleColor(ImGuiCol.FrameBgHovered, DRAW:GetColor("checkbox/on/background/hovered", state))
 	else
-		ImGui.PushStyleColor(ImGuiCol.FrameBgActive, DRAW:GetColor("Grey","Darker", demand))
-		ImGui.PushStyleColor(ImGuiCol.FrameBgHovered, DRAW:GetColor("Grey","Darker", demand))
-	end
-
-	-- text color depending on value
-	if value
-	then
-		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("Orange","Normal", demand))
-	else
-
-		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("White","Normal", demand))
+		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("checkbox/off/text", state))
+		ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColor("checkbox/off/background", state))
+		ImGui.PushStyleColor(ImGuiCol.FrameBgActive, DRAW:GetColor("checkbox/off/background/active", state))
+		ImGui.PushStyleColor(ImGuiCol.FrameBgHovered, DRAW:GetColor("checkbox/off/background/hovered", state))
 	end
 
 	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, UTIL:WindowScale(3))
 	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:WindowScale(3), UTIL:WindowScale(3))
 	ImGui.PushStyleVar(ImGuiStyleVar.ItemInnerSpacing, UTIL:WindowScale(8), 0)
 
-
-	ImGui.PushID('DE_Checkbox'..tostring(render.path))
+	-- draw checkbox
+	ImGui.PushID("DE_CB"..UTIL:ElementID(render.path))
 	local _return, _trigger = ImGui.Checkbox(render.name, value)
 	ImGui.PopID()
 
@@ -1249,37 +1080,18 @@ function DRAW:Checkbox(render, option, demand, value)
 	ImGui.PopStyleVar(3)
 	ImGui.PopStyleColor(5)
 
+	-- notice
+	if render.note
+	then
+		DRAW:Notice(render, state)
+	else
+		DRAW:Sameline()
+		DRAW:Spacer(UTIL:WindowScale(14))
+	end
+
 	-- result
 	return _return, _trigger
 end
-
---
---// DRAW:CheckboxDesc()
---
-function DRAW:CheckboxDesc(render, option, demand)
-
-	-- some room
-	DRAW:Spacing(1,1)
-
-	if render.spacing then
-		DRAW:Spacing(render.spacing + 34,1)
-	else
-		DRAW:Spacing(44,1)
-	end
-
-	-- add stacks
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("White","Dark",demand))
-	ImGui.Text(render.desc)
-	ImGui.PopStyleColor(1)
-end
-
-
-
-
-
-
-
-
 
 
 
@@ -1311,9 +1123,9 @@ function DRAW:Combobox(render, option, demand, names, length, value)
 
 	-- deco paint
 	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, UTIL:WindowScale(6))
-	ImGui.PushStyleColor(ImGuiCol.Button, DRAW:GetColorNew("element/decoration"))
-	ImGui.PushStyleColor(ImGuiCol.ButtonActive, DRAW:GetColorNew("element/decoration"))
-	ImGui.PushStyleColor(ImGuiCol.ButtonHovered, DRAW:GetColorNew("element/decoration"))
+	ImGui.PushStyleColor(ImGuiCol.Button, DRAW:GetColor("element/decoration"))
+	ImGui.PushStyleColor(ImGuiCol.ButtonActive, DRAW:GetColor("element/decoration"))
+	ImGui.PushStyleColor(ImGuiCol.ButtonHovered, DRAW:GetColor("element/decoration"))
 
 	-- deco title
 	DRAW:FlexButton(UTIL:WindowScale(5), UTIL:WindowScale(19))
@@ -1322,7 +1134,7 @@ function DRAW:Combobox(render, option, demand, names, length, value)
 	ImGui.PopStyleVar(1)
 	DRAW:Sameline()
 	DRAW:Spacing(UTIL:WindowScale(5),1)
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew("element/title"))
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("element/title"))
 	ImGui.Text(render.name)
 	ImGui.PopStyleColor(1)
 
@@ -1335,21 +1147,21 @@ function DRAW:Combobox(render, option, demand, names, length, value)
 	-- comboboxes have a fixed width
 	ImGui.SetNextItemWidth(DRAW.Scaling.Window.Width - (_spacing * 2) - UTIL:WindowScale(2))
 
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew("element/title"))
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("element/title"))
 
-	ImGui.PushStyleColor(ImGuiCol.PopupBg, DRAW:GetColorNew("combobox/popup/background"))
-	ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColorNew("combobox/background"))
-	ImGui.PushStyleColor(ImGuiCol.FrameBgActive, DRAW:GetColorNew("combobox/background"))
-	ImGui.PushStyleColor(ImGuiCol.FrameBgHovered, DRAW:GetColorNew("combobox/background"))
+	ImGui.PushStyleColor(ImGuiCol.PopupBg, DRAW:GetColor("combobox/popup/background"))
+	ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColor("combobox/background"))
+	ImGui.PushStyleColor(ImGuiCol.FrameBgActive, DRAW:GetColor("combobox/background"))
+	ImGui.PushStyleColor(ImGuiCol.FrameBgHovered, DRAW:GetColor("combobox/background"))
 
-	ImGui.PushStyleColor(ImGuiCol.Border, DRAW:GetColorNew("combobox/border"))
-	ImGui.PushStyleColor(ImGuiCol.Button, DRAW:GetColorNew("combobox/button"))
-	ImGui.PushStyleColor(ImGuiCol.ButtonActive, DRAW:GetColorNew("combobox/button/active"))
-	ImGui.PushStyleColor(ImGuiCol.ButtonHovered, DRAW:GetColorNew("combobox/button/hovered"))
+	ImGui.PushStyleColor(ImGuiCol.Border, DRAW:GetColor("combobox/border"))
+	ImGui.PushStyleColor(ImGuiCol.Button, DRAW:GetColor("combobox/button"))
+	ImGui.PushStyleColor(ImGuiCol.ButtonActive, DRAW:GetColor("combobox/button/active"))
+	ImGui.PushStyleColor(ImGuiCol.ButtonHovered, DRAW:GetColor("combobox/button/hovered"))
 
-	ImGui.PushStyleColor(ImGuiCol.Header, DRAW:GetColorNew("combobox/header"))
-	ImGui.PushStyleColor(ImGuiCol.HeaderActive, DRAW:GetColorNew("combobox/header/active"))
-	ImGui.PushStyleColor(ImGuiCol.HeaderHovered, DRAW:GetColorNew("combobox/header/hovered"))
+	ImGui.PushStyleColor(ImGuiCol.Header, DRAW:GetColor("combobox/header"))
+	ImGui.PushStyleColor(ImGuiCol.HeaderActive, DRAW:GetColor("combobox/header/active"))
+	ImGui.PushStyleColor(ImGuiCol.HeaderHovered, DRAW:GetColor("combobox/header/hovered"))
 
 
 	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:WindowScale(8), UTIL:WindowScale(4))
@@ -1416,7 +1228,7 @@ function DRAW:Quickshift(render, option, state, value)
 	if render.align
 	then
 		-- paint title
-		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew("element/title"))
+		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("element/title"))
 		ImGui.Text(render.name)
 		ImGui.PopStyleColor(1)
 		DRAW:Sameline()
@@ -1431,19 +1243,19 @@ function DRAW:Quickshift(render, option, state, value)
 	-- add stacks
 	if UTIL:IntToBool(value)
 	then
-		ImGui.PushStyleColor(ImGuiCol.Border, DRAW:GetColorNew("quickshift/on/border"))
-		ImGui.PushStyleColor(ImGuiCol.SliderGrab, DRAW:GetColorNew("quickshift/on/grab/normal"))
-		ImGui.PushStyleColor(ImGuiCol.SliderGrabActive, DRAW:GetColorNew("quickshift/on/grab/active"))
+		ImGui.PushStyleColor(ImGuiCol.Border, DRAW:GetColor("quickshift/on/border"))
+		ImGui.PushStyleColor(ImGuiCol.SliderGrab, DRAW:GetColor("quickshift/on/grab/normal"))
+		ImGui.PushStyleColor(ImGuiCol.SliderGrabActive, DRAW:GetColor("quickshift/on/grab/active"))
 	else
-		ImGui.PushStyleColor(ImGuiCol.Border, DRAW:GetColorNew("quickshift/off/border"))
-		ImGui.PushStyleColor(ImGuiCol.SliderGrab, DRAW:GetColorNew("quickshift/off/grab/normal"))
-		ImGui.PushStyleColor(ImGuiCol.SliderGrabActive, DRAW:GetColorNew("quickshift/off/grab/active"))
+		ImGui.PushStyleColor(ImGuiCol.Border, DRAW:GetColor("quickshift/off/border"))
+		ImGui.PushStyleColor(ImGuiCol.SliderGrab, DRAW:GetColor("quickshift/off/grab/normal"))
+		ImGui.PushStyleColor(ImGuiCol.SliderGrabActive, DRAW:GetColor("quickshift/off/grab/active"))
 	end
 
 	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor())
-	ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColorNew("quickshift/background"))
-	ImGui.PushStyleColor(ImGuiCol.FrameBgActive, DRAW:GetColorNew("quickshift/background/active"))
-	ImGui.PushStyleColor(ImGuiCol.FrameBgHovered, DRAW:GetColorNew("quickshift/background/hovered"))
+	ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColor("quickshift/background"))
+	ImGui.PushStyleColor(ImGuiCol.FrameBgActive, DRAW:GetColor("quickshift/background/active"))
+	ImGui.PushStyleColor(ImGuiCol.FrameBgHovered, DRAW:GetColor("quickshift/background/hovered"))
 
 	ImGui.PushStyleVar(ImGuiStyleVar.GrabRounding, UTIL:WindowScale(10))
 	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, UTIL:WindowScale(10))
@@ -1464,7 +1276,7 @@ function DRAW:Quickshift(render, option, state, value)
 	then
 		DRAW:Sameline()
 		DRAW:Spacing(UTIL:WindowScale(10),1)
-		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew("element/title"))
+		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("element/title"))
 		ImGui.Text(render.name)
 		ImGui.PopStyleColor(1)
 	end
@@ -1487,7 +1299,7 @@ function DRAW:Quickshift(render, option, state, value)
 		end
 
 		-- add stacks
-		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew("element/description"))
+		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("element/description"))
 
 		if render.align
 		then
@@ -1536,8 +1348,8 @@ function DRAW:DebugTable(input,name)
 	DRAW:Spacer(1, 5)
 
 	-- format table
-	ImGui.PushStyleColor(ImGuiCol.TableHeaderBg, DRAW:GetColorNew("debug/table/background"))
-	ImGui.PushStyleColor(ImGuiCol.TableRowBg, DRAW:GetColorNew("debug/table/background"))
+	ImGui.PushStyleColor(ImGuiCol.TableHeaderBg, DRAW:GetColor("debug/table/background"))
+	ImGui.PushStyleColor(ImGuiCol.TableRowBg, DRAW:GetColor("debug/table/background"))
 	ImGui.PushStyleVar(ImGuiStyleVar.CellPadding, 6, 5)
 
 	if ImGui.BeginTable(name,2, ImGuiTableFlags.Borders + ImGuiTableFlags.RowBg)
@@ -1644,7 +1456,7 @@ function DRAW:PageDebug()
 
 
 	DRAW:Spacer(1, 5)
-	DRAW:SeparatorNew(1, "tabbar/bottomline")
+	DRAW:Separator(1, "tabbar/bottomline")
 	DRAW:Spacer(1, 5)
 
 
@@ -1754,24 +1566,6 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 --
 --// DRAW:TextTitle(<STRING>,<TABLE>)
 --
@@ -1860,30 +1654,6 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 --
 --
 --//////////////////// ABOUT PAGE ////////////////////
@@ -1899,7 +1669,10 @@ function DRAW:PageAbout()
 	DRAW:Spacer(1, UTIL:WindowScale(44))
 
 	-- draw animation
-	DRAW:LogoAnimation()
+	---DRAW:LogoAnimation()
+
+	DRAW:AnimLogo()
+
 
 	-- paint version
 	DRAW:PageAbout_Version("v"..DRAW.Version.String)
@@ -2206,28 +1979,6 @@ end
 --
 --// DRAW:FlexButton(<NUMBER>,<NUMBER>)
 --
-function DRAW:FlexButtonOLD(width, height)
-
-	-- catch unset
-	local width = width or UTIL:WindowScale(1)
-	local height = height or UTIL:WindowScale(1)
-
-	-- add stack
-	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, 0, 0)
-
-	-- element id
-	ImGui.PushID("DE_StyleButton")
-	local _blind = ImGui.Button("", width, height)
-	ImGui.PopID()
-
-	-- drop stacks
-	ImGui.PopStyleVar(1)
-end
-
-
---
---// DRAW:FlexButton(<NUMBER>,<NUMBER>)
---
 function DRAW:FlexButton(width, height)
 
 	-- catch unset
@@ -2457,6 +2208,134 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+--
+--// DRAW:AnimLogo()
+--
+function DRAW:AnimLogo()
+
+	--
+	--// Painter(<INT>,<INT>,<INT>.<FLOAT>)
+	--
+	local function Painter(_id, _size, _transparency)
+
+		-- base
+		local _color = "animations/logo/default"
+
+		-- highlight
+		if _id > 1000 and _id < 1002
+		or _id > 1210 and _id < 1212
+		or _id > 1235 and _id < 1241
+		or _id > 1256 and _id < 1259
+		or _id > 1281 and _id < 1287
+		or _id > 1302 and _id < 1307
+		or _id > 1326 and _id < 1333
+		or _id > 1356 and _id < 1364
+		then
+			_color = "animations/logo/highlight"
+		end
+
+		-- decoration
+		if _id > 1363 and _id < 1415
+		then
+			_color = "animations/logo/decoration"
+		end
+
+		-- paint child
+		ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, UTIL:WindowScale(1))
+		ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColor(_color, DRAW.Anim.Logo.Colors[_transparency]))
+		local _blind = ImGui.BeginChildFrame(_id, _size, _size, ImGuiWindowFlags.NoScrollbar + ImGuiWindowFlags.NoScrollWithMouse)
+		ImGui.PopStyleColor(1)
+		ImGui.PopStyleVar(1)
+
+		-- close child
+		ImGui.EndChildFrame()
+	end
+
+	-- frame id's
+	local _frames = 1000
+
+	-- needed for animation
+	local _timings = UTIL:Get25thSeconds()
+
+	-- transparency switch
+	if DRAW.Anim.Logo.Cycles ~= _timings
+	then
+		-- update timing
+		DRAW.Anim.Logo.Cycles = _timings
+
+		-- get table length
+		local _length = UTIL:TableLength(DRAW.Anim.Logo.Colors)
+
+		-- rotate transparency table
+		table.insert(DRAW.Anim.Logo.Colors, DRAW.Anim.Logo.Colors[1])
+
+		-- cut to long table
+		if UTIL:TableLength(DRAW.Anim.Logo.Colors) > _length
+		then
+			table.remove(DRAW.Anim.Logo.Colors,1)
+		end
+	end
+
+	-- number of elements
+	DRAW.Anim.Logo.Pieces = UTIL:TableLength(DRAW.Anim.Logo.Matrix[1])
+
+	-- calculate element size
+	DRAW.Anim.Logo.Single = math.ceil((DRAW.Scaling.Window.Usable - (DRAW.Anim.Logo.Pieces - 1) - UTIL:WindowScale(100)) / DRAW.Anim.Logo.Pieces)
+
+	-- update pixel size
+	DRAW.Anim.Logo.Pixels = (DRAW.Anim.Logo.Single * DRAW.Anim.Logo.Pieces) + (DRAW.Anim.Logo.Pieces - 1)
+
+	-- update center spacer
+	DRAW.Anim.Logo.Spacer = math.floor((DRAW.Scaling.Window.Usable - DRAW.Anim.Logo.Pixels) / 2)
+
+	-- loop matrix rows
+	for _,_row in pairs(DRAW.Anim.Logo.Matrix)
+	do
+		-- centering row
+		DRAW:Spacing(DRAW.Anim.Logo.Spacer)
+
+		-- loop matrix columns
+		for _,_col in pairs(_row)
+		do
+			-- paint
+			if _col > 0
+			then
+				-- increase
+				_frames = _frames + 1
+
+				-- seeding so its sticks
+				math.randomseed(_frames)
+
+				-- call painter
+				Painter(_frames, DRAW.Anim.Logo.Single, math.random(1,UTIL:TableLength(DRAW.Anim.Logo.Colors)))
+				DRAW:Sameline()
+				DRAW:Spacing(1,1)
+			-- or not
+			else
+				-- draw only a space
+				DRAW:Spacing(DRAW.Anim.Logo.Single + 1,1)
+			end
+		end
+
+		-- linebreak
+		DRAW:Spacer(1,1)
+
+		-- space between
+		DRAW:Spacer(1,1)
+	end
+end
 
 
 
@@ -2848,7 +2727,7 @@ function DRAW:Graph(_child, _table, _should, _length, _format, _color, _title, _
 	DRAW:Spacing(5,1)
 
 	-- print title
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew("element/title", _trans_text))
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("element/title", _trans_text))
 	ImGui.Text(_title)
 	ImGui.PopStyleColor(1)
 
@@ -2859,13 +2738,13 @@ function DRAW:Graph(_child, _table, _should, _length, _format, _color, _title, _
 	-- left spacing
 	DRAW:Spacing(5,1)
 
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew("graph/text/name", _trans_text))
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("graph/text/name", _trans_text))
 	ImGui.Text("CUR:")
 	ImGui.PopStyleColor(1)
 
 	DRAW:Sameline()
 
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew("graph/text/value", _trans_text))
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("graph/text/value", _trans_text))
 	ImGui.Text(tostring(_cur))
 	ImGui.PopStyleColor(1)
 
@@ -2875,13 +2754,13 @@ function DRAW:Graph(_child, _table, _should, _length, _format, _color, _title, _
 	-- left spacing
 	DRAW:Spacing(10,1)
 
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew("graph/text/name", _trans_text))
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("graph/text/name", _trans_text))
 	ImGui.Text("AVG:")
 	ImGui.PopStyleColor(1)
 
 	DRAW:Sameline()
 
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew("graph/text/value", _trans_text))
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("graph/text/value", _trans_text))
 	ImGui.Text(tostring(_avg))
 	ImGui.PopStyleColor(1)
 
@@ -2891,13 +2770,13 @@ function DRAW:Graph(_child, _table, _should, _length, _format, _color, _title, _
 	DRAW:Spacing(10,1)
 
 
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew("graph/text/name", _trans_text))
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("graph/text/name", _trans_text))
 	ImGui.Text("MIN:")
 	ImGui.PopStyleColor(1)
 
 	DRAW:Sameline()
 
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew("graph/text/value", _trans_text))
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("graph/text/value", _trans_text))
 	ImGui.Text(tostring(_min))
 	ImGui.PopStyleColor(1)
 
@@ -2907,13 +2786,13 @@ function DRAW:Graph(_child, _table, _should, _length, _format, _color, _title, _
 	DRAW:Spacing(10,1)
 	DRAW:Sameline()
 
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew("graph/text/name", _trans_text))
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("graph/text/name", _trans_text))
 	ImGui.Text("MAX:")
 	ImGui.PopStyleColor(1)
 
 	DRAW:Sameline()
 
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew("graph/text/value", _trans_text))
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("graph/text/value", _trans_text))
 	ImGui.Text(tostring(_max))
 	ImGui.PopStyleColor(1)
 
@@ -2983,7 +2862,7 @@ function DRAW:GraphBar(_child, _width, _height, _scale, _value, _show, _trans_ba
 
 	--ImGui.PushStyleColor(ImGuiCol.FrameBg, GetColors("grey_darker", "disabled"))
 
-	ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColorNew("graphbar/background", _trans_barbg))
+	ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColor("graphbar/background", _trans_barbg))
 	ImGui.PushStyleVar(ImGuiStyleVar.ScrollbarSize, 0)
 	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, 0, 0)
 
@@ -3003,8 +2882,8 @@ function DRAW:GraphBar(_child, _width, _height, _scale, _value, _show, _trans_ba
 	then
 		DRAW:Spacer(1,_top)
 
-		ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColorNew())
-		ImGui.PushStyleColor(ImGuiCol.PlotHistogram, DRAW:GetColorNew("graphbar/progessbar", _trans_bar))
+		ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColor())
+		ImGui.PushStyleColor(ImGuiCol.PlotHistogram, DRAW:GetColor("graphbar/progessbar", _trans_bar))
 
 		ImGui.ProgressBar(1, _width, _bar, "")
 		ImGui.PopStyleColor(2)
@@ -3029,7 +2908,7 @@ function DRAW:GraphBar(_child, _width, _height, _scale, _value, _show, _trans_ba
 				DRAW:Sameline()
 			end
 
-			ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew("graph/text/value", _trans_text))
+			ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("graph/text/value", _trans_text))
 			ImGui.Text(_txt)
 			ImGui.PopStyleColor(1)
 
@@ -3229,7 +3108,7 @@ function DRAW:GraphHeader(_title, _current, _average, _minimum, _maximum, _text)
 	DRAW:Spacing(UTIL:WindowScale(5),1)
 
 	-- print title
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew("element/title", _text))
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("element/title", _text))
 	ImGui.Text(_title)
 	ImGui.PopStyleColor(1)
 
@@ -3242,11 +3121,11 @@ function DRAW:GraphHeader(_title, _current, _average, _minimum, _maximum, _text)
 	-- between spacing
 	DRAW:Spacing(current,1)
 
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew("graph/text/name", _text))
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("graph/text/name", _text))
 	ImGui.Text("CUR:")
 	ImGui.PopStyleColor(1)
 	DRAW:Sameline()
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew("graph/text/value", _text))
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("graph/text/value", _text))
 	ImGui.Text(tostring(_current))
 	ImGui.PopStyleColor(1)
 
@@ -3259,11 +3138,11 @@ function DRAW:GraphHeader(_title, _current, _average, _minimum, _maximum, _text)
 	-- between spacing
 	DRAW:Spacing(average,1)
 
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew("graph/text/name", _text))
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("graph/text/name", _text))
 	ImGui.Text("AVG:")
 	ImGui.PopStyleColor(1)
 	DRAW:Sameline()
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew("graph/text/value", _text))
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("graph/text/value", _text))
 	ImGui.Text(tostring(_average))
 	ImGui.PopStyleColor(1)
 
@@ -3276,11 +3155,11 @@ function DRAW:GraphHeader(_title, _current, _average, _minimum, _maximum, _text)
 	-- between spacing
 	DRAW:Spacing(minimum,1)
 
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew("graph/text/name", _text))
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("graph/text/name", _text))
 	ImGui.Text("MIN:")
 	ImGui.PopStyleColor(1)
 	DRAW:Sameline()
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew("graph/text/value", _text))
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("graph/text/value", _text))
 	ImGui.Text(tostring(_minimum))
 	ImGui.PopStyleColor(1)
 
@@ -3293,11 +3172,11 @@ function DRAW:GraphHeader(_title, _current, _average, _minimum, _maximum, _text)
 	-- between spacing
 	DRAW:Spacing(maximum,1)
 
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew("graph/text/name", _text))
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("graph/text/name", _text))
 	ImGui.Text("MAX:")
 	ImGui.PopStyleColor(1)
 	DRAW:Sameline()
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew("graph/text/value", _text))
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("graph/text/value", _text))
 	ImGui.Text(tostring(_maximum))
 	ImGui.PopStyleColor(1)
 end
@@ -3329,7 +3208,7 @@ function DRAW:GraphPainter(_child, _width, _height, _scale, _value, _show, _bar,
 	end
 
 	-- start painting
-	ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColorNew("graphbar/background", _back))
+	ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColor("graphbar/background", _back))
 	ImGui.PushStyleVar(ImGuiStyleVar.ScrollbarSize, 0)
 	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, 0, 0)
 
@@ -3349,8 +3228,8 @@ function DRAW:GraphPainter(_child, _width, _height, _scale, _value, _show, _bar,
 	then
 		DRAW:Spacer(1,top)
 
-		ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColorNew())
-		ImGui.PushStyleColor(ImGuiCol.PlotHistogram, DRAW:GetColorNew("graphbar/progessbar", _bar))
+		ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColor())
+		ImGui.PushStyleColor(ImGuiCol.PlotHistogram, DRAW:GetColor("graphbar/progessbar", _bar))
 
 		ImGui.ProgressBar(1, UTIL:ScreenScale(_width), bar, "")
 		ImGui.PopStyleColor(2)
@@ -3375,7 +3254,7 @@ function DRAW:GraphPainter(_child, _width, _height, _scale, _value, _show, _bar,
 				DRAW:Sameline()
 			end
 
-			ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColorNew("graph/text/value", _text))
+			ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("graph/text/value", _text))
 			ImGui.Text(txt)
 			ImGui.PopStyleColor(1)
 
@@ -3398,15 +3277,6 @@ end
 
 
 
-
-local function capture(table, key, rest)
-	return function(...)
-		local args = {...}
-		print(string.format("call to %s with key %s and arg[1] %s",
-                                   tostring(table), tostring(key),
-                                   tostring(args[1])))
-	end
-end
 
 
 --
@@ -3440,10 +3310,14 @@ function DRAW:Pre(project, version, runtime, scaling, debug)
 
 	-- animations
 	DRAW.Anim = {
-		Cycles = 0,
-		Colors = {0.4,0.5,0.6,0.7,0.8,0.9,0.95,0.97,0.98,0.99,1,1,1,0.99,0.98,0.97,0.95,0.9,0.8,0.7,0.6,0.5},
-		Matrix = {
-			Logo = {
+		Logo = {
+			Single = 0,
+			Pieces = 0,
+			Pixels = 0,
+			Spacer = 0,
+			Cycles = 0,
+			Colors = {0.4,0.5,0.6,0.7,0.8,0.9,0.95,0.97,0.98,0.99,1,1,1,0.99,0.98,0.97,0.95,0.9,0.8,0.7,0.6,0.5},
+			Matrix = {
 				{1,1,1,1,1,0,1,1,1,1,1,0,1,1,0,1,1,0,1,1,1,1,1,0,1,1,0,0,1,1,1,1,1,0,1,1,1,1,1,0,1,1,1,1,1,0,1,1,1,1,1},
 				{1,1,0,1,1,0,1,1,0,1,1,0,1,1,0,1,1,0,1,1,0,1,1,0,1,1,0,0,1,1,0,1,1,0,1,1,0,1,1,0,1,1,0,1,1,0,1,1,0,1,1},
 				{1,1,0,1,1,0,1,1,0,1,1,0,1,1,0,1,1,0,1,1,0,1,1,0,1,1,0,0,1,1,0,1,1,0,1,1,0,1,1,0,1,1,0,1,1,0,1,1,0,0,0},
@@ -3460,15 +3334,9 @@ function DRAW:Pre(project, version, runtime, scaling, debug)
 				{1,1,1,1,1,0,1,1,0,1,1,0,0,1,1,1,0,1,1,0,0,0,0,1,1,1,1,1,0,1,1,1,1,1,0,0,0,0,0,0,0,0,0,1,1,0,1,1,1,1,1},
 				{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 				{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
-			},
-			Save = {
-				{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-				{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-				{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-				{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-				{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
 			}
 		}
+
 	}
 
 

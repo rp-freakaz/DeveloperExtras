@@ -203,7 +203,7 @@ function CORE:Interface()
 					end
 
 					-- make the tabbar thicker, before the child
-					DRAW:SeparatorNew(UTIL:WindowScale(2), "tabbar/bottomline")
+					DRAW:Separator(UTIL:WindowScale(2), "tabbar/bottomline")
 
 					-- start tabchild
 					local _trigger = DRAW:TabchildStart(CORE.Scaling.Window.Width, CORE.Scaling.Window.Height - bottom, CORE.Extras["DeveloperExtras/Scrollbar/Enable"])
@@ -260,7 +260,7 @@ function CORE:Interface()
 										-- show tab notice
 										if CORE:isPreGame()
 										then
-											DRAW:CollapseNotice("Toggle's are disabled, because you are not in Night City yet.")
+											DRAW:Notification("Toggle's are disabled, because you are not in Night City yet.")
 										end
 
 										-- start option loop
@@ -294,8 +294,8 @@ function CORE:Interface()
 		DRAW:TabbarEnd()
 
 		-- tabbar thickness, after the child
-		DRAW:SeparatorNew(UTIL:WindowScale(2), "tabbar/bottomline")
-		DRAW:SeparatorNew(1, "tabbar/bottomline")
+		DRAW:Separator(UTIL:WindowScale(2), "tabbar/bottomline")
+		DRAW:Separator(1, "tabbar/bottomline")
 
 		if CORE:GetInternal("DeveloperExtras/Graph/Enable")
 		then
@@ -315,8 +315,8 @@ function CORE:Interface()
 			--draw_list->AddRect(ImVec2(x, y), ImVec2(x+sz, y+sz), col32, 0.0f,  ImDrawCornerFlags_All, th); x += sz+spacing; 
 
 			-- tabbar thickness, after performance graph
-			DRAW:SeparatorNew(UTIL:WindowScale(2), "tabbar/bottomline")
-			DRAW:SeparatorNew(1, "tabbar/bottomline")
+			DRAW:Separator(UTIL:WindowScale(2), "tabbar/bottomline")
+			DRAW:Separator(1, "tabbar/bottomline")
 		end
 
 
@@ -390,9 +390,12 @@ function CORE:RenderSwitch(pool, render)
 	elseif render.separator
 	then
 		DRAW:Spacer(1,UTIL:WindowScale(10))
-		DRAW:SeparatorNew(UTIL:WindowScale(render.separator))
+		DRAW:Separator(UTIL:WindowScale(render.separator))
 
-		--DRAW:Separator(UTIL:WindowScale(render.separator))
+		--DRAW:FlexButton(CORE.Scaling.Window.Usable * 0.75,5)
+		--DRAW:FlexButton(CORE.Scaling.Window.Usable * 0.5,5)
+		--DRAW:FlexButton(CORE.Scaling.Window.Usable * 0.25,5)
+
 		DRAW:Spacer(1,UTIL:WindowScale(10))
 	elseif render.spacing
 	then
@@ -400,10 +403,20 @@ function CORE:RenderSwitch(pool, render)
 	else
 		-- something is wrong
 		if CORE.isDebug then
-			DRAW.CollapseNotice(ImGui.GetWindowWidth(), "BROKEN ELEMENT (no path)")
+			DRAW:Notification("BROKEN ELEMENT (no path)")
 		end
 	end
 end
+
+
+
+--
+--// CORE:RenderRequire(<POOL>,<ENTRY>)
+--
+function CORE:Require()
+	return 0
+end
+
 
 --
 --// CORE:RenderRequire(<POOL>,<ENTRY>)
@@ -447,7 +460,7 @@ function CORE:RenderRequire(pool, option, render)
 	end
 
 	-- return
-	return demand
+	return 0
 end
 
 --
@@ -680,7 +693,7 @@ end
 --
 --// CORE:RenderCheckbox()
 --
-function CORE:RenderCheckbox(pool, option, render, demand)
+function CORE:RenderCheckboxOLD(pool, option, render, demand)
 
 	-- debug id
 	local __func__ = "CORE:RenderCheckbox"
@@ -902,6 +915,110 @@ function CORE:RenderQuickshift(pool, option, render, demand)
 		CORE:SetToggle(render.path, option.type, UTIL:IntToBool(value))
 	end
 end
+
+
+
+--
+--// CORE:RenderCheckbox()
+--
+function CORE:RenderCheckbox(pool, option, render)
+
+	-- debug id
+	local __func__ = "CORE:RenderCheckbox"
+
+	-- get state
+	local state = CORE:Require(pool, option, render)
+
+	-- get current
+	local value = CORE:GetToggle(render.path, option.type)
+
+	-- create checkbox
+	local value, trigger = DRAW:Checkbox(render, option, state, value)
+	if trigger
+	then
+		-- needs to be enabled
+		if UTIL:IntToBool(state)
+		then
+			-- apply it
+			CORE:SetToggle(render.path, option.type, value)
+
+
+			--print(UTIL.DebugDump(_entry))
+
+			--local eLoop = false
+
+			--if cValue == true and eFlag.onTrue then
+			--	eLoop = Self.LoopChild(ePool, eFlag.onTrue)
+			--end
+
+			--if cValue == false and eFlag.onFalse then
+			--	eLoop = Self.LoopChild(ePool, eFlag.onFalse)
+			--end
+
+			--if eFlag.Draw then
+			--	Self.DelayRedraw(eFlag.Draw)
+			--elseif eLoop == true then
+			--	Self.DelayRedraw(0)
+			--end
+
+		end
+	end
+
+
+	--if _render.path == "DeveloperExtras/BoolTrue"
+	--or _render.path == "DeveloperExtras/BoolFalse"
+	--then
+	--	DRAW.CheckboxInfo("can't be toggled", "!", _state)
+	--end
+
+
+
+
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1732,7 +1849,7 @@ function CORE:UpdateScreen()
 		-- update dimension
 		CORE.Scaling.Screen.Width = width
 		CORE.Scaling.Screen.Height = height
-		CORE.Scaling.Screen.Usable = math.floor(width / 2.5)
+		CORE.Scaling.Screen.Usable = math.floor(width / 2)
 
 		-- scaling enabled?
 		if CORE.Scaling.Enable
@@ -1908,6 +2025,7 @@ function CORE:Pre()
 	CORE.isPaint = false
 	CORE.isPhoto = false
 	CORE.isDebug = true
+	CORE.isScale = true
 	CORE.isStash = false
 
 	CORE.isSaving = 0

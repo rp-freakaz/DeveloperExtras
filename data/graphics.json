@@ -23,11 +23,8 @@
 					"name":"Cascade Shadows",
 					"path":"Developer/FeatureToggles/CascadeShadows"
 				},
-
-
-
 				{
-					"separator":5
+					"separator":3
 				},
 				{
 					"name":"Ambient Occlusion",
@@ -42,19 +39,20 @@
 					"path":"graphics/advanced/AmbientOcclusion"
 				},
 				{
-					"separator":5
+					"separator":3
 				},
 				{
 					"name":"Global Illumination",
-					"path":"Developer/FeatureToggles/GlobalIllumination"
+					"path":"Developer/FeatureToggles/GlobalIllumination",
+					"note":"Filters Textures on Distance"
 				},
 				{
 					"name":"(Distant Rendering)",
 					"path":"Developer/FeatureToggles/DistantGI",
-					"sameline":50
+					"sameline":56
 				},
 				{
-					"separator":2
+					"separator":1
 				},
 				{
 					"name":"Distant Shadow (Blur)",
@@ -96,7 +94,7 @@
 					"name":"(Heat Haze)",
 					"path":"Developer/FeatureToggles/ScreenSpaceHeatHaze",
 
-					"sameline":108
+					"sameline":103
 				},
 				{
 					"spacing":10
@@ -111,7 +109,7 @@
 					"name":"(Underwater)",
 					"path":"Developer/FeatureToggles/ScreenSpaceUnderwater",
 
-					"sameline":80
+					"sameline":73
 				},
 				{
 					"spacing":10
@@ -126,7 +124,7 @@
 					"name":"(Planar Reflection)",
 					"path":"Developer/FeatureToggles/ScreenSpacePlanarReflection",
 
-					"sameline":38
+					"sameline":40
 				},
 				{
 					"separator":5
@@ -139,7 +137,7 @@
 					"name":"(Distant Rendering)",
 					"path":"Developer/FeatureToggles/DistantVolFog",
 
-					"sameline":85
+					"sameline":79
 				},
 				{
 					"spacing":10
@@ -161,7 +159,7 @@
 					"name":"Simple Fog (Distant)",
 					"path":"Developer/FeatureToggles/DistantFog",
 
-					"sameline":38
+					"sameline":32
 				},
 				{
 					"separator":5

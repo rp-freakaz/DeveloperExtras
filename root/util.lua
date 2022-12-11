@@ -80,7 +80,7 @@ end
 --
 
 --
---// UTIL:ScreenScale(<FLOAT>,<FLOAT>)
+--// UTIL:ScreenScale(<INT>,<FLOAT>)
 --
 function UTIL:ScreenScale(pixels, factor)
 
@@ -90,13 +90,13 @@ function UTIL:ScreenScale(pixels, factor)
 
 	if UTIL.Scaling.Enable and pixels > 0
 	then
-		return UTIL:ShortenFloat(UTIL.Scaling.Screen.Factor * pixels)
+		return UTIL:ShortenFloat(factor * pixels)
 	end
 	return pixels
 end
 
 --
---// UTIL:WindowScale(<FLOAT>,<FLOAT>)
+--// UTIL:WindowScale(<INT>,<FLOAT>)
 --
 function UTIL:WindowScale(pixels, factor)
 
@@ -106,68 +106,26 @@ function UTIL:WindowScale(pixels, factor)
 
 	if UTIL.Scaling.Enable and pixels > 0
 	then
-		return UTIL:ShortenFloat((UTIL.Scaling.Screen.Factor * UTIL.Scaling.Window.Factor) * pixels)
+		return UTIL:ShortenFloat((UTIL.Scaling.Screen.Factor * factor) * pixels)
 	end
 	return pixels
 end
 
-
-
-
-
-
-
-
 --
---// UTIL:WindowScale(<FLOAT>,<FLOAT>)
+--// UTIL:BorderScale(<INT>,<FLOAT>)
 --
-function UTIL:WindowBorder(pixels, factor)
+function UTIL:BorderScale(pixels, factor)
 
 	-- catch non set
 	local pixels = pixels or 0
-	local factor = factor or UTIL.Scaling.Window.Factor
+	local factor = factor or UTIL.Scaling.Screen.Factor
 
 	if UTIL.Scaling.Enable and pixels > 0
 	then
-		return math.ceil(UTIL.Scaling.Screen.Factor * pixels)
+		return math.ceil(factor * pixels)
 	end
 	return pixels
 end
-
-
-
-
-
-
-
-
-
---
---// UTIL:ScaleSwitch(<INT>,<BOOL>)
---
-function UTIL:ScaleSwitch(pixels, screen)
-
-	-- catch non set
-	local pixels = pixels or 0
-	local screen = screen or false
-
-	if UTIL.Scaling.Enable and pixels > 0
-	then
-		if screen
-		then
-			return UTIL:ShortenFloat(UTIL.Scaling.Screen.Factor * pixels)
-		end
-		return UTIL:ShortenFloat((UTIL.Scaling.Screen.Factor * UTIL.Scaling.Window.Factor) * pixels)
-		--return UTIL:ShortenFloat(UTIL.Scaling.Window.Factor * pixels)
-		--return UTIL:ShortenFloat((ImGui.GetFontSize() / 18) * pixels)
-	end
-	return pixels
-end
-
-
-
-
-
 
 --
 --// UTIL:FontScale(<INT>)
@@ -184,7 +142,6 @@ function UTIL:FontScale(pixels)
 	return pixels
 end
 
-
 --
 --
 --//////////////////// CONVERSIONS ////////////////////
@@ -197,7 +154,7 @@ end
 --   CORE:RenderQuickshift
 --
 function UTIL:IntToBool(input)
-	if input == 1 then return true end
+	if input == 0 then return true end
 	return false
 end
 
@@ -207,8 +164,8 @@ end
 --   CORE:RenderQuickshift
 --
 function UTIL:BoolToInt(input)
-	if input == true then return 1 end
-	return 0
+	if input == true then return 0 end
+	return 1
 end
 
 --
@@ -383,7 +340,7 @@ end
 --
 function UTIL:ButtonWidth(text)
 	x, y = ImGui.CalcTextSize(tostring(text))
-	return x + UTIL:ScaleSwitch(12)
+	return x + UTIL:WindowScale(12)
 end
 
 --
@@ -391,7 +348,7 @@ end
 --
 function UTIL:ButtonHeight(text)
 	x, y = ImGui.CalcTextSize(tostring(text))
-	return y + UTIL:ScaleSwitch(7)
+	return y + UTIL:WindowScale(7)
 end
 
 

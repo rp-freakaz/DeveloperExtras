@@ -101,7 +101,13 @@
 				{
 					"name":"Enable Debug",
 					"path":"DeveloperExtras/Debug/Enable",
-					"desc":"Enables Debug Mode, also allows resizeing the main window horizontally.",
+					"desc":"Enables Debug Mode with verbose logging to the cet console",
+					"align":true
+				},
+				{
+					"name":"Enable Resize",
+					"path":"DeveloperExtras/Debug/Resize",
+					"desc":"Allows resizing the main window for testing purposes",
 					"align":true
 				},
 				{
