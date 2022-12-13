@@ -172,7 +172,7 @@ function CORE:Interface()
 	CORE:UpdateScreen()
 
 	-- start window
-	local _trigger = DRAW:WindowStart()
+	local _trigger = DRAW:WindowStart(CORE:GetToggle("DeveloperExtras/Debug/Resize","bool"))
 	if _trigger
 	then
 		-- always update
@@ -304,7 +304,7 @@ function CORE:Interface()
 			--DRAW:GraphWrapperFT(CORE.Overlay.FT.History, CORE.Overlay.FT.Length, UTIL:TableLength(CORE.Overlay.FT.History))
 			--DRAW:GraphWrapperFPS(CORE.Overlay.FPS.History, CORE.Overlay.FPS.Length, UTIL:TableLength(CORE.Overlay.FPS.History))
 
-			DRAW:FrameTimes(CORE.History.Frametime.Store, CORE.History.Frametime.Limit)
+			DRAW:Frametime(CORE.History.Frametime.Store, "%.2f", 5, 50, 2, false, "FRAMETIME:", 1, 1, 1)
 
 
 			--print(UTIL:DebugDump(ImGui.GetWindowDrawList()))
@@ -550,7 +550,7 @@ function CORE:RenderSlider(pool, option, render, state)
 
 	-- description
 	if render.desc then
-		DRAW:Description(render, spacing + UTIL:WindowScale(11), state)
+		--DRAW:Description(render, spacing + UTIL:WindowScale(11), state)
 	end
 
 end
@@ -1039,10 +1039,10 @@ function CORE:ResetGraph()
 	and not CORE:GetInternal("DeveloperExtras/Graph/Overlay/Enable")
 	and not CORE:GetInternal("DeveloperExtras/Graph/BackgroundUpdate")
 	then
-		CORE.Overlay.FT.Previous = 0
-		CORE.Overlay.FPS.Previous = 0
-		CORE.Overlay.FT.History = {}
-		CORE.Overlay.FPS.History = {}
+		CORE.History.Frametime.Previous = 0
+		CORE.History.Framerate.Previous = 0
+		CORE.History.Frametime.Store = {}
+		CORE.History.Framerate.Store = {}
 
 		-- debug msg
 		CORE:DebugConsole(__func__,"Executed!")
@@ -1616,6 +1616,8 @@ function CORE:GetInternal(path)
 
 	-- ui toggles
 	if path == "DeveloperExtras/Debug/Enable" then return CORE.isDebug end
+	if path == "DeveloperExtras/Debug/Resize" then return CORE.Extras[path] end
+
 	if path == "DeveloperExtras/Scrollbar/Enable" then return CORE.Extras[path] end
 
 	-- ui scaling
@@ -1657,6 +1659,8 @@ function CORE:SetInternal(path, set)
 		DRAW.isDebug = set
 		UTIL.isDebug = set
 	end
+	if path == "DeveloperExtras/Debug/Resize" then CORE.Extras[path] = set end
+
 
 	-- color theme
 	if path == "DeveloperExtras/Color/Preset" then
@@ -1681,6 +1685,12 @@ function CORE:SetInternal(path, set)
 	-- graph toggles (flexi)
 	if path == "DeveloperExtras/Graph/Enable" then
 		CORE.Extras[path] = set
+
+		if not CORE:GetInternal("DeveloperExtras/Graph/BackgroundUpdate")
+		and not CORE:GetInternal("DeveloperExtras/Graph/Overlay/Enable")
+		then
+			CORE:ResetGraph()
+		end
 	end
 	if path == "DeveloperExtras/Graph/BackgroundUpdate" then
 		CORE.Extras[path] = set

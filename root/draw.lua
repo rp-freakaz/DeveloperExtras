@@ -127,10 +127,10 @@ function DRAW:GetColor(color, state)
 		if color == "element/decoration"			then return GetShared("generic/orange/normal", state) end
 
 		-- graph
-		if color == "graph/text/name"				then return GetShared("generic/grey/lighter", state) end
-		if color == "graph/text/value"				then return GetShared("generic/white/dark", state) end
-		if color == "graphbar/background"			then return GetShared("generic/grey/darkest", state) end
-		if color == "graphbar/progessbar"			then return GetShared("generic/orange/normal", state) end
+		if color == "graph/text/name"				then return ImGui.GetColorU32(0.6, 0.6, 0.63, state) end
+		if color == "graph/text/value"				then return ImGui.GetColorU32(0.8, 0.8, 0.85, state) end
+		if color == "graphbar/background"			then return ImGui.GetColorU32(0.1, 0.1, 0.13, state) end
+		if color == "graphbar/progessbar"			then return ImGui.GetColorU32(1, 0.56, 0.13, state) end
 
 		-- slider
 		if color == "slider/minmax"				then return GetShared("generic/grey/light", state) end
@@ -191,14 +191,131 @@ function DRAW:GetColor(color, state)
 
 
 
+		-- fallback
+		return GetShared("fallback")
+	end
+
+
+
+	-- theme: default (backup)
+	if DRAW.Runtime.Themes.Select == 1
+	then
+		-- window
+		if color == "window/main/text"				then return GetShared("generic/white/light", state) end
+		if color == "window/main/border"			then return ImGui.GetColorU32(0.2, 0.2, 0.23, 0.3) end
+		if color == "window/main/background"			then return GetShared("generic/black/dark", state) end
+		if color == "window/main/title/background"		then return GetShared("generic/black/dark", state) end
+		if color == "window/main/title/background/active"	then return GetShared("generic/black/dark", state) end
+		if color == "window/main/title/background/collapsed"	then return GetShared("generic/black/dark", state) end
+		if color == "window/main/resize"			then return GetShared("generic/grey/dark", state) end
+		if color == "window/main/resize/active"			then return GetShared("generic/orange/normal", state) end
+		if color == "window/main/resize/hovered"		then return GetShared("generic/orange/light", state) end
+		if color == "window/main/separator"			then return GetShared("generic/grey/darkest", state) end
+		if color == "window/main/scrollbar"			then return GetShared("generic/orange/dark", state) end
+		if color == "window/main/scrollbar/hovered"		then return GetShared("generic/orange/normal", state) end
+		if color == "window/main/scrollbar/background"		then return GetShared("transparency", state) end
+
+		-- tabbar
+		if color == "tabbar/text"				then return GetShared("generic/white/normal", state) end
+		if color == "tabbar/tab"				then return GetShared("generic/grey/darker", state) end
+		if color == "tabbar/tab/active"				then return GetShared("generic/orange/normal", state) end
+		if color == "tabbar/tab/hovered"			then return GetShared("generic/orange/light", state) end
+		if color == "tabbar/bottomline"				then return GetShared("generic/orange/normal", state) end
+
+		-- collapse
+		if color == "collapse/text"				then return GetShared("generic/white/normal", state) end
+		if color == "collapse/header"				then return GetShared("generic/grey/darker", state) end
+		if color == "collapse/header/active"			then return GetShared("generic/orange/normal", state) end
+		if color == "collapse/header/hovered"			then return GetShared("generic/orange/light", state) end
+
+		-- generic
+		if color == "element/title"				then return GetShared("generic/white/normal", state) end
+		if color == "element/notice"				then return GetShared("generic/white/dark", state) end
+		if color == "element/description"			then return GetShared("generic/grey/lighter", state) end
+		if color == "element/decoration"			then return GetShared("generic/orange/normal", state) end
+
+		-- graph
+		if color == "graph/text/name"				then return ImGui.GetColorU32(0.6, 0.6, 0.63, state) end
+		if color == "graph/text/value"				then return ImGui.GetColorU32(0.8, 0.8, 0.85, state) end
+		if color == "graphbar/background"			then return ImGui.GetColorU32(0.1, 0.1, 0.13, state) end
+		if color == "graphbar/progessbar"			then return ImGui.GetColorU32(1, 0.56, 0.13, state) end
+
+		-- slider
+		if color == "slider/minmax"				then return GetShared("generic/grey/light", state) end
+		if color == "slider/text"				then return GetShared("generic/white/normal", state) end
+		if color == "slider/grab"				then return GetShared("generic/orange/normal", state) end
+		if color == "slider/grab/active"			then return GetShared("generic/orange/light", state) end
+		if color == "slider/background"				then return GetShared("generic/grey/darker", state) end
+		if color == "slider/background/active"			then return GetShared("generic/grey/darker", state) end
+		if color == "slider/background/hovered"			then return GetShared("generic/grey/darker", state) end
+
+		-- checkbox
+		if color == "checkbox/checkmark"			then return GetShared("generic/white/normal", state) end
+		if color == "checkbox/on/title"				then return GetShared("generic/orange/normal", state) end
+		if color == "checkbox/on/background"			then return GetShared("generic/grey/darker", state) end
+		if color == "checkbox/on/background/active"		then return GetShared("generic/orange/dark", state) end
+		if color == "checkbox/on/background/hovered"		then return GetShared("generic/orange/normal", state) end
+		if color == "checkbox/off/title"			then return GetShared("generic/white/normal", state) end
+		if color == "checkbox/off/background"			then return GetShared("generic/grey/darker", state) end
+		if color == "checkbox/off/background/active"		then return GetShared("generic/grey/darker", state) end
+		if color == "checkbox/off/background/hovered"		then return GetShared("generic/grey/darker", state) end
+
+		-- quickshift
+		if color == "quickshift/background"			then return GetShared("generic/grey/darker", state) end
+		if color == "quickshift/background/active"		then return GetShared("generic/grey/darker", state) end
+		if color == "quickshift/background/hovered"		then return GetShared("generic/grey/darker", state) end
+		if color == "quickshift/on/border"			then return GetShared("generic/orange/darkest", state) end
+		if color == "quickshift/on/grab/normal"			then return GetShared("generic/orange/normal", state) end
+		if color == "quickshift/on/grab/active"			then return GetShared("generic/orange/light", state) end
+		if color == "quickshift/off/border"			then return GetShared("generic/grey/dark", state) end
+		if color == "quickshift/off/grab/normal"		then return GetShared("generic/grey/light", state) end
+		if color == "quickshift/off/grab/active"		then return GetShared("generic/grey/lighter", state) end
+
+		-- combobox
+		if color == "combobox/border"				then return GetShared("generic/grey/dark", state) end
+		if color == "combobox/background"			then return GetShared("generic/grey/darker", state) end
+		if color == "combobox/popup/background"			then return GetShared("generic/grey/darker", state) end
+		if color == "combobox/button"				then return GetShared("generic/orange/normal", state) end
+		if color == "combobox/button/active"			then return GetShared("generic/orange/normal", state) end
+		if color == "combobox/button/hovered"			then return GetShared("generic/orange/light", state) end
+		if color == "combobox/header"				then return GetShared("generic/grey/normal", state) end
+		if color == "combobox/header/active"			then return GetShared("generic/orange/light", state) end
+		if color == "combobox/header/hovered"			then return GetShared("generic/orange/normal", state) end
+
+		-- notification
+		if color == "notification/text"				then return GetShared("generic/white/dark", state) end
+		if color == "notification/background"			then return GetShared("generic/grey/darkest", state) end
+		if color == "notification/decoration"			then return GetShared("generic/orange/normal", state) end
+
+		-- animations
+		if color == "animations/logo/default"			then return ImGui.GetColorU32(1, 0.56, 0.13, state) end
+		if color == "animations/logo/highlight"			then return ImGui.GetColorU32(0.9, 0.9, 1, state) end
+		if color == "animations/logo/decoration"		then return ImGui.GetColorU32(0.4, 0.4, 0.43, state) end
+
+		-- debug
+		if color == "debug/table/background"			then return GetShared("generic/grey/darker", state) end
+
+
+
 
 
 		-- fallback
 		return GetShared("fallback")
 	end
 
+
+
+
+
+
+
+
+
+
+
+
 	-- theme: white satin
-	if DRAW.Runtime.Themes.Select == 1
+	if DRAW.Runtime.Themes.Select == 2
 	then
 		-- window
 		if color == "window/main/text"				then return GetShared("generic/grey/darker") end
@@ -271,7 +388,7 @@ function DRAW:GetColor(color, state)
 
 
 	-- theme: mox destiny
-	if DRAW.Runtime.Themes.Select == 2
+	if DRAW.Runtime.Themes.Select == 3
 	then
 		-- window
 		if color == "window/main/text"				then return GetShared("generic/pink") end
@@ -331,13 +448,13 @@ end
 --
 --// DRAW:WindowStart()
 --
-function DRAW:WindowStart()
+function DRAW:WindowStart(resize)
 
 	-- first position
 	ImGui.SetNextWindowPos(100, 100, ImGuiCond.FirstUseEver)
 
 	-- allow window resize
-	if DRAW.isDebug then
+	if DRAW.isDebug and resize then
 		ImGui.SetNextWindowSizeConstraints(UTIL:ScreenScale(456), UTIL:ScreenScale(600), DRAW.Scaling.Screen.Usable, DRAW.Scaling.Screen.Height - 100)
 	else
 		ImGui.SetNextWindowSizeConstraints(UTIL:ScreenScale(456), UTIL:ScreenScale(600), UTIL:ScreenScale(456), DRAW.Scaling.Screen.Height - 100)
@@ -1106,7 +1223,7 @@ function DRAW:Checkbox(render, option, state, value)
 end
 
 --
---// DRAW:Quickshift()
+--// DRAW:Quickshift(<TABLE>,<TABLE>,<INT>,<BOOL>)
 --
 function DRAW:Quickshift(render, option, state, value)
 
@@ -1159,7 +1276,7 @@ function DRAW:Quickshift(render, option, state, value)
 
 	-- draw minified slider
 	ImGui.PushID("DE_QS"..UTIL:ElementID(render.path))
-	local _return, _trigger = ImGui.SliderInt("", value, 0, 1)
+	local _return, _trigger = ImGui.SliderInt("", value, 1, 0)
 	ImGui.PopID()
 
 	-- drop stacks
@@ -1188,9 +1305,9 @@ function DRAW:Quickshift(render, option, state, value)
 		-- alignment
 		if render.align
 		then
-			DRAW:Spacing(_spacing,1)
+			DRAW:Spacing(_left,1)
 		else
-			DRAW:Spacing(_spacing + UTIL:WindowScale(42),1)
+			DRAW:Spacing(_left + UTIL:WindowScale(42),1)
 		end
 
 		-- add stacks
@@ -1198,13 +1315,13 @@ function DRAW:Quickshift(render, option, state, value)
 
 		if render.align
 		then
-			ImGui.Text(UTIL:WordWrap(render.desc,_spacing))
+			ImGui.Text(UTIL:WordWrap(render.desc,_left))
 		else
 			if render.spacing
 			then
 				ImGui.Text(UTIL:WordWrap(render.desc,UTIL:WindowScale(render.spacing) + UTIL:WindowScale(60)))
 			else
-				ImGui.Text(UTIL:WordWrap(render.desc,_spacing + UTIL:WindowScale(60)))
+				ImGui.Text(UTIL:WordWrap(render.desc,_left + UTIL:WindowScale(60)))
 			end
 		end
 		ImGui.PopStyleColor(1)
@@ -1348,142 +1465,6 @@ function DRAW:Combobox(render, option, demand, names, length, value)
 	-- result
 	return _return, _trigger
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
---
---// DRAW:Quickshift()
---
-function DRAW:QuickshiftOLD(render, option, state, value)
-
-	-- default
-	local _spacing = UTIL:WindowScale(16)
-
-	-- spacing
-	if render.spacing then _spacing = UTIL:WindowScale(render.spacing) + _spacing end
-
-	-- top spacer
-	DRAW:Spacer(1,UTIL:WindowScale(4))
-
-	-- lead spacing
-	DRAW:Spacing(_spacing,1)
-
-	-- alignment
-	if render.align
-	then
-		-- paint title
-		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("element/title"))
-		ImGui.Text(render.name)
-		ImGui.PopStyleColor(1)
-		DRAW:Sameline()
-
-		-- fill space between
-		DRAW:Spacing(DRAW.Scaling.Window.Width - (_spacing + UTIL:TextWidth(render.name) + UTIL:WindowScale(50)),1)
-	end
-
-	-- fixed width to keep aspect ratio
-	ImGui.SetNextItemWidth(UTIL:WindowScale(32))
-
-	-- add stacks
-	if UTIL:IntToBool(value)
-	then
-		ImGui.PushStyleColor(ImGuiCol.Border, DRAW:GetColor("quickshift/on/border"))
-		ImGui.PushStyleColor(ImGuiCol.SliderGrab, DRAW:GetColor("quickshift/on/grab/normal"))
-		ImGui.PushStyleColor(ImGuiCol.SliderGrabActive, DRAW:GetColor("quickshift/on/grab/active"))
-	else
-		ImGui.PushStyleColor(ImGuiCol.Border, DRAW:GetColor("quickshift/off/border"))
-		ImGui.PushStyleColor(ImGuiCol.SliderGrab, DRAW:GetColor("quickshift/off/grab/normal"))
-		ImGui.PushStyleColor(ImGuiCol.SliderGrabActive, DRAW:GetColor("quickshift/off/grab/active"))
-	end
-
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor())
-	ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColor("quickshift/background"))
-	ImGui.PushStyleColor(ImGuiCol.FrameBgActive, DRAW:GetColor("quickshift/background/active"))
-	ImGui.PushStyleColor(ImGuiCol.FrameBgHovered, DRAW:GetColor("quickshift/background/hovered"))
-
-	ImGui.PushStyleVar(ImGuiStyleVar.GrabRounding, UTIL:WindowScale(10))
-	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, UTIL:WindowScale(10))
-	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, 0, 0)
-	ImGui.PushStyleVar(ImGuiStyleVar.FrameBorderSize, UTIL:WindowScale(2))
-
-	-- draw minified slider
-	ImGui.PushID("DE_QS"..UTIL:ElementID(render.path))
-	local _return, _trigger = ImGui.SliderInt("", value, 0, 1)
-	ImGui.PopID()
-
-	-- drop stacks
-	ImGui.PopStyleVar(4)
-	ImGui.PopStyleColor(7)
-
-	-- alignment
-	if not render.align
-	then
-		DRAW:Sameline()
-		DRAW:Spacing(UTIL:WindowScale(10),1)
-		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("element/title"))
-		ImGui.Text(render.name)
-		ImGui.PopStyleColor(1)
-	end
-
-	-- description
-	if render.desc
-	then
-		-- top spacer
-		DRAW:Spacer(1,UTIL:WindowScale(4))
-
-		-- left spacing
-		--DRAW:Spacing(_spacing,1)
-
-		-- alignment
-		if render.align
-		then
-			DRAW:Spacing(_spacing,1)
-		else
-			DRAW:Spacing(_spacing + UTIL:WindowScale(42),1)
-		end
-
-		-- add stacks
-		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("element/description"))
-
-		if render.align
-		then
-			ImGui.Text(UTIL:WordWrap(render.desc,_spacing))
-		else
-			if render.spacing
-			then
-				ImGui.Text(UTIL:WordWrap(render.desc,UTIL:WindowScale(render.spacing) + UTIL:WindowScale(60)))
-			else
-				ImGui.Text(UTIL:WordWrap(render.desc,_spacing + UTIL:WindowScale(60)))
-			end
-		end
-		ImGui.PopStyleColor(1)
-	end
-
-	-- result
-	return _return, _trigger
-end
-
-
-
-
 
 
 
@@ -2660,13 +2641,6 @@ end
 
 
 
-
-
-
-
-
-
-
 --
 --// DRAW:SaveAnimation()
 --
@@ -2753,9 +2727,6 @@ function DRAW:SaveAnimation(text)
 	--ImGui.EndChild()
 
 end
-
-
-
 
 function DRAW:AnimPainter(id, width, height, opacity, rounding)
 
@@ -3156,19 +3127,179 @@ end
 
 
 --
---// DRAW.FrameTimes(<TABLE>,<INT>,<TABLE>) -- wrapper for DRAW.Graph
+--// DRAW.Frametime(<TABLE>,<FLOAT>,<FLOAT>,<FLOAT>)
 --
 -- <TABLE>	history graph table
 -- <INT>	length it should have
 -- <TABLE>	transparency settings
 --
-function DRAW:FrameTimes(_history, _length, _transparency)
+function DRAW:Frametime(_history, _format, _width, _height, _space, _scale, _title, _bar, _back, _text)
 
-	-- catch non set
-	local _transparency = _transparency or {1,1,1} -- text, bar, background
+	-- bar painter
+	local function Painter(_child, _width, _height, _scale, _value, _show, _bar, _back, _text)
+
+		local _show = false
+
+		-- round bar and string value
+		local bar = math.floor(_value)
+		local txt = tostring(_value)
+
+		-- scale if not false
+		if _scale ~= false then bar = math.floor(_value / _scale) end
+
+		-- calculate remaining
+		local top = _height - bar
+
+		-- exception if zero
+		if bar == 0
+		then
+			top = _height - 1
+			bar = 1
+			txt = "N/A"
+		end
+
+		-- start painting
+		ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColor("graphbar/background", _back))
+		ImGui.PushStyleVar(ImGuiStyleVar.ScrollbarSize, 0)
+		ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, 0, 0)
+
+		if _show ~= false
+		then
+			_height = _height + 22
+		end
+
+		-- create frame
+		local blind = ImGui.BeginChildFrame(_child, _width, _height, ImGuiWindowFlags.NoScrollWithMouse)
+
+		-- drop stacks
+		ImGui.PopStyleVar(2)
+		ImGui.PopStyleColor(1)
+
+		if blind
+		then
+			DRAW:Spacer(1,top)
+
+			ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColor())
+			ImGui.PushStyleColor(ImGuiCol.PlotHistogram, DRAW:GetColor("graphbar/progessbar", _bar))
+
+			ImGui.ProgressBar(1, UTIL:ScreenScale(_width), bar, "")
+			ImGui.PopStyleColor(2)
+
+			-- draw text if wanted
+			if _show ~= false
+			then
+				DRAW:Spacer(1,1)
+
+				DRAW:Spacer(2,1)
+				DRAW:Sameline()
+
+				if string.len(txt) < 3
+				then
+					DRAW:Spacer(4,1)
+					DRAW:Sameline()
+				end
+
+				if string.len(txt) < 2
+				then
+					DRAW:Spacer(3,1)
+					DRAW:Sameline()
+				end
+
+				ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("graph/text/value", _text))
+				ImGui.Text(txt)
+				ImGui.PopStyleColor(1)
+
+				DRAW:Spacer(1,3)
+			end
+
+			ImGui.EndChildFrame()
+		end
+	end
+
+	-- paint table
+	local paint = {}
+
+	-- calculate number of bars
+	local count = UTIL:NumberOfBars(_width, _space)
+
+	-- caluclate remaining space for centering
+	local space = UTIL:CenterOfBars(count, _width, _space)
+
+	-- get last entries for display
+	local limit = UTIL:TableEntriesLast(_history, count)
+
+	-- fill empty spots if needed
+	if UTIL:TableLength(limit) < count
+	then
+		local remain = count - UTIL:TableLength(limit)
+		for i=1,remain do table.insert(paint, 0) end
+	end
+
+	-- preset values
+	local current = 0
+	local average = 0
+	local maximum = 0
+	local minimum = 1000
+
+	-- fill values
+	for id,value in pairs(limit)
+	do
+		-- we round them for display
+		table.insert(paint, math.floor(value))
+
+		-- collect basics / avoid spikes
+		if value < 1000 then average = average + value end
+		if value < 1000 and value > maximum then maximum = value end
+		if value < 1000 and value < minimum then minimum = value end
+	end
+
+	-- calculate and format
+	if UTIL:TableLength(paint) > 0
+	then
+		current = string.format(_format, paint[#paint])
+		average = string.format(_format, average / UTIL:TableLength(paint))
+		maximum = string.format(_format, maximum)
+		minimum = string.format(_format, minimum)
+	else
+		current = "N/A"
+		average = "N/A"
+		maximum = "N/A"
+		minimum = "N/A"
+	end
+
+	-- check transparency
+	local transparency = {bar=0.75,back=0.35,text=0.75}
+	if _bar >= 0 and _bar <= 10 then transparency.bar = _bar / 10 end
+	if _back >= 0 and _back <= 10 then transparency.back = _back / 10 end
+	if _text >= 0 and _text <= 10 then transparency.text = _text / 10 end
+
+	-- start painting
+	DRAW:Spacer(1,UTIL:WindowScale(3))
+	DRAW:GraphHeader(_title, current, average, minimum, maximum, _text)
+
+	-- left spacing
+	DRAW:Spacing(UTIL:ScreenScale(space),1)
+	--DRAW:Sameline()
 
 
-	DRAW:GraphNew(_history, "%.2f", "FRAME TIMES", 2, 5, 50, false, false, 1, 1, 1)
+	-- child start
+	local childs = 2000
+
+	-- draw values
+	for _,value in pairs(paint)
+	do
+		--DRAW:Sameline()
+		Painter(childs, _width, 50, false, value, false, _bar, _back, _text)
+		childs = childs + 1
+		DRAW:Sameline()
+		DRAW:Spacing(UTIL:ScreenScale(_space),1)
+	end
+
+	-- clear sameline
+	DRAW:Spacer(1,1)
+
+	-- some more room
+	DRAW:Spacer(1,UTIL:WindowScale(3))
 end
 
 
@@ -3471,7 +3602,6 @@ function DRAW:Pre(project, version, runtime, scaling, debug)
 	DRAW.Runtime = runtime
 	DRAW.Scaling = scaling
 	DRAW.isDebug = debug
-
 
 
 

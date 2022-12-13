@@ -30,25 +30,27 @@
 					"desc":"Show's the Performance Graph with Frametimes and Frames Per Second in the Window."
 				},
 				{
-					"spacing":10
+					"spacing":14
 				},
 				{
 					"name":"Background Update",
 					"path":"DeveloperExtras/Graph/BackgroundUpdate",
 					"desc":"Updates the Graph constantly and not only when visible. May has some slight performance impact. Has no effect when the Overlay is visible.",
 
-					"spacing":40
+					"spacing":58
 				},
 				{
-					"separator":1
+					"spacing":14
 				},
 				{
 					"name":"Show Graph Overlay",
 					"path":"DeveloperExtras/Graph/Overlay/Enable",
-					"desc":"Show's a permanent Overlay of the Performance Graph. Disables the Graph in the Main Window."
+					"desc":"Show's a permanent Overlay of the Performance Graph and disables it in the Main Window.",
+
+					"spacing":58
 				},
 				{
-					"spacing":10
+					"spacing":14
 				},
 				{
 					"name":"Overlay Position",
@@ -56,7 +58,7 @@
 					"note":"no idea",
 					"desc":"Places the Graph Overlay on a specific Position. Left to Right and top to bottom.",
 
-					"spacing":32
+					"spacing":74
 				},
 				{
 					"spacing":10
@@ -101,13 +103,16 @@
 				{
 					"name":"Enable Debug",
 					"path":"DeveloperExtras/Debug/Enable",
-					"desc":"Enables Debug Mode with verbose logging to the cet console",
+					"desc":"Activates Debug Mode with verbose logging to the cet console.",
 					"align":true
+				},
+				{
+					"spacing":14
 				},
 				{
 					"name":"Enable Resize",
 					"path":"DeveloperExtras/Debug/Resize",
-					"desc":"Allows resizing the main window for testing purposes",
+					"desc":"Allows resizing the main window for testing purposes.",
 					"align":true
 				},
 				{

@@ -359,6 +359,17 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
 --
 --// UTIL:TextSplit(<STRING>)
 --
@@ -542,14 +553,20 @@ function UTIL:FormatFrametime(input)
 end
 
 
+--
+--// UTIL:NumberOfBars(<INT>,<INT>)
+--
+function UTIL:NumberOfBars(width, space)
+	return math.floor(UTIL.Scaling.Window.Usable / UTIL:ScreenScale(width + space))
+end
 
 
-
-
-
-
-
-
+--
+--// UTIL:NumberOfBars(<INT>,<INT>,<INT>)
+--
+function UTIL:CenterOfBars(count, width, space)
+	return math.floor((((UTIL.Scaling.Window.Usable + space) - (UTIL:ScreenScale((width + space) * count))) / 2) + UTIL:ScreenScale(UTIL.Runtime.Window.Border))
+end
 
 
 
