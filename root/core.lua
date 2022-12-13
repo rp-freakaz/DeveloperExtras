@@ -304,7 +304,7 @@ function CORE:Interface()
 			--DRAW:GraphWrapperFT(CORE.Overlay.FT.History, CORE.Overlay.FT.Length, UTIL:TableLength(CORE.Overlay.FT.History))
 			--DRAW:GraphWrapperFPS(CORE.Overlay.FPS.History, CORE.Overlay.FPS.Length, UTIL:TableLength(CORE.Overlay.FPS.History))
 
-			--DRAW:FrameTimes(CORE.History.Frametime.Store, CORE.History.Frametime.Limit)
+			DRAW:FrameTimes(CORE.History.Frametime.Store, CORE.History.Frametime.Limit)
 
 
 			--print(UTIL:DebugDump(ImGui.GetWindowDrawList()))

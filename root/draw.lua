@@ -120,7 +120,7 @@ function DRAW:GetColor(color, state)
 		if color == "collapse/header/active"			then return GetShared("generic/orange/normal", state) end
 		if color == "collapse/header/hovered"			then return GetShared("generic/orange/light", state) end
 
-		-- elements
+		-- generic
 		if color == "element/title"				then return GetShared("generic/white/normal", state) end
 		if color == "element/notice"				then return GetShared("generic/white/dark", state) end
 		if color == "element/description"			then return GetShared("generic/grey/lighter", state) end
@@ -143,11 +143,11 @@ function DRAW:GetColor(color, state)
 
 		-- checkbox
 		if color == "checkbox/checkmark"			then return GetShared("generic/white/normal", state) end
-		if color == "checkbox/on/text"				then return GetShared("generic/orange/normal", state) end
+		if color == "checkbox/on/title"				then return GetShared("generic/orange/normal", state) end
 		if color == "checkbox/on/background"			then return GetShared("generic/grey/darker", state) end
-		if color == "checkbox/on/background/active"		then return GetShared("generic/grey/darker", state) end
-		if color == "checkbox/on/background/hovered"		then return GetShared("generic/grey/darker", state) end
-		if color == "checkbox/off/text"				then return GetShared("generic/white/normal", state) end
+		if color == "checkbox/on/background/active"		then return GetShared("generic/orange/dark", state) end
+		if color == "checkbox/on/background/hovered"		then return GetShared("generic/orange/normal", state) end
+		if color == "checkbox/off/title"			then return GetShared("generic/white/normal", state) end
 		if color == "checkbox/off/background"			then return GetShared("generic/grey/darker", state) end
 		if color == "checkbox/off/background/active"		then return GetShared("generic/grey/darker", state) end
 		if color == "checkbox/off/background/hovered"		then return GetShared("generic/grey/darker", state) end
@@ -999,7 +999,7 @@ end
 --
 --// DRAW:Description()
 --
-function DRAW:Description(render, space, state)
+function DRAW:DescriptionOLD(render, space, state)
 
 	-- catch unset
 	local space = space or 0
@@ -1035,7 +1035,7 @@ end
 
 
 --
---// DRAW:Checkbox(<TABLE>,<TABLE>,<BOOL>,<BOOL>)
+--// DRAW:Checkbox(<TABLE>,<TABLE>,<INT>,<BOOL>)
 --
 function DRAW:Checkbox(render, option, state, value)
 
@@ -1056,12 +1056,17 @@ function DRAW:Checkbox(render, option, state, value)
 
 	-- add stacks (conditional)
 	if value then
-		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("checkbox/on/text", state))
+		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("checkbox/on/title", state))
+	else
+		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("checkbox/off/title", state))
+	end
+
+	-- add stacks (conditional)
+	if value then
 		ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColor("checkbox/on/background", state))
 		ImGui.PushStyleColor(ImGuiCol.FrameBgActive, DRAW:GetColor("checkbox/on/background/active", state))
 		ImGui.PushStyleColor(ImGuiCol.FrameBgHovered, DRAW:GetColor("checkbox/on/background/hovered", state))
 	else
-		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("checkbox/off/text", state))
 		ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColor("checkbox/off/background", state))
 		ImGui.PushStyleColor(ImGuiCol.FrameBgActive, DRAW:GetColor("checkbox/off/background/active", state))
 		ImGui.PushStyleColor(ImGuiCol.FrameBgHovered, DRAW:GetColor("checkbox/off/background/hovered", state))
@@ -1089,9 +1094,166 @@ function DRAW:Checkbox(render, option, state, value)
 		DRAW:Spacer(UTIL:WindowScale(14))
 	end
 
+	-- description (not on sameline)
+	if render.desc and not render.sameline
+	then
+		_left = _left + UTIL:WindowScale(32)
+		DRAW:Description(render.desc, _left, _right, state)
+	end
+
 	-- result
 	return _return, _trigger
 end
+
+--
+--// DRAW:Quickshift()
+--
+function DRAW:Quickshift(render, option, state, value)
+
+	-- default spacing
+	local _left = UTIL:WindowScale(16)
+	local _right = UTIL:WindowScale(16)
+
+	-- add spacing to left
+	if render.spacing then _left = UTIL:WindowScale(render.spacing) end
+
+	-- paint spacing
+	DRAW:Spacing(_left,1)
+
+	-- alignment
+	if render.align
+	then
+		-- paint title
+		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("element/title"))
+		ImGui.Text(render.name)
+		ImGui.PopStyleColor(1)
+		DRAW:Sameline()
+
+		-- fill space between
+		DRAW:Spacing(DRAW.Scaling.Window.Usable - (_left + UTIL:TextWidth(render.name) + UTIL:WindowScale(50)),1)
+	end
+
+	-- fixed width to keep aspect ratio
+	ImGui.SetNextItemWidth(UTIL:WindowScale(32))
+
+	-- add stacks
+	if UTIL:IntToBool(value) then
+		ImGui.PushStyleColor(ImGuiCol.Border, DRAW:GetColor("quickshift/on/border"))
+		ImGui.PushStyleColor(ImGuiCol.SliderGrab, DRAW:GetColor("quickshift/on/grab/normal"))
+		ImGui.PushStyleColor(ImGuiCol.SliderGrabActive, DRAW:GetColor("quickshift/on/grab/active"))
+	else
+		ImGui.PushStyleColor(ImGuiCol.Border, DRAW:GetColor("quickshift/off/border"))
+		ImGui.PushStyleColor(ImGuiCol.SliderGrab, DRAW:GetColor("quickshift/off/grab/normal"))
+		ImGui.PushStyleColor(ImGuiCol.SliderGrabActive, DRAW:GetColor("quickshift/off/grab/active"))
+	end
+
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor())
+	ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColor("quickshift/background"))
+	ImGui.PushStyleColor(ImGuiCol.FrameBgActive, DRAW:GetColor("quickshift/background/active"))
+	ImGui.PushStyleColor(ImGuiCol.FrameBgHovered, DRAW:GetColor("quickshift/background/hovered"))
+
+	ImGui.PushStyleVar(ImGuiStyleVar.GrabRounding, UTIL:WindowScale(10))
+	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, UTIL:WindowScale(10))
+	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, 0, 0)
+	ImGui.PushStyleVar(ImGuiStyleVar.FrameBorderSize, UTIL:WindowScale(2))
+
+	-- draw minified slider
+	ImGui.PushID("DE_QS"..UTIL:ElementID(render.path))
+	local _return, _trigger = ImGui.SliderInt("", value, 0, 1)
+	ImGui.PopID()
+
+	-- drop stacks
+	ImGui.PopStyleVar(4)
+	ImGui.PopStyleColor(7)
+
+	-- alignment
+	if not render.align
+	then
+		DRAW:Sameline()
+		DRAW:Spacing(UTIL:WindowScale(10),1)
+		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("element/title"))
+		ImGui.Text(render.name)
+		ImGui.PopStyleColor(1)
+	end
+
+	-- description
+	if render.desc
+	then
+		-- top spacer
+		DRAW:Spacer(1,UTIL:WindowScale(4))
+
+		-- left spacing
+		--DRAW:Spacing(_spacing,1)
+
+		-- alignment
+		if render.align
+		then
+			DRAW:Spacing(_spacing,1)
+		else
+			DRAW:Spacing(_spacing + UTIL:WindowScale(42),1)
+		end
+
+		-- add stacks
+		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("element/description"))
+
+		if render.align
+		then
+			ImGui.Text(UTIL:WordWrap(render.desc,_spacing))
+		else
+			if render.spacing
+			then
+				ImGui.Text(UTIL:WordWrap(render.desc,UTIL:WindowScale(render.spacing) + UTIL:WindowScale(60)))
+			else
+				ImGui.Text(UTIL:WordWrap(render.desc,_spacing + UTIL:WindowScale(60)))
+			end
+		end
+		ImGui.PopStyleColor(1)
+	end
+
+	-- result
+	return _return, _trigger
+end
+
+
+
+--
+--// DRAW:Description()
+--
+function DRAW:Description(text, left, right, state)
+
+	-- catch unset
+	local left = left or 0
+	local right = right or 0
+	local state = state or 0
+
+	-- top spacer
+	DRAW:Spacer(1,UTIL:WindowScale(3))
+
+	-- left spacing
+	DRAW:Spacing(left,1)
+
+	-- add stacks
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("element/description", state))
+	ImGui.Text(UTIL:WordWrap(text, left + right))
+	ImGui.PopStyleColor(1)
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1210,7 +1372,7 @@ end
 --
 --// DRAW:Quickshift()
 --
-function DRAW:Quickshift(render, option, state, value)
+function DRAW:QuickshiftOLD(render, option, state, value)
 
 	-- default
 	local _spacing = UTIL:WindowScale(16)
@@ -2633,7 +2795,7 @@ end
 --
 --// DRAW.Graph()
 --
-function DRAW:Graph(_child, _table, _should, _length, _format, _color, _title, _space, _width, _height, _scale, _show, _trans_bar, _trans_barbg, _trans_text)
+function DRAW:GraphOLD(_child, _table, _should, _length, _format, _color, _title, _space, _width, _height, _scale, _show, _trans_bar, _trans_barbg, _trans_text)
 
 	-- graph table
 	local _graph = {}
@@ -2836,7 +2998,7 @@ end
 --
 --// DRAW.GraphBar() --- child for painting bars
 --
-function DRAW:GraphBar(_child, _width, _height, _scale, _value, _show, _trans_bar, _trans_barbg, _trans_text)
+function DRAW:GraphBarOLD(_child, _width, _height, _scale, _value, _show, _trans_bar, _trans_barbg, _trans_text)
 
 	-- defaults
 	local _bar = math.floor(_value)
@@ -2977,6 +3139,22 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --
 --// DRAW.FrameTimes(<TABLE>,<INT>,<TABLE>) -- wrapper for DRAW.Graph
 --
@@ -3001,7 +3179,7 @@ end
 function DRAW:GraphNew(_history, _format, _title, _space, _width, _height, _scale, _show, _bar, _back, _text)
 
 	-- defaults
-	local remaining = UTIL:RemainingPixels(DRAW.Scaling.Window.Width, DRAW.Runtime.Window.Border)
+	--local remaining = UTIL:RemainingPixels(DRAW.Scaling.Window.Width, DRAW.Runtime.Window.Border)
 
 
 

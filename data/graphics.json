@@ -9,7 +9,8 @@
 				{
 					"name":"Antialiasing",
 					"path":"Developer/FeatureToggles/Antialiasing",
-					"note":"Required for DLSS or FSR 2.0"
+					"note":"Required for DLSS or FSR 2.0",
+					"desc":"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua."
 				},
 
 
@@ -49,6 +50,7 @@
 				{
 					"name":"(Distant Rendering)",
 					"path":"Developer/FeatureToggles/DistantGI",
+					"desc":"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.",
 					"sameline":56
 				},
 				{
