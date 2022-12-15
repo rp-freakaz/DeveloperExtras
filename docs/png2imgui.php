@@ -17,9 +17,6 @@ if(!$import) {
 $width = imagesx($import);
 $height = imagesy($import);
 
-// calculate conversion
-$factor = 1 / 255;
-
 
 
 // collector
