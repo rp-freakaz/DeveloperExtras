@@ -89,17 +89,23 @@ for($x = 0; $x < $width; $x++)
 // start
 echo "{\n";
 
+// row loop
+$row_loop = 0;
+
 // loop rows again
 for($y = 0; $y < $height; $y++)
 {
 	// no disabled rows
 	if(!in_array($y, $row_disable))
 	{
+		// inc loop count
+		$row_loop++;
+
 		// row start
 		echo "{";
 
-		// loops
-		$loops = 0;
+		// col loop
+		$col_loop = 0;
 
 		// loop columns again
 		for($x = 0; $x < $width; $x++)
@@ -108,7 +114,7 @@ for($y = 0; $y < $height; $y++)
 			if(!in_array($x, $col_disable))
 			{
 				// inc loop count
-				$loops++;
+				$col_loop++;
 
 				// read color index
 				$index = imagecolorat($import, $x, $y);
@@ -124,7 +130,7 @@ for($y = 0; $y < $height; $y++)
 				}
 
 				// drop comma if not last
-				if($loops != ($width - count($col_disable))) {
+				if($col_loop != ($width - count($col_disable))) {
 					echo ",";
 				}
 
@@ -132,12 +138,17 @@ for($y = 0; $y < $height; $y++)
 		}
 
 		// row end
-		echo "}\n";
+		echo "}";
+
+		// drop comma if not last
+		if($row_loop != ($height - count($row_disable))) {
+			echo ",\n";
+		}
 	}
 }
 
 // end
-echo "}";
+echo "\n}";
 
 
 
