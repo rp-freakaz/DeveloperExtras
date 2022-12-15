@@ -95,6 +95,7 @@ for($y = 0; $y < $height; $y++)
 	// no disabled rows
 	if(!in_array($y, $row_disable))
 	{
+		// row start
 		echo "{";
 
 		// loops
@@ -106,6 +107,7 @@ for($y = 0; $y < $height; $y++)
 			// no disabled columns
 			if(!in_array($x, $col_disable))
 			{
+				// inc loop count
 				$loops++;
 
 				// read color index
@@ -129,6 +131,7 @@ for($y = 0; $y < $height; $y++)
 			}
 		}
 
+		// row end
 		echo "}\n";
 	}
 }
