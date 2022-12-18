@@ -6,7 +6,7 @@
 //
 
 // open local image
-$import = imagecreatefrompng("./mox.png");
+$import = imagecreatefrompng("./moxtest.png");
 
 // check for successful read
 if(!$import) {
