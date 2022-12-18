@@ -949,36 +949,19 @@ end
 --
 function DRAW:Notification(text)
 
-	-- add stacks (decoration)
-	ImGui.PushStyleColor(ImGuiCol.Button, DRAW:GetColor("notification/decoration"))
-	ImGui.PushStyleColor(ImGuiCol.ButtonActive, DRAW:GetColor("notification/decoration"))
-	ImGui.PushStyleColor(ImGuiCol.ButtonHovered, DRAW:GetColor("notification/decoration"))
-
-	ImGui.PushID("Button"..tostring("NotificationSign"))
-	local _blind = ImGui.Button("", UTIL:WindowScale(5), UTIL:TextHeight(text) + (UTIL:WindowScale(6) * 2))
-	ImGui.PopID()
-
-	-- drop stacks (decoration)
-	ImGui.PopStyleColor(3)
-
-	-- sameline
-	DRAW:Sameline()
-
 	-- add stacks (notification)
 	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("notification/text"))
-	ImGui.PushStyleColor(ImGuiCol.Button, DRAW:GetColor("notification/background"))
-	ImGui.PushStyleColor(ImGuiCol.ButtonActive, DRAW:GetColor("notification/background"))
-	ImGui.PushStyleColor(ImGuiCol.ButtonHovered, DRAW:GetColor("notification/background"))
+	ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColor("notification/background"))
+	ImGui.PushStyleColor(ImGuiCol.PlotHistogram, DRAW:GetColor("notification/decoration"))
 	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:WindowScale(6), UTIL:WindowScale(6))
 	ImGui.PushStyleVar(ImGuiStyleVar.ButtonTextAlign, 0, 0)
 
-	ImGui.PushID("Button"..tostring("NotificationText"))
-	local _blind = ImGui.Button(tostring(text), UTIL:WindowScale(456), UTIL:TextHeight(text) + (UTIL:WindowScale(6) * 2))
-	ImGui.PopID()
+	-- we use the progressbar, because its the fastest in rendering
+	ImGui.ProgressBar(0.013, UTIL:WindowScale(456), UTIL:TextHeight(text) + (UTIL:WindowScale(6) * 2), "  "..tostring(text))
 
 	-- drop stacks (notification)
 	ImGui.PopStyleVar(2)
-	ImGui.PopStyleColor(4)
+	ImGui.PopStyleColor(3)
 end
 
 
