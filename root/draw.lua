@@ -124,7 +124,7 @@ function DRAW:GetColor(color, state)
 		if color == "element/title"				then return GetShared("generic/white/normal", state) end
 		if color == "element/notice"				then return GetShared("generic/white/dark", state) end
 		if color == "element/description"			then return GetShared("generic/grey/lighter", state) end
-		if color == "element/decoration"			then return GetShared("generic/orange/normal", state) end
+		if color == "element/decoration"			then return GetShared("generic/orange/dark", state) end
 
 		-- graph
 		if color == "graph/text/name"				then return ImGui.GetColorU32(0.6, 0.6, 0.63, state) end
@@ -133,11 +133,14 @@ function DRAW:GetColor(color, state)
 		if color == "graphbar/progessbar"			then return ImGui.GetColorU32(1, 0.56, 0.13, state) end
 
 		-- slider
-		if color == "slider/minmax"				then return GetShared("generic/grey/light", state) end
 		if color == "slider/text"				then return GetShared("generic/white/normal", state) end
-		if color == "slider/grab"				then return GetShared("generic/orange/normal", state) end
-		if color == "slider/grab/active"			then return GetShared("generic/orange/light", state) end
-		if color == "slider/background"				then return GetShared("generic/grey/darker", state) end
+		if color == "slider/grab"				then return GetShared("generic/white/dark", state) end
+		if color == "slider/grab/active"			then return GetShared("generic/white/dark", state) end
+		if color == "slider/minmax"				then return GetShared("generic/grey/lightest", state) end
+		if color == "slider/decoration"				then return GetShared("generic/grey/normal", state) end
+		if color == "slider/border"				then return GetShared("generic/orange/dark", state) end
+		if color == "slider/progress"				then return ImGui.GetColorU32(0.9, 0.9, 1, GetStatus(state, 0.125)) end
+		if color == "slider/background"				then return ImGui.GetColorU32(0.15, 0.15, 0.18, GetStatus(state, 1)) end
 		if color == "slider/background/active"			then return GetShared("generic/grey/darker", state) end
 		if color == "slider/background/hovered"			then return GetShared("generic/grey/darker", state) end
 
@@ -151,6 +154,15 @@ function DRAW:GetColor(color, state)
 		if color == "checkbox/off/background"			then return GetShared("generic/grey/darker", state) end
 		if color == "checkbox/off/background/active"		then return GetShared("generic/grey/darker", state) end
 		if color == "checkbox/off/background/hovered"		then return GetShared("generic/grey/darker", state) end
+
+
+		-- quicktune
+		if color == "quicktune/text"				then return GetShared("generic/white/normal", state) end
+		if color == "quicktune/grab"				then return GetShared("generic/white/dark", state) end
+		if color == "quicktune/border"				then return GetShared("generic/orange/dark", state) end
+		if color == "quicktune/progress"			then return ImGui.GetColorU32(0.9, 0.9, 1, GetStatus(state, 0.125)) end
+		if color == "quicktune/background"			then return ImGui.GetColorU32(0.15, 0.15, 0.18, GetStatus(state, 1)) end
+		if color == "quicktune/decoration"			then return GetShared("generic/grey/normal", state) end
 
 		-- quickshift
 		if color == "quickshift/background"			then return GetShared("generic/grey/darker", state) end
@@ -468,9 +480,10 @@ function DRAW:WindowStart(resize)
 	ImGui.PushStyleVar(ImGuiStyleVar.FrameBorderSize, 0)
 	ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, 0, 0)
 	ImGui.PushStyleVar(ImGuiStyleVar.ItemInnerSpacing, UTIL:WindowScale(2), 0)
-	ImGui.PushStyleVar(ImGuiStyleVar.GrabRounding, UTIL:ScreenScale(2))
+	ImGui.PushStyleVar(ImGuiStyleVar.GrabRounding, UTIL:WindowScale(2))
 	ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, 0, 0)
 	ImGui.PushStyleVar(ImGuiStyleVar.ChildBorderSize, 0)
+	ImGui.PushStyleVar(ImGuiStyleVar.GrabMinSize, UTIL:WindowScale(4))
 
 	-- add stacks (window)
 	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("window/main/text"))
@@ -518,7 +531,7 @@ end
 function DRAW:WindowEnd()
 
 	-- drop stacks (global)
-	ImGui.PopStyleVar(10)
+	ImGui.PopStyleVar(11)
 
 	-- end window
 	ImGui.End()
@@ -709,6 +722,402 @@ end
 --
 --
 
+
+
+
+
+function DRAW:Slider_Details(render, option, state, value)
+
+	-- default spacing
+	local _left = UTIL:WindowScale(30)
+	local _right = UTIL:WindowScale(16)
+
+	-- replace spacing on left
+	if render.spacing then _left = UTIL:WindowScale(render.spacing) end
+
+	-- paint spacing
+	DRAW:Spacing(_left + UTIL:WindowScale(13),1)
+
+	-- paint details
+	DRAW:Sameline()
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("slider/minmax"))
+	if option.res then
+		ImGui.Text(string.format(option.res, option.min))
+	else
+		ImGui.Text(string.format("%.0f", option.min))
+	end
+	ImGui.PopStyleColor(1)
+	DRAW:Sameline()
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("slider/decoration"))
+	ImGui.Text(" « ")
+	ImGui.PopStyleColor(1)
+	DRAW:Sameline()
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("slider/minmax"))
+	if option.res then
+		ImGui.Text(string.format(option.res, value))
+	else
+		ImGui.Text(string.format("%.0f", value))
+	end
+	ImGui.PopStyleColor(1)
+	DRAW:Sameline()
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("slider/decoration"))
+	ImGui.Text(" » ")
+	ImGui.PopStyleColor(1)
+	DRAW:Sameline()
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("slider/minmax"))
+	if option.res then
+		ImGui.Text(string.format(option.res, option.max))
+	else
+		ImGui.Text(string.format("%.0f", option.max))
+	end
+	ImGui.PopStyleColor(1)
+	DRAW:Sameline()
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("slider/decoration"))
+	ImGui.Text("   [")
+	ImGui.PopStyleColor(1)
+	DRAW:Sameline()
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("slider/minmax"))
+	ImGui.Text(tostring(UTIL:ValueToPercent(option.min, option.max, value)).."%")
+	ImGui.PopStyleColor(1)
+	DRAW:Sameline()
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("slider/decoration"))
+	ImGui.Text("]")
+	ImGui.PopStyleColor(1)
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--
+--// DRAW:Slider(<TABLE>,<TABLE>,<INT>,<BOOL>)
+--
+function DRAW:SliderEXP(render, option, state, value)
+
+	-- default spacing
+	local _left = UTIL:WindowScale(30)
+	local _right = UTIL:WindowScale(16)
+
+	-- replace spacing on left
+	if render.spacing then _left = UTIL:WindowScale(render.spacing) end
+
+	-- top spacer
+	DRAW:Spacer(1,UTIL:WindowScale(5))
+
+	-- paint spacing
+	DRAW:Spacing(_left,1)
+
+	-- add stacks (deco)
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("slider/front"))
+	ImGui.Text("»")
+	-- drop stacks (deco)
+	ImGui.PopStyleColor(1)
+
+	-- paint title
+	DRAW:Sameline()
+	DRAW:Spacing(UTIL:WindowScale(5),1)
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("element/title"))
+	ImGui.Text(render.name)
+	ImGui.PopStyleColor(1)
+
+	-- additional paint
+	if option.min and option.max
+	then
+		ImGui.SameLine()
+		DRAW:Spacing(UTIL:WindowScale(8),1)
+		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("slider/minmax"))
+		ImGui.Text(tostring(option.min)..' to '..tostring(option.max).." cur: "..tostring(UTIL:ValueToPercent(option.min, option.max, value)))
+		ImGui.PopStyleColor(1)
+	end
+
+	-- render info
+	if render.note
+	then
+		DRAW:Notice(render, demand)
+	end
+
+
+
+
+
+
+
+	DRAW:Spacer(1,UTIL:WindowScale(6))
+	DRAW:Spacing(_left + UTIL:WindowScale(13),1)
+
+
+	ImGui.PushStyleColor(ImGuiCol.PlotHistogram, DRAW:GetColor("element/decoration", state))
+	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, UTIL:WindowScale(3))
+
+	ImGui.ProgressBar(1, UTIL:WindowScale(3), UTIL:WindowScale(21), "")
+	ImGui.PopStyleVar(1)
+	ImGui.PopStyleColor(1)
+
+
+	local sliderwidth = DRAW.Scaling.Window.Width - (_left + _right + UTIL:ButtonWidth("Reset") + UTIL:WindowScale(13))
+
+
+
+
+	DRAW:Sameline()
+	ImGui.Text(UTIL:SpaceBetween(" 0%", "100% ", DRAW.Scaling.Window.Width - (_left + _right), UTIL:TextWidth(" ")))
+	DRAW:Sameline()
+	ImGui.PushStyleColor(ImGuiCol.PlotHistogram, DRAW:GetColor("element/decoration", state))
+	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, UTIL:WindowScale(3))
+	ImGui.ProgressBar(1, UTIL:WindowScale(3), UTIL:WindowScale(21), "")
+	ImGui.PopStyleVar(1)
+	ImGui.PopStyleColor(1)
+
+
+
+	DRAW:Spacer(1,UTIL:WindowScale(3))
+
+
+
+	DRAW:Spacing(_left + UTIL:WindowScale(13),1)
+
+
+
+
+	ImGui.SetNextItemWidth(sliderwidth)
+
+	-- add stacks
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("element/title"))
+	ImGui.PushStyleColor(ImGuiCol.SliderGrab, DRAW:GetColor("slider/grab"))
+	ImGui.PushStyleColor(ImGuiCol.SliderGrabActive, DRAW:GetColor("slider/grab/active"))
+	ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColor("slider/background"))
+	ImGui.PushStyleColor(ImGuiCol.FrameBgActive, DRAW:GetColor("slider/background/active"))
+	ImGui.PushStyleColor(ImGuiCol.FrameBgHovered, DRAW:GetColor("slider/background/hovered"))
+
+	--ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, UTIL:WindowScale(5))
+	--ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:WindowScale(2), UTIL:WindowScale(4))
+
+	ImGui.PushStyleVar(ImGuiStyleVar.GrabMinSize, UTIL:WindowScale(16))
+	ImGui.PushStyleVar(ImGuiStyleVar.GrabRounding, UTIL:WindowScale(8))
+
+	-- make them local before
+	local _return, _trigger
+
+	-- int slider (no title)
+	if option.type == "int" or option.type == "Int"
+	then
+		ImGui.PushID("DE_SI"..UTIL:ElementID(render.path))
+		_return, _trigger = ImGui.SliderFloat("", value, option.min, option.max, "%.0f")
+		ImGui.PopID()
+	end
+
+	if option.type == "float" or option.type == "Float"
+	then
+		ImGui.PushID('DE_SF'..UTIL:ElementID(render.path))
+		_return, _trigger = ImGui.SliderFloat("", value, option.min, option.max, option.res)
+		ImGui.PopID()
+	end
+
+	-- drop stacks
+	ImGui.PopStyleVar(2)
+	ImGui.PopStyleColor(6)
+
+	DRAW:Sameline()
+	DRAW:Spacing(-sliderwidth,1)
+
+
+
+
+
+
+	ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColor("slider/overlay", state))
+	ImGui.PushStyleColor(ImGuiCol.PlotHistogram, DRAW:GetColor("slider/text", state))
+	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, UTIL:WindowScale(2))
+
+	ImGui.ProgressBar(UTIL:ValueToProgress(option.min, option.max, value), sliderwidth, UTIL:WindowScale(17), "")
+
+	ImGui.PopStyleVar(1)
+	ImGui.PopStyleColor(2)
+
+
+	-- result
+	return _return, _trigger, _spacing
+end
+
+
+
+
+
+
+
+
+
+
+--
+--// DRAW:Slider(<TABLE>,<TABLE>,<INT>,<BOOL>)
+--
+function DRAW:Slider(render, option, state, value)
+
+	-- default spacing
+	local _left = UTIL:WindowScale(30)
+	local _right = UTIL:WindowScale(16)
+
+	-- replace spacing on left
+	if render.spacing then _left = UTIL:WindowScale(render.spacing) end
+
+	-- top spacer
+	DRAW:Spacer(1,UTIL:WindowScale(5))
+
+	-- paint spacing
+	DRAW:Spacing(_left,1)
+
+	-- add stacks (deco)
+	ImGui.PushStyleColor(ImGuiCol.PlotHistogram, DRAW:GetColor("element/decoration", state))
+	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, UTIL:WindowScale(6))
+
+
+	-- we use the progressbar, because its the fastest in rendering
+	ImGui.ProgressBar(1, UTIL:WindowScale(15), UTIL:WindowScale(19), "»")
+
+	-- drop stacks (deco)
+	ImGui.PopStyleVar(1)
+	ImGui.PopStyleColor(1)
+
+	-- paint title
+	DRAW:Sameline()
+	DRAW:Spacing(UTIL:WindowScale(5),1)
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("element/title"))
+	ImGui.BulletText(render.name)
+	ImGui.PopStyleColor(1)
+
+	-- additional paint
+	if option.min and option.max
+	then
+		ImGui.SameLine()
+		DRAW:Spacing(UTIL:WindowScale(8),1)
+		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("slider/minmax"))
+		ImGui.Text(tostring(option.min)..' to '..tostring(option.max))
+		ImGui.PopStyleColor(1)
+	end
+
+	-- render info
+	if render.note
+	then
+		DRAW:Notice(render, demand)
+	end
+
+
+
+DRAW:Spacing(_left + UTIL:WindowScale(10),1)
+
+
+
+	ImGui.PushStyleColor(ImGuiCol.PlotHistogram, DRAW:GetColor("slider/overlay", state))
+
+	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, UTIL:WindowScale(3))
+
+	ImGui.ProgressBar(1, UTIL:WindowScale(3), UTIL:WindowScale(19), "")
+	ImGui.PopStyleVar(1)
+	ImGui.PopStyleColor(1)
+	DRAW:Sameline()
+
+
+
+	DRAW:Spacing(-20,-10)
+
+	ImGui.Text(tostring(option.min))
+
+	DRAW:Sameline()
+
+
+
+
+
+
+	DRAW:Spacer(1,UTIL:WindowScale(6))
+	DRAW:Spacing(_left + UTIL:WindowScale(10),1)
+	ImGui.SetNextItemWidth(DRAW.Scaling.Window.Width - (_left + UTIL:ButtonWidth("Reset") + UTIL:WindowScale(32)))
+
+	-- add stacks
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("element/title"))
+	ImGui.PushStyleColor(ImGuiCol.SliderGrab, DRAW:GetColor("slider/grab"))
+	ImGui.PushStyleColor(ImGuiCol.SliderGrabActive, DRAW:GetColor("slider/grab/active"))
+	ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColor("slider/background"))
+	ImGui.PushStyleColor(ImGuiCol.FrameBgActive, DRAW:GetColor("slider/background/active"))
+	ImGui.PushStyleColor(ImGuiCol.FrameBgHovered, DRAW:GetColor("slider/background/hovered"))
+
+	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, UTIL:WindowScale(2))
+	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:WindowScale(2), UTIL:WindowScale(4))
+
+	-- make them local before
+	local _return, _trigger
+
+	-- int slider (no title)
+	if option.type == "int" or option.type == "Int"
+	then
+		ImGui.PushID("DE_SI"..UTIL:ElementID(render.path))
+		_return, _trigger = ImGui.SliderInt("", value, option.min, option.max)
+		ImGui.PopID()
+	end
+
+	if option.type == "float" or option.type == "Float"
+	then
+		ImGui.PushID('DE_SF'..UTIL:ElementID(render.path))
+		_return, _trigger = ImGui.SliderFloat("", value, option.min, option.max, option.res)
+		ImGui.PopID()
+	end
+
+	-- drop stacks
+	ImGui.PopStyleVar(2)
+	ImGui.PopStyleColor(6)
+
+	DRAW:Sameline()
+	DRAW:Spacing(-(DRAW.Scaling.Window.Width - (_left + UTIL:ButtonWidth("Reset") + UTIL:WindowScale(32))),1)
+
+
+	ImGui.PushStyleColor(ImGuiCol.PlotHistogram, DRAW:GetColor("slider/overlay", state))
+	ImGui.ProgressBar(UTIL:ShortenFloat(option.max/10000 * value), DRAW.Scaling.Window.Width - (_left + UTIL:ButtonWidth("Reset") + UTIL:WindowScale(32)), UTIL:WindowScale(5), "")
+	ImGui.PopStyleColor(1)
+
+
+
+	-- result
+	return _return, _trigger, _spacing
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --
 --// DRAW:Checkbox(<TABLE>,<TABLE>,<INT>,<BOOL>)
 --
@@ -718,7 +1127,7 @@ function DRAW:Checkbox(render, option, state, value)
 	local _left = UTIL:WindowScale(10)
 	local _right = UTIL:WindowScale(10)
 
-	-- add spacing to left
+	-- replace spacing on left
 	if render.spacing then _left = UTIL:WindowScale(render.spacing) end
 	if render.sameline then DRAW:Sameline() end
 	if render.sameline then _left = UTIL:WindowScale(render.sameline) end
@@ -789,7 +1198,32 @@ end
 --
 
 --
+--// DRAW:Notification(<STRING>)
+--
+-- used by:
+-- CORE:Interface()
+--
+function DRAW:Notification(text)
+
+	-- add stacks (notification)
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("notification/text"))
+	ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColor("notification/background"))
+	ImGui.PushStyleColor(ImGuiCol.PlotHistogram, DRAW:GetColor("notification/decoration"))
+	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:WindowScale(6), UTIL:WindowScale(6))
+
+	-- we use the progressbar, because its the fastest in rendering
+	ImGui.ProgressBar(0.013, UTIL:WindowScale(456), UTIL:TextHeight(text) + (UTIL:WindowScale(6) * 2), "  "..tostring(text))
+
+	-- drop stacks (notification)
+	ImGui.PopStyleVar(1)
+	ImGui.PopStyleColor(3)
+end
+
+--
 --// DRAW:Notice(<TABLE>,<INT>)
+--
+-- used by:
+-- CORE:Interface()
 --
 function DRAW:Notice(render, state)
 
@@ -944,25 +1378,7 @@ end
 --
 --
 
---
---// DRAW:Notification(<STRING>)
---
-function DRAW:Notification(text)
 
-	-- add stacks (notification)
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("notification/text"))
-	ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColor("notification/background"))
-	ImGui.PushStyleColor(ImGuiCol.PlotHistogram, DRAW:GetColor("notification/decoration"))
-	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:WindowScale(6), UTIL:WindowScale(6))
-	ImGui.PushStyleVar(ImGuiStyleVar.ButtonTextAlign, 0, 0)
-
-	-- we use the progressbar, because its the fastest in rendering
-	ImGui.ProgressBar(0.013, UTIL:WindowScale(456), UTIL:TextHeight(text) + (UTIL:WindowScale(6) * 2), "  "..tostring(text))
-
-	-- drop stacks (notification)
-	ImGui.PopStyleVar(2)
-	ImGui.PopStyleColor(3)
-end
 
 
 
@@ -1005,96 +1421,7 @@ end
 
 
 
---
---// DRAW:Slider()
---
-function DRAW:Slider(render, option, demand, value)
 
-	-- default
-	local _spacing = UTIL:WindowScale(16)
-
-	-- update
-	if render.spacing then _spacing = UTIL:WindowScale(render.spacing) + _spacing end
-
-	-- top spacer
-	DRAW:Spacer(1,UTIL:WindowScale(5))
-
-	-- lead spacing
-	DRAW:Spacing(_spacing,1)
-
-	-- deco paint
-	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, UTIL:WindowScale(6))
-	ImGui.PushStyleColor(ImGuiCol.Button, DRAW:GetColor("element/decoration"))
-	ImGui.PushStyleColor(ImGuiCol.ButtonActive, DRAW:GetColor("element/decoration"))
-	ImGui.PushStyleColor(ImGuiCol.ButtonHovered, DRAW:GetColor("element/decoration"))
-
-	-- deco title
-	DRAW:FlexButton(UTIL:WindowScale(5), UTIL:WindowScale(19))
-
-	ImGui.PopStyleColor(3)
-	ImGui.PopStyleVar(1)
-	DRAW:Sameline()
-	DRAW:Spacing(UTIL:WindowScale(5),1)
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("element/title"))
-	ImGui.Text(render.name)
-	ImGui.PopStyleColor(1)
-
-	-- additional paint
-	if option.min and option.max
-	then
-		ImGui.SameLine()
-		DRAW:Spacing(UTIL:WindowScale(8),1)
-		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("slider/minmax"))
-		ImGui.Text(tostring(option.min)..' to '..tostring(option.max))
-		ImGui.PopStyleColor(1)
-	end
-
-	-- render info
-	if render.note
-	then
-		DRAW:Notice(render, demand)
-	end
-
-	DRAW:Spacer(1,UTIL:WindowScale(6))
-	DRAW:Spacing(_spacing + UTIL:WindowScale(10),1)
-	ImGui.SetNextItemWidth(DRAW.Scaling.Window.Width - (_spacing + UTIL:ButtonWidth("Reset") + UTIL:WindowScale(32)))
-
-	-- add stacks
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("element/title"))
-	ImGui.PushStyleColor(ImGuiCol.SliderGrab, DRAW:GetColor("slider/grab"))
-	ImGui.PushStyleColor(ImGuiCol.SliderGrabActive, DRAW:GetColor("slider/grab/active"))
-	ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColor("slider/background"))
-	ImGui.PushStyleColor(ImGuiCol.FrameBgActive, DRAW:GetColor("slider/background/active"))
-	ImGui.PushStyleColor(ImGuiCol.FrameBgHovered, DRAW:GetColor("slider/background/hovered"))
-
-	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, UTIL:WindowScale(2))
-	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:WindowScale(2), UTIL:WindowScale(4))
-
-	-- make them local before
-	local _return, _trigger
-
-	-- int slider (no title)
-	if option.type == "int" or option.type == "Int"
-	then
-		ImGui.PushID("DE_SI"..UTIL:ElementID(render.path))
-		_return, _trigger = ImGui.SliderInt("", value, option.min, option.max)
-		ImGui.PopID()
-	end
-
-	if option.type == "float" or option.type == "Float"
-	then
-		ImGui.PushID('DE_SF'..UTIL:ElementID(render.path))
-		_return, _trigger = ImGui.SliderFloat("", value, option.min, option.max, option.res)
-		ImGui.PopID()
-	end
-
-	-- drop stacks
-	ImGui.PopStyleVar(2)
-	ImGui.PopStyleColor(6)
-
-	-- result
-	return _return, _trigger, _spacing
-end
 
 
 
@@ -1309,7 +1636,109 @@ end
 
 
 
+--
+--// DRAW:Quicktune(<TABLE>,<TABLE>,<INT>,<BOOL>)
+--
+function DRAW:Quicktune(render, option, state, value)
 
+	-- default spacing
+	local _left = UTIL:WindowScale(30)
+	local _right = UTIL:WindowScale(28)
+
+	-- replace spacing on left
+	if render.spacing then _left = UTIL:WindowScale(render.spacing) end
+
+	-- set value display
+	local _range = "%.0f"
+
+	-- update range if specified
+	if option.res then _range = option.res end
+
+	-- calculate slider width
+	local _width = DRAW.Scaling.Window.Width - (_left + _right + UTIL:WindowScale(10))
+
+	-- update slider width if option has a reset button
+	if option.def then _width = _width - (UTIL:ButtonWidth("Reset") + UTIL:WindowScale(3)) end
+
+	-- top spacer
+	DRAW:Spacer(1,UTIL:WindowScale(5))
+
+	-- paint spacing
+	DRAW:Spacing(_left,1)
+
+	-- paint decoration
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("quicktune/decoration"))
+	ImGui.Text("»")
+	ImGui.PopStyleColor(1)
+
+	-- paint title
+	DRAW:Sameline()
+	DRAW:Spacing(UTIL:WindowScale(5),1)
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("element/title"))
+	ImGui.Text(render.name)
+	ImGui.PopStyleColor(1)
+
+	-- paint info
+	if render.note then DRAW:Notice(render, state) end
+
+	-- spacer between title and slider
+	DRAW:Spacer(1,UTIL:WindowScale(8))
+
+	-- left deco border
+	DRAW:Spacing(_left + UTIL:WindowScale(13),1)
+	ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColor())
+	ImGui.PushStyleColor(ImGuiCol.PlotHistogram, DRAW:GetColor("quicktune/border", state))
+	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, UTIL:WindowScale(3))
+	ImGui.ProgressBar(1, UTIL:WindowScale(6), UTIL:WindowScale(26), "")
+	ImGui.PopStyleVar(1)
+	ImGui.PopStyleColor(2)
+	DRAW:Sameline()
+
+	-- right deco border
+	DRAW:Spacing(_width - UTIL:WindowScale(10),1)
+	ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColor())
+	ImGui.PushStyleColor(ImGuiCol.PlotHistogram, DRAW:GetColor("quicktune/border", state))
+	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, UTIL:WindowScale(3))
+	ImGui.ProgressBar(1, UTIL:WindowScale(6), UTIL:WindowScale(26), "")
+	ImGui.PopStyleVar(1)
+	ImGui.PopStyleColor(2)
+	DRAW:Sameline()
+
+	-- overwriting progress background
+	DRAW:Spacing(-(_width - UTIL:WindowScale(2)),1)
+	ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColor("quicktune/background", state))
+	ImGui.PushStyleColor(ImGuiCol.PlotHistogram, DRAW:GetColor("quicktune/progress", state))
+	ImGui.ProgressBar(UTIL:ValueToProgress(option.min, option.max, value), _width - UTIL:WindowScale(6), UTIL:WindowScale(26), "")
+	ImGui.PopStyleColor(2)
+	DRAW:Sameline()
+
+	-- position the slider above the deco
+	DRAW:Spacing(-(_width - UTIL:WindowScale(3)),1)
+
+	-- make sure it has the right width
+	ImGui.SetNextItemWidth(_width)
+
+	-- add stacks
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("quicktune/text"))
+	ImGui.PushStyleColor(ImGuiCol.SliderGrab, DRAW:GetColor("quicktune/grab"))
+	ImGui.PushStyleColor(ImGuiCol.SliderGrabActive, DRAW:GetColor("quicktune/grab"))
+	ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColor())
+	ImGui.PushStyleColor(ImGuiCol.FrameBgActive, DRAW:GetColor())
+	ImGui.PushStyleColor(ImGuiCol.FrameBgHovered, DRAW:GetColor())
+	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:WindowScale(2), UTIL:WindowScale(4))
+
+	-- make them local before
+	ImGui.PushID("DE_QT"..UTIL:ElementID(render.path))
+	_return, _trigger = ImGui.SliderFloat("", value, option.min, option.max, _range)
+	ImGui.PopID()
+
+	-- drop stacks
+	ImGui.PopStyleVar(1)
+	ImGui.PopStyleColor(6)
+
+	-- result
+	return _return, _trigger
+end
 
 --
 --// DRAW:Quickshift(<TABLE>,<TABLE>,<INT>,<BOOL>)
@@ -1419,6 +1848,30 @@ function DRAW:Quickshift(render, option, state, value)
 	-- result
 	return _return, _trigger
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1898,10 +2351,10 @@ end
 function DRAW:PageAbout()
 
 	-- make room
-	DRAW:Spacer(1, UTIL:WindowScale(44))
+	--DRAW:Spacer(1, UTIL:WindowScale(44))
 
 
-	DRAW:Picture(DRAW.Matrix.Mox, 0.88, 0.29, 0.49)
+	--DRAW:Picture(DRAW.Matrix.Mox, 0.88, 0.29, 0.49)
 
 	-- make room
 	DRAW:Spacer(1, UTIL:WindowScale(44))
@@ -1909,7 +2362,7 @@ function DRAW:PageAbout()
 	-- draw animation
 	---DRAW:LogoAnimation()
 
-	--DRAW:AnimLogo()
+	DRAW:AnimLogo()
 
 
 	-- paint version

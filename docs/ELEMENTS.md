@@ -14,6 +14,7 @@
 | BT | Button | ImGui + Internal | |
 | CB | Checkbox | ImGui | |
 | CO | Combobox | ImGui | |
+| QT | Quicktune | ImGui + Internal | ImGui:SliderFloat with fancy progess overlay |
 | QS | Quickshift | ImGui + Internal | ImGui:SliderInt with value conversion (Bool 2 Int 2 Bool) |
 
 ## Styling Elements

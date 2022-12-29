@@ -353,7 +353,12 @@ function CORE:RenderSwitch(pool, render)
 			or option.type == "float"
 			or option.type == "Float"
 			then
-				CORE:RenderSlider(pool, option, render, demand)
+				if pool == "Settings"
+				then
+					CORE:RenderQuicktune(pool, option, render, demand)
+				else
+					CORE:RenderSlider(pool, option, render, demand)
+				end
 			end
 
 			-- button types
@@ -463,6 +468,8 @@ function CORE:RenderRequire(pool, option, render)
 	return 0
 end
 
+
+
 --
 --// CORE:RenderSlider()
 --
@@ -475,7 +482,7 @@ function CORE:RenderSlider(pool, option, render, state)
 	local value = CORE:GetToggle(render.path, option.type)
 
 	-- create slider
-	local value, trigger, spacing = DRAW:Slider(render, option, demand, value)
+	local value, trigger = DRAW:Slider(render, option, state, value)
 	if trigger
 	then
 		CORE:SetToggle(render.path, option.type, value)
@@ -504,6 +511,13 @@ function CORE:RenderSlider(pool, option, render, state)
 
 		end
 	end
+
+	-- slider details
+	DRAW:Slider_Details(render, option, state, value)
+
+
+
+
 
 	-- has list
 	if option.list
@@ -919,6 +933,67 @@ end
 
 
 --
+--// CORE:RenderQuicktune()
+--
+function CORE:RenderQuicktune(pool, option, render, state)
+
+	-- debug id
+	local __func__ = "CORE:RenderQuicktune"
+
+	-- get current
+	local value = CORE:GetToggle(render.path, option.type)
+
+	-- create slider
+	local value, trigger = DRAW:Quicktune(render, option, state, value)
+	if trigger
+	then
+		CORE:SetToggle(render.path, option.type, value)
+
+		-- needs to be enabled
+		--if state == "enabled"
+		--then
+			--POOL.SetToggle(_entry.path, _entry.type, _value)
+			--if eFlag.Draw ~= nil then
+			--	Self.DelayRedraw(eFlag.Draw)
+			--end
+		--end
+	end
+
+	-- has default
+	if option.def
+	then
+		-- always
+		DRAW:Sameline()
+		DRAW:Spacing(UTIL:WindowScale(4),1)
+		DRAW:Sameline()
+
+		local trigger = DRAW:Button(render, option, state, "Reset", "Reset")
+		if trigger
+		then
+
+		end
+	end
+
+	-- slider details
+	DRAW:Slider_Details(render, option, state, value)
+
+	-- description
+	if render.desc then
+		--DRAW:Description(render, spacing + UTIL:WindowScale(11), state)
+	end
+
+end
+
+
+
+
+
+
+
+
+
+
+--
 --// CORE:RenderCheckbox()
 --
 function CORE:RenderCheckbox(pool, option, render)
@@ -1173,7 +1248,7 @@ function CORE:BootOption(path, attr)
 		then
 			unit.res = attr.res
 		else
-			unit.res = "%.1f"
+			unit.res = "%.0f"
 		end
 
 		-- cet vesion

@@ -192,6 +192,26 @@ function UTIL:WordsToUpper(input)
 	return result
 end
 
+
+
+--
+--// UTIL:ValueToPercent(<INT/FLOAT>, <INT/FLOAT>, <INT/FLOAT>)
+--
+-- Formula: NewValue = (((OldValue - OldMin) * (NewMax - NewMin)) / (OldMax - OldMin)) + NewMin
+--
+function UTIL:ValueToPercent(min, max, value)
+	return math.floor(((((value - min) * (100 - 0)) / (max - min)) + 0) + 0.5)
+end
+
+--
+--// UTIL:ValueToProgress(<INT/FLOAT>, <INT/FLOAT>, <INT/FLOAT>)
+--
+-- Formula: NewValue = (((OldValue - OldMin) * (NewMax - NewMin)) / (OldMax - OldMin)) + NewMin
+--
+function UTIL:ValueToProgress(min, max, value)
+	return UTIL:ShortenFloat((((value - min) * (1.0 - 0.0)) / (max - min)) + 0.0)
+end
+
 --
 --
 --//////////////////// STYLING ////////////////////
