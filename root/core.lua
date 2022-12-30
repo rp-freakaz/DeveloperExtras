@@ -31,17 +31,27 @@ function CORE:Initialize()
 		CORE:DebugConsole(__func__,"Detected: Cyberpunk 2077: "..CORE.Version.Game.String.." ("..CORE.Version.Game.Numeric..")")
 		CORE:DebugConsole(__func__,"Detected: Cyber Engine Tweaks: "..CORE.Version.Cet.String.." ("..CORE.Version.Cet.Numeric..")")
 
-		-- native scaling
+		-- debug msg
+		CORE:DebugConsole(__func__,"Checking Features ..")
+
+		-- imgui disable
+		if CORE.Version.Cet.Numeric >= 1164
+		then
+			-- enable disable
+			CORE.Runtime.Disable = true
+			CORE:DebugConsole(__func__,"ImGui Disable: Supported")
+		else
+			CORE:DebugConsole(__func__,"ImGui Disable: Not Supported")
+		end
+
+		-- imgui scaling
 		if CORE.Version.Cet.Numeric >= 1210
 		then
 			-- enable scaling
-			CORE.Scaling.Enable = true
-
-			-- debug msg
-			CORE:DebugConsole(__func__,"Native Scaling: Enabled")
+			CORE.Runtime.Scaling = true
+			CORE:DebugConsole(__func__,"ImGui Scaling: Supported")
 		else
-			-- debug msg
-			CORE:DebugConsole(__func__,"Native Scaling: Not Supported")
+			CORE:DebugConsole(__func__,"ImGui Scaling: Not Supported")
 		end
 
 		-- libraries
@@ -1937,7 +1947,7 @@ function CORE:UpdateScreen()
 		CORE.Scaling.Screen.Usable = math.floor(width / 2)
 
 		-- scaling enabled?
-		if CORE.Scaling.Enable
+		if CORE.Runtime.Scaling
 		then
 			-- we use the screen height to keep the aspect ratio
 			CORE.Scaling.Screen.Factor = UTIL:ShortenFloat((CORE.Scaling.Screen.Height / 9 * 16) / 1920)
@@ -1967,7 +1977,7 @@ function CORE:UpdateWindow()
 		CORE.Scaling.Window.Usable = width - (CORE.Runtime.Window.Border * 2)
 
 		-- scaling enabled?
-		if CORE.Scaling.Enable
+		if CORE.Runtime.Scaling
 		then
 			-- update window factor
 			CORE.Scaling.Window.Factor = UTIL:ShortenFloat(CORE.Scaling.Window.Width / (456 * CORE.Scaling.Screen.Factor))
@@ -1995,22 +2005,19 @@ function CORE:DetectVersions()
 	if CORE.Version.Cet.Numeric >= 1200
 	then
 		-- (string) version, (numeric) branch - call doesn't exist pre 1.3
-		CORE.Version.Game.String = GetSingleton("inkMenuScenario"):GetSystemRequestsHandler():GetGameVersion()
-		CORE.Version.Game.Numeric = tonumber(UTIL:FilterNumbers(string.format("%.1f", GetSingleton("inkMenuScenario"):GetSystemRequestsHandler():GetGameVersion())))
+		CORE.Version.Game.String, CORE.Version.Game.Numeric = CORE:GameVersion()
 
 	-- set game version (1.19.0+ is 1.5 Branch)
-	elseif CORE.Version.Cet.Numeric >= 1190
+	elseif CORE.Version.Cet.Numeric >= 1190 and CORE.Version.Cet.Numeric <= 1195
 	then
 		-- (string) version, (numeric) branch - call doesn't exist pre 1.3
-		CORE.Version.Game.String = GetSingleton("inkMenuScenario"):GetSystemRequestsHandler():GetGameVersion()
-		CORE.Version.Game.Numeric = tonumber(UTIL:FilterNumbers(string.format("%.1f", GetSingleton("inkMenuScenario"):GetSystemRequestsHandler():GetGameVersion())))
+		CORE.Version.Game.String, CORE.Version.Game.Numeric = CORE:GameVersion()
 
 	-- set game version (1.16.0+ is 1.3 Branch)
 	elseif CORE.Version.Cet.Numeric >= 1160 and CORE.Version.Cet.Numeric <= 1183
 	then
 		-- (string) version, (numeric) branch - call doesn't exist pre 1.3
-		CORE.Version.Game.String = GetSingleton("inkMenuScenario"):GetSystemRequestsHandler():GetGameVersion()
-		CORE.Version.Game.Numeric = tonumber(UTIL:FilterNumbers(string.format("%.1f", GetSingleton("inkMenuScenario"):GetSystemRequestsHandler():GetGameVersion())))
+		CORE.Version.Game.String, CORE.Version.Game.Numeric = CORE:GameVersion()
 
 	-- set game version (1.12.0+ is 1.2 Branch)
 	elseif CORE.Version.Cet.Numeric >= 1120 and CORE.Version.Cet.Numeric <= 1150
@@ -2020,9 +2027,9 @@ function CORE:DetectVersions()
 		CORE.Version.Game.Numeric = 12
 
 		-- patch versions
-		if CORE.Version.Cet.Numeric >= 1122 then CORE.Version.Game.String = "1.21" end
-		if CORE.Version.Cet.Numeric >= 1130 then CORE.Version.Game.String = "1.22" end
-		if CORE.Version.Cet.Numeric >= 1140 then CORE.Version.Game.String = "1.23" end
+		if CORE.Version.Cet.Numeric >= 1122 then CORE.Version.Game.String, CORE.Version.Game.Numeric = CORE:GameVersion("1.21") end
+		if CORE.Version.Cet.Numeric >= 1130 then CORE.Version.Game.String, CORE.Version.Game.Numeric = CORE:GameVersion("1.22") end
+		if CORE.Version.Cet.Numeric >= 1140 then CORE.Version.Game.String, CORE.Version.Game.Numeric = CORE:GameVersion("1.23") end
 
 	-- set game version (1.9.0+ is 1.1 Branch)
 	elseif CORE.Version.Cet.Numeric >= 190 and CORE.Version.Cet.Numeric <= 1114
@@ -2032,8 +2039,8 @@ function CORE:DetectVersions()
 		CORE.Version.Game.Numeric = 11
 
 		-- patch versions
-		if CORE.Version.Cet.Numeric >= 195 then CORE.Version.Game.String = "1.11" end
-		if CORE.Version.Cet.Numeric >= 1100 then CORE.Version.Game.String = "1.12" end
+		if CORE.Version.Cet.Numeric >= 195 then CORE.Version.Game.String, CORE.Version.Game.Numeric = CORE:GameVersion("1.11") end
+		if CORE.Version.Cet.Numeric >= 1100 then CORE.Version.Game.String, CORE.Version.Game.Numeric = CORE:GameVersion("1.12") end
 	end
 
 	-- validate
@@ -2047,11 +2054,31 @@ end
 
 
 
+
+
+
+
+
 --
 --// CORE:isPreGame()
 --
 function CORE:isPreGame()
 	return GetSingleton("inkMenuScenario"):GetSystemRequestsHandler():IsPreGame()
+end
+
+--
+--// CORE:GameBranch()
+--
+function CORE:GameBranch()
+	return tonumber(UTIL:FilterNumbers(string.format("%.1f", CORE.Version.Game.String)))
+end
+
+--
+--// CORE:GameVersion(<STRING>)
+--
+function CORE:GameVersion(v)
+	local v = v or GetSingleton("inkMenuScenario"):GetSystemRequestsHandler():GetGameVersion()
+	return tostring(v), tonumber(UTIL:FilterNumbers(v))
 end
 
 --
@@ -2084,8 +2111,8 @@ function CORE:Pre()
 	CORE.Version = {String="3.0.0-161",Numeric=300161,Cet={String=nil,Numeric=0},Game={String=nil,Numeric=0}}
 
 	-- shared var
-	CORE.Scaling = {Enable=false,Screen={Width=0,Height=0,Factor=1,Usable=0},Window={Width=456,Height=600,Factor=1,Usable=0}}
-	CORE.Runtime = {Window={Border=2,Padding=10},Themes={Select=0,Listing={"Default","White Satin"}}}
+	CORE.Scaling = {Screen={Width=0,Height=0,Factor=1,Usable=0},Window={Width=456,Height=600,Factor=1,Usable=0}}
+	CORE.Runtime = {Scaling=false,Disable=false,Window={Border=2,Padding=10},Themes={Select=0,Listing={"Default","White Satin"}}}
 
 	-- non shared
 	CORE.Timings = {Frame=0,Second=0,Millisecond=0}

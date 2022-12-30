@@ -508,7 +508,7 @@ function DRAW:WindowStart(resize)
 	local _trigger
 
 	-- native scaling
-	if DRAW.Scaling.Enable
+	if DRAW.Runtime.Scaling
 	then
 		-- create window
 		_trigger = ImGui.Begin("~ "..string.upper(DRAW.Project).." ~", ImGuiWindowFlags.NoScrollbar)
@@ -2065,7 +2065,7 @@ function DRAW:PageDebug()
 
 	debug = {
 		"Scaling:",
-		UTIL:FirstToUpper(tostring(DRAW.Scaling.Enable))
+		UTIL:FirstToUpper(tostring(DRAW.Runtime.Scaling))
 	}
 	DRAW:DebugTable(debug,"Debug Scaling #1")
 
