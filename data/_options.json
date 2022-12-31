@@ -14,9 +14,13 @@
 			"type":"bool",
 			"boot":true
 		},
-		"DeveloperExtras/Debug/Resize":{
+		"DeveloperExtras/Debug/Force/Resize":{
 			"type":"bool",
 			"boot":true
+		},
+		"DeveloperExtras/Debug/Force/Options":{
+			"type":"bool",
+			"boot":false
 		},
 		"DeveloperExtras/Scrollbar/Enable":{
 			"type":"bool",

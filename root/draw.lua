@@ -32,7 +32,7 @@ function DRAW:GetColor(color, state)
 	--// GetStatus(<BOOL>,<FLOAT>)
 	--
 	local function GetStatus(state, value)
-		if state > 0 then return UTIL:ShortenFloat(value / 1.75) end
+		if not DRAW.Runtime.Disable and state > 0 then return UTIL:ShortenFloat(value * 0.60) end
 		return value
 	end
 
@@ -460,13 +460,13 @@ end
 --
 --// DRAW:WindowStart()
 --
-function DRAW:WindowStart(resize)
+function DRAW:WindowStart(force)
 
 	-- first position
 	ImGui.SetNextWindowPos(100, 100, ImGuiCond.FirstUseEver)
 
-	-- allow window resize
-	if DRAW.isDebug and resize then
+	-- window resize
+	if force then
 		ImGui.SetNextWindowSizeConstraints(UTIL:ScreenScale(456), UTIL:ScreenScale(600), DRAW.Scaling.Screen.Usable, DRAW.Scaling.Screen.Height - 100)
 	else
 		ImGui.SetNextWindowSizeConstraints(UTIL:ScreenScale(456), UTIL:ScreenScale(600), UTIL:ScreenScale(456), DRAW.Scaling.Screen.Height - 100)
@@ -484,6 +484,9 @@ function DRAW:WindowStart(resize)
 	ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, 0, 0)
 	ImGui.PushStyleVar(ImGuiStyleVar.ChildBorderSize, 0)
 	ImGui.PushStyleVar(ImGuiStyleVar.GrabMinSize, UTIL:WindowScale(4))
+
+	-- add stacks (disable)
+	if DRAW.Runtime.Disable then ImGui.PushStyleVar(ImGuiStyleVar.DisabledAlpha, 0.70) end
 
 	-- add stacks (window)
 	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("window/main/text"))
@@ -529,6 +532,9 @@ end
 --// DRAW:WindowEnd()
 --
 function DRAW:WindowEnd()
+
+	-- drop stacks (disable)
+	if DRAW.Runtime.Disable then ImGui.PopStyleVar(1) end
 
 	-- drop stacks (global)
 	ImGui.PopStyleVar(11)
@@ -695,9 +701,10 @@ end
 --
 --// DRAW:Separator()
 --
-function DRAW:Separator(height, color)
+function DRAW:Separator(lines, color)
 
 	-- catch unset
+	local lines = lines or 1
 	local color = color or "window/main/separator"
 
 	-- add stacks (separator)
@@ -705,8 +712,8 @@ function DRAW:Separator(height, color)
 	ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, 0, 1)
 
 	-- multiple if wanted
-	if height > 0 then
-		for i=1, height do
+	if lines > 0 then
+		for i=1, lines do
 			ImGui.Separator()
 		end
 	end

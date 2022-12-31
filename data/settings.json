@@ -107,16 +107,25 @@
 					"align":true
 				},
 				{
-					"spacing":14
+					"spacing":16
 				},
 				{
-					"name":"Enable Resize",
-					"path":"DeveloperExtras/Debug/Resize",
+					"name":"Force Resize",
+					"path":"DeveloperExtras/Debug/Force/Resize",
 					"desc":"Allows resizing the main window for testing purposes.",
 					"align":true
 				},
 				{
-					"spacing":20
+					"spacing":16
+				},
+				{
+					"name":"Force Options",
+					"path":"DeveloperExtras/Debug/Force/Options",
+					"desc":"Enables all Options, no matter if supported or not",
+					"align":true
+				},
+				{
+					"spacing":18
 				}
 			]
 		}

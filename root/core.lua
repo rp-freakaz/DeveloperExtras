@@ -182,7 +182,7 @@ function CORE:Interface()
 	CORE:UpdateScreen()
 
 	-- start window
-	local _trigger = DRAW:WindowStart(CORE:GetToggle("DeveloperExtras/Debug/Resize","bool"))
+	local _trigger = DRAW:WindowStart(CORE:GetToggle("DeveloperExtras/Debug/Force/Resize","bool"))
 	if _trigger
 	then
 		-- always update
@@ -350,7 +350,7 @@ function CORE:RenderSwitch(pool, render)
 			local option = CORE.Option[render.path]
 
 			-- check option requirements
-			local demand = CORE:RenderRequire(pool, option, render)
+			local state = CORE:RenderRequire(pool, option, render)
 
 			--local need = CORE:RenderRequire(pool, option, render)
 
@@ -365,9 +365,9 @@ function CORE:RenderSwitch(pool, render)
 			then
 				if pool == "Settings"
 				then
-					CORE:RenderQuicktune(pool, option, render, demand)
+					CORE:RenderQuicktune(pool, option, render, state)
 				else
-					CORE:RenderSlider(pool, option, render, demand)
+					CORE:RenderSlider(pool, option, render, state)
 				end
 			end
 
@@ -385,16 +385,16 @@ function CORE:RenderSwitch(pool, render)
 			then
 				if pool == "Settings"
 				then
-					CORE:RenderQuickshift(pool, option, render, demand)
+					CORE:RenderQuickshift(pool, option, render, state)
 				else
-					CORE:RenderCheckbox(pool, option, render, demand)
+					CORE:RenderCheckbox(pool, option, render, state)
 				end
 			end
 
 			-- combobox types
 			if option.type == "select"
 			then
-				CORE:RenderCombobox(pool, option, render, demand)
+				CORE:RenderCombobox(pool, option, render, state)
 			end
 		else
 			-- something is wrong
@@ -428,8 +428,27 @@ end
 --
 --// CORE:RenderRequire(<POOL>,<ENTRY>)
 --
-function CORE:Require()
-	return 0
+function CORE:Require(pool, option, render)
+
+	-- defaults
+	local state = 0
+
+	-- check requirements
+	if CORE:isPreGame() and pool ~= "Settings"
+	then
+		-- pregame
+		state = 1
+	end
+
+
+
+
+	if CORE:GetToggle("DeveloperExtras/Debug/Force/Options","bool")
+	then
+		state = 0
+	end
+
+	return state
 end
 
 
@@ -439,43 +458,43 @@ end
 function CORE:RenderRequire(pool, option, render)
 
 	-- defaults
-	local demand = 0
+	local state = 0
 
 	-- check requirements
 	if CORE:isPreGame() and pool ~= "Settings"
 	then
 		-- pregame
-		demand = 0
+		state = 1
 	end
 
 	-- is enabled?
-	if option.is == false and demand == 0
+	if option.is == false and state == 0
 	then
 		-- disable
-		demand = 2
+		state = 2
 	end
 
 	-- check cet
-	if option.cet and demand == 0
+	if option.cet and state == 0
 	then
 		-- disable
-		demand = 3
+		state = 3
 
 		if option.cet.min <= CORE.Version.Cet.Numeric and option.cet.max >= CORE.Version.Cet.Numeric
 		then
 			-- reenable
-			demand = 0
+			state = 0
 		end
 	end
 
 	-- check photomode
-	if option.need == "Photomode" and CORE.isPhoto == false and demand == 0
+	if option.need == "Photomode" and CORE.isPhoto == false and state == 0
 	then
-		demand = 9
+		state = 9
 	end
 
 	-- return
-	return 0
+	return state
 end
 
 
@@ -1017,6 +1036,9 @@ function CORE:RenderCheckbox(pool, option, render)
 	-- get current
 	local value = CORE:GetToggle(render.path, option.type)
 
+	-- use disable
+	if CORE.Runtime.Disable and state > 0 then ImGui.BeginDisabled() end
+
 	-- create checkbox
 	local value, trigger = DRAW:Checkbox(render, option, state, value)
 	if trigger
@@ -1056,7 +1078,8 @@ function CORE:RenderCheckbox(pool, option, render)
 	--	DRAW.CheckboxInfo("can't be toggled", "!", _state)
 	--end
 
-
+	-- use disable
+	if CORE.Runtime.Disable and state > 0 then ImGui.EndDisabled() end
 
 
 end
@@ -1701,7 +1724,8 @@ function CORE:GetInternal(path)
 
 	-- ui toggles
 	if path == "DeveloperExtras/Debug/Enable" then return CORE.isDebug end
-	if path == "DeveloperExtras/Debug/Resize" then return CORE.Extras[path] end
+	if path == "DeveloperExtras/Debug/Force/Resize" then return CORE.Extras[path] end
+	if path == "DeveloperExtras/Debug/Force/Options" then return CORE.Extras[path] end
 
 	if path == "DeveloperExtras/Scrollbar/Enable" then return CORE.Extras[path] end
 
@@ -1744,7 +1768,9 @@ function CORE:SetInternal(path, set)
 		DRAW.isDebug = set
 		UTIL.isDebug = set
 	end
-	if path == "DeveloperExtras/Debug/Resize" then CORE.Extras[path] = set end
+
+	if path == "DeveloperExtras/Debug/Force/Resize" then CORE.Extras[path] = set end
+	if path == "DeveloperExtras/Debug/Force/Options" then CORE.Extras[path] = set end
 
 
 	-- color theme

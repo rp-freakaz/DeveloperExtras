@@ -104,7 +104,7 @@ function UTIL:WindowScale(pixels, factor)
 	local pixels = pixels or 0
 	local factor = factor or UTIL.Scaling.Window.Factor
 
-	if UTIL.Scaling.Enable and pixels > 0
+	if UTIL.Runtime.Scaling and pixels > 0
 	then
 		return UTIL:ShortenFloat((UTIL.Scaling.Screen.Factor * factor) * pixels)
 	end
@@ -120,7 +120,7 @@ function UTIL:BorderScale(pixels, factor)
 	local pixels = pixels or 0
 	local factor = factor or UTIL.Scaling.Screen.Factor
 
-	if UTIL.Scaling.Enable and pixels > 0
+	if UTIL.Runtime.Scaling and pixels > 0
 	then
 		return math.ceil(factor * pixels)
 	end
@@ -135,7 +135,7 @@ function UTIL:FontScale(pixels)
 	-- catch non set
 	local pixels = pixels or 0
 
-	if UTIL.Scaling.Enable and pixels > 0
+	if UTIL.Runtime.Scaling and pixels > 0
 	then
 		return UTIL:ShortenFloat((ImGui.GetFontSize() / 18) * pixels)
 	end
