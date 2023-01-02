@@ -502,13 +502,19 @@ end
 --
 --// CORE:RenderSlider()
 --
-function CORE:RenderSlider(pool, option, render, state)
+function CORE:RenderSlider(pool, option, render)
 
 	-- debug id
 	local __func__ = "CORE:RenderSlider"
 
+	-- get state
+	local state = CORE:Require(pool, option, render)
+
 	-- get current
 	local value = CORE:GetToggle(render.path, option.type)
+
+	-- use disable
+	if CORE.Runtime.Disable and state > 0 then ImGui.BeginDisabled() end
 
 	-- create slider
 	local value, trigger = DRAW:Slider(render, option, state, value)
@@ -540,13 +546,6 @@ function CORE:RenderSlider(pool, option, render, state)
 
 		end
 	end
-
-	-- slider details
-	DRAW:Slider_Details(render, option, state, value)
-
-
-
-
 
 	-- has list
 	if option.list
@@ -595,6 +594,9 @@ function CORE:RenderSlider(pool, option, render, state)
 	if render.desc then
 		--DRAW:Description(render, spacing + UTIL:WindowScale(11), state)
 	end
+
+	-- use disable
+	if CORE.Runtime.Disable and state > 0 then ImGui.EndDisabled() end
 
 end
 

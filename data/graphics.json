@@ -58,7 +58,8 @@
 				},
 				{
 					"name":"Distant Shadow (Blur)",
-					"path":"Rendering/GlobalIllumination/DistantShadowBlur"
+					"path":"Rendering/GlobalIllumination/DistantShadowBlur",
+					"note":"Filters Textures on Distance"
 				},
 				{
 					"spacing":10

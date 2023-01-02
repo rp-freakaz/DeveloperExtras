@@ -32,7 +32,8 @@ function DRAW:GetColor(color, state)
 	--// GetStatus(<BOOL>,<FLOAT>)
 	--
 	local function GetStatus(state, value)
-		if not DRAW.Runtime.Disable and state > 0 then return UTIL:ShortenFloat(value * 0.60) end
+		if not DRAW.Runtime.Disable and state > 0 then return UTIL:ShortenFloat(value * 0.70) end
+		--if state > 0 then return UTIL:ShortenFloat(value * 0.80) end
 		return value
 	end
 
@@ -55,7 +56,7 @@ function DRAW:GetColor(color, state)
 		if color == "generic/red"					then return ImGui.GetColorU32(1, 0, 0, GetStatus(state, 1)) end
 
 		-- variations
-		if color == "generic/white/dark"				then return ImGui.GetColorU32(0.8, 0.8, 0.85, GetStatus(state, 0.8)) end
+		if color == "generic/white/dark"				then return ImGui.GetColorU32(0.8, 0.8, 0.85, GetStatus(state, 0.9)) end
 		if color == "generic/white/light"				then return ImGui.GetColorU32(0.9, 0.9, 1, GetStatus(state, 1)) end
 		if color == "generic/white/normal"				then return ImGui.GetColorU32(0.9, 0.9, 1, GetStatus(state, 0.9)) end
 
@@ -121,8 +122,11 @@ function DRAW:GetColor(color, state)
 		if color == "collapse/header/hovered"			then return GetShared("generic/orange/light", state) end
 
 		-- generic
-		if color == "element/title"				then return GetShared("generic/white/normal", state) end
-		if color == "element/notice"				then return GetShared("generic/white/dark", state) end
+		if color == "element/title"				then return GetShared("generic/white/dark", state) end
+		if color == "element/title/active"			then return GetShared("generic/orange/normal", state) end
+		if color == "element/notice"				then return GetShared("generic/orange/dark", state) end
+		if color == "element/notice/text"			then return GetShared("generic/white/normal", state) end
+		if color == "element/notice/border"			then return GetShared("generic/orange/dark", state) end
 		if color == "element/description"			then return GetShared("generic/grey/lighter", state) end
 		if color == "element/decoration"			then return GetShared("generic/orange/dark", state) end
 
@@ -133,16 +137,14 @@ function DRAW:GetColor(color, state)
 		if color == "graphbar/progessbar"			then return ImGui.GetColorU32(1, 0.56, 0.13, state) end
 
 		-- slider
-		if color == "slider/text"				then return GetShared("generic/white/normal", state) end
-		if color == "slider/grab"				then return GetShared("generic/white/dark", state) end
-		if color == "slider/grab/active"			then return GetShared("generic/white/dark", state) end
-		if color == "slider/minmax"				then return GetShared("generic/grey/lightest", state) end
+		if color == "slider/grab"				then return GetShared("generic/orange/normal", state) end
+		if color == "slider/grab/active"			then return GetShared("generic/orange/light", state) end
+		if color == "slider/minmax"				then return GetShared("generic/grey/lighter", state) end
+		if color == "slider/percent"				then return GetShared("generic/orange/dark", state) end
 		if color == "slider/decoration"				then return GetShared("generic/grey/normal", state) end
-		if color == "slider/border"				then return GetShared("generic/orange/dark", state) end
-		if color == "slider/progress"				then return ImGui.GetColorU32(0.9, 0.9, 1, GetStatus(state, 0.125)) end
-		if color == "slider/background"				then return ImGui.GetColorU32(0.15, 0.15, 0.18, GetStatus(state, 1)) end
-		if color == "slider/background/active"			then return GetShared("generic/grey/darker", state) end
-		if color == "slider/background/hovered"			then return GetShared("generic/grey/darker", state) end
+		if color == "slider/background"				then return GetShared("generic/grey/darker", state) end
+		if color == "slider/background/active"			then return GetShared("generic/grey/dark", state) end
+		if color == "slider/background/hovered"			then return GetShared("generic/grey/dark", state) end
 
 		-- checkbox
 		if color == "checkbox/checkmark"			then return GetShared("generic/white/normal", state) end
@@ -165,13 +167,12 @@ function DRAW:GetColor(color, state)
 		if color == "quicktune/decoration"			then return GetShared("generic/grey/normal", state) end
 
 		-- quickshift
+		if color == "quickshift/border"				then return GetShared("generic/grey/dark", state) end
 		if color == "quickshift/background"			then return GetShared("generic/grey/darker", state) end
 		if color == "quickshift/background/active"		then return GetShared("generic/grey/darker", state) end
 		if color == "quickshift/background/hovered"		then return GetShared("generic/grey/darker", state) end
-		if color == "quickshift/on/border"			then return GetShared("generic/orange/darkest", state) end
 		if color == "quickshift/on/grab/normal"			then return GetShared("generic/orange/normal", state) end
 		if color == "quickshift/on/grab/active"			then return GetShared("generic/orange/light", state) end
-		if color == "quickshift/off/border"			then return GetShared("generic/grey/dark", state) end
 		if color == "quickshift/off/grab/normal"		then return GetShared("generic/grey/light", state) end
 		if color == "quickshift/off/grab/active"		then return GetShared("generic/grey/lighter", state) end
 
@@ -483,7 +484,7 @@ function DRAW:WindowStart(force)
 	ImGui.PushStyleVar(ImGuiStyleVar.GrabRounding, UTIL:WindowScale(2))
 	ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, 0, 0)
 	ImGui.PushStyleVar(ImGuiStyleVar.ChildBorderSize, 0)
-	ImGui.PushStyleVar(ImGuiStyleVar.GrabMinSize, UTIL:WindowScale(4))
+	ImGui.PushStyleVar(ImGuiStyleVar.GrabMinSize, UTIL:WindowScale(10))
 
 	-- add stacks (disable)
 	if DRAW.Runtime.Disable then ImGui.PushStyleVar(ImGuiStyleVar.DisabledAlpha, 0.70) end
@@ -952,11 +953,6 @@ function DRAW:SliderEXP(render, option, state, value)
 	DRAW:Sameline()
 	DRAW:Spacing(-sliderwidth,1)
 
-
-
-
-
-
 	ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColor("slider/overlay", state))
 	ImGui.PushStyleColor(ImGuiCol.PlotHistogram, DRAW:GetColor("slider/text", state))
 	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, UTIL:WindowScale(2))
@@ -987,10 +983,27 @@ function DRAW:Slider(render, option, state, value)
 
 	-- default spacing
 	local _left = UTIL:WindowScale(30)
-	local _right = UTIL:WindowScale(16)
+	local _right = UTIL:WindowScale(28)
 
 	-- replace spacing on left
 	if render.spacing then _left = UTIL:WindowScale(render.spacing) end
+
+	-- slider type
+	local _type = "DE"
+	if option.type == "int" or option.type == "Int" then _type = "DE_SI" end
+	if option.type == "float" or option.type == "Float" then _type = "DE_SF" end
+
+	-- set value display
+	local _range = "%.0f"
+
+	-- update range if specified
+	if option.res then _range = option.res end
+
+	-- calculate slider width
+	local _width = DRAW.Scaling.Window.Width - (_left + _right + UTIL:WindowScale(10))
+
+	-- update slider width if option has a reset button
+	if option.def then _width = _width - (UTIL:ButtonWidth("Reset") + UTIL:WindowScale(3)) end
 
 	-- top spacer
 	DRAW:Spacer(1,UTIL:WindowScale(5))
@@ -998,118 +1011,112 @@ function DRAW:Slider(render, option, state, value)
 	-- paint spacing
 	DRAW:Spacing(_left,1)
 
-	-- add stacks (deco)
-	ImGui.PushStyleColor(ImGuiCol.PlotHistogram, DRAW:GetColor("element/decoration", state))
-	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, UTIL:WindowScale(6))
-
-
-	-- we use the progressbar, because its the fastest in rendering
-	ImGui.ProgressBar(1, UTIL:WindowScale(15), UTIL:WindowScale(19), "»")
-
-	-- drop stacks (deco)
-	ImGui.PopStyleVar(1)
+	-- paint decoration
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("slider/decoration", state))
+	ImGui.Text("»")
 	ImGui.PopStyleColor(1)
 
 	-- paint title
 	DRAW:Sameline()
 	DRAW:Spacing(UTIL:WindowScale(5),1)
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("element/title"))
-	ImGui.BulletText(render.name)
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("element/title", state))
+	ImGui.Text(render.name)
 	ImGui.PopStyleColor(1)
 
 	-- additional paint
 	if option.min and option.max
 	then
-		ImGui.SameLine()
-		DRAW:Spacing(UTIL:WindowScale(8),1)
-		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("slider/minmax"))
-		ImGui.Text(tostring(option.min)..' to '..tostring(option.max))
+		DRAW:Sameline()
+		DRAW:Spacing(UTIL:WindowScale(5),1)
+
+		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("slider/decoration", state))
+		ImGui.Text("[")
+		ImGui.PopStyleColor(1)
+
+		DRAW:Sameline()
+		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("slider/percent", state))
+		ImGui.Text(tostring(UTIL:ValueToPercent(option.min, option.max, value)).."%")
+
+		-- simulate bold text
+		if DRAW.Runtime.Scaling
+		then
+			DRAW:Sameline()
+			DRAW:Spacing(-UTIL:TextWidth(tostring(UTIL:ValueToPercent(option.min, option.max, value)).."%")+1,1)
+			ImGui.Text(tostring(UTIL:ValueToPercent(option.min, option.max, value)).."%")
+		end
+
+		DRAW:Sameline()
+		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("slider/decoration", state))
+		ImGui.Text("]")
 		ImGui.PopStyleColor(1)
 	end
 
 	-- render info
-	if render.note
-	then
-		DRAW:Notice(render, demand)
-	end
+	if render.note then DRAW:Notice(render, demand) end
+
+	-- spacer between title and slider
+	DRAW:Spacer(1,UTIL:WindowScale(8))
+
+	DRAW:Spacing(_left + UTIL:WindowScale(13),1)
 
 
-
-DRAW:Spacing(_left + UTIL:WindowScale(10),1)
-
-
-
-	ImGui.PushStyleColor(ImGuiCol.PlotHistogram, DRAW:GetColor("slider/overlay", state))
-
-	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, UTIL:WindowScale(3))
-
-	ImGui.ProgressBar(1, UTIL:WindowScale(3), UTIL:WindowScale(19), "")
-	ImGui.PopStyleVar(1)
-	ImGui.PopStyleColor(1)
-	DRAW:Sameline()
-
-
-
-	DRAW:Spacing(-20,-10)
-
-	ImGui.Text(tostring(option.min))
-
-	DRAW:Sameline()
-
-
-
-
-
-
-	DRAW:Spacer(1,UTIL:WindowScale(6))
-	DRAW:Spacing(_left + UTIL:WindowScale(10),1)
-	ImGui.SetNextItemWidth(DRAW.Scaling.Window.Width - (_left + UTIL:ButtonWidth("Reset") + UTIL:WindowScale(32)))
+	ImGui.SetNextItemWidth(_width)
 
 	-- add stacks
-	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("element/title"))
-	ImGui.PushStyleColor(ImGuiCol.SliderGrab, DRAW:GetColor("slider/grab"))
-	ImGui.PushStyleColor(ImGuiCol.SliderGrabActive, DRAW:GetColor("slider/grab/active"))
-	ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColor("slider/background"))
-	ImGui.PushStyleColor(ImGuiCol.FrameBgActive, DRAW:GetColor("slider/background/active"))
-	ImGui.PushStyleColor(ImGuiCol.FrameBgHovered, DRAW:GetColor("slider/background/hovered"))
-
+	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("element/title", state))
+	ImGui.PushStyleColor(ImGuiCol.SliderGrab, DRAW:GetColor("slider/grab", state))
+	ImGui.PushStyleColor(ImGuiCol.SliderGrabActive, DRAW:GetColor("slider/grab/active", state))
+	ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColor("slider/background", state))
+	ImGui.PushStyleColor(ImGuiCol.FrameBgActive, DRAW:GetColor("slider/background/active", state))
+	ImGui.PushStyleColor(ImGuiCol.FrameBgHovered, DRAW:GetColor("slider/background/hovered", state))
 	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, UTIL:WindowScale(2))
-	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:WindowScale(2), UTIL:WindowScale(4))
+	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:WindowScale(2), UTIL:WindowScale(5))
 
-	-- make them local before
-	local _return, _trigger
-
-	-- int slider (no title)
-	if option.type == "int" or option.type == "Int"
-	then
-		ImGui.PushID("DE_SI"..UTIL:ElementID(render.path))
-		_return, _trigger = ImGui.SliderInt("", value, option.min, option.max)
-		ImGui.PopID()
-	end
-
-	if option.type == "float" or option.type == "Float"
-	then
-		ImGui.PushID('DE_SF'..UTIL:ElementID(render.path))
-		_return, _trigger = ImGui.SliderFloat("", value, option.min, option.max, option.res)
-		ImGui.PopID()
-	end
+	ImGui.PushID(_type..UTIL:ElementID(render.path))
+	local _return, _trigger = ImGui.SliderFloat("", value, option.min, option.max, _range)
+	ImGui.PopID()
 
 	-- drop stacks
 	ImGui.PopStyleVar(2)
 	ImGui.PopStyleColor(6)
 
-	DRAW:Sameline()
-	DRAW:Spacing(-(DRAW.Scaling.Window.Width - (_left + UTIL:ButtonWidth("Reset") + UTIL:WindowScale(32))),1)
+	-- additional paint
+	if option.min and option.max
+	then
+		DRAW:Sameline()
+		DRAW:Spacing(-_width,1)
 
+		-- predefine
+		local _min
+		local _max
 
-	ImGui.PushStyleColor(ImGuiCol.PlotHistogram, DRAW:GetColor("slider/overlay", state))
-	ImGui.ProgressBar(UTIL:ShortenFloat(option.max/10000 * value), DRAW.Scaling.Window.Width - (_left + UTIL:ButtonWidth("Reset") + UTIL:WindowScale(32)), UTIL:WindowScale(5), "")
-	ImGui.PopStyleColor(1)
+		-- formatting
+		if option.res then
+			_min = string.format(option.res, option.min)
+			_max = string.format(option.res, option.max)
+		else
+			_min = string.format("%.0f", option.min)
+			_max = string.format("%.0f", option.max)
+		end
 
+		DRAW:Spacing(UTIL:WindowScale(6),1)
+		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("slider/minmax", state))
+		ImGui.Text("·  ".._min)
+		ImGui.PopStyleColor(1)
+		DRAW:Sameline()
 
+		DRAW:Spacing(_width - UTIL:TextWidth(_min.._max.."    ··") - UTIL:WindowScale(12),1)
+		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("slider/minmax", state))
+		ImGui.Text(_max.."  ·")
+		ImGui.PopStyleColor(1)
+		DRAW:Sameline()
+
+		-- room for reset
+		DRAW:Spacing(UTIL:WindowScale(8),1)
+	end
 
 	-- result
-	return _return, _trigger, _spacing
+	return _return, _trigger
 end
 
 
@@ -1239,7 +1246,7 @@ function DRAW:Notice(render, state)
 	DRAW:Spacing(UTIL:WindowScale(6), 1)
 
 	-- add stacks (notice)
-	ImGui.PushStyleColor(ImGuiCol.PlotHistogram, DRAW:GetColor("element/decoration", state))
+	ImGui.PushStyleColor(ImGuiCol.PlotHistogram, DRAW:GetColor("element/notice", state))
 	ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, UTIL:WindowScale(6))
 
 	-- we use the progressbar, because its the fastest in rendering
@@ -1248,7 +1255,7 @@ function DRAW:Notice(render, state)
 	-- add tooltip
 	if ImGui.IsItemHovered()
 	then
-		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("element/notice"))
+		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("element/notice/text"))
 		ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, UTIL:WindowScale(6), UTIL:WindowScale(6))
 		ImGui.BeginTooltip()
 		ImGui.SetTooltip(render.note)
@@ -1482,7 +1489,7 @@ function DRAW:Button(render, option, demand, piece, value)
 	end
 
 	ImGui.PushID("Button"..tostring(render.path))
-	local _trigger = ImGui.Button(piece, UTIL:ButtonWidth(piece), UTIL:ButtonHeight(piece) + UTIL:WindowScale(1))
+	local _trigger = ImGui.Button(piece, UTIL:ButtonWidth(piece), UTIL:ButtonHeight(piece) + UTIL:WindowScale(3))
 	ImGui.PopID()
 
 	-- drop stacks
@@ -1733,6 +1740,7 @@ function DRAW:Quicktune(render, option, state, value)
 	ImGui.PushStyleColor(ImGuiCol.FrameBgActive, DRAW:GetColor())
 	ImGui.PushStyleColor(ImGuiCol.FrameBgHovered, DRAW:GetColor())
 	ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, UTIL:WindowScale(2), UTIL:WindowScale(4))
+	ImGui.PushStyleVar(ImGuiStyleVar.GrabMinSize, UTIL:WindowScale(4))
 
 	-- make them local before
 	ImGui.PushID("DE_QT"..UTIL:ElementID(render.path))
@@ -1740,7 +1748,7 @@ function DRAW:Quicktune(render, option, state, value)
 	ImGui.PopID()
 
 	-- drop stacks
-	ImGui.PopStyleVar(1)
+	ImGui.PopStyleVar(2)
 	ImGui.PopStyleColor(6)
 
 	-- result
@@ -1766,7 +1774,11 @@ function DRAW:Quickshift(render, option, state, value)
 	if render.align
 	then
 		-- paint title
-		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("element/title"))
+		if UTIL:IntToBool(value) then
+			ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("element/title/active"))
+		else
+			ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("element/title"))
+		end
 		ImGui.Text(render.name)
 		ImGui.PopStyleColor(1)
 		DRAW:Sameline()
@@ -1780,16 +1792,15 @@ function DRAW:Quickshift(render, option, state, value)
 
 	-- add stacks
 	if UTIL:IntToBool(value) then
-		ImGui.PushStyleColor(ImGuiCol.Border, DRAW:GetColor("quickshift/on/border"))
 		ImGui.PushStyleColor(ImGuiCol.SliderGrab, DRAW:GetColor("quickshift/on/grab/normal"))
 		ImGui.PushStyleColor(ImGuiCol.SliderGrabActive, DRAW:GetColor("quickshift/on/grab/active"))
 	else
-		ImGui.PushStyleColor(ImGuiCol.Border, DRAW:GetColor("quickshift/off/border"))
 		ImGui.PushStyleColor(ImGuiCol.SliderGrab, DRAW:GetColor("quickshift/off/grab/normal"))
 		ImGui.PushStyleColor(ImGuiCol.SliderGrabActive, DRAW:GetColor("quickshift/off/grab/active"))
 	end
 
 	ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor())
+	ImGui.PushStyleColor(ImGuiCol.Border, DRAW:GetColor("quickshift/border"))
 	ImGui.PushStyleColor(ImGuiCol.FrameBg, DRAW:GetColor("quickshift/background"))
 	ImGui.PushStyleColor(ImGuiCol.FrameBgActive, DRAW:GetColor("quickshift/background/active"))
 	ImGui.PushStyleColor(ImGuiCol.FrameBgHovered, DRAW:GetColor("quickshift/background/hovered"))
@@ -1813,7 +1824,11 @@ function DRAW:Quickshift(render, option, state, value)
 	then
 		DRAW:Sameline()
 		DRAW:Spacing(UTIL:WindowScale(10),1)
-		ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("element/title"))
+		if UTIL:IntToBool(value) then
+			ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("element/title/active"))
+		else
+			ImGui.PushStyleColor(ImGuiCol.Text, DRAW:GetColor("element/title"))
+		end
 		ImGui.Text(render.name)
 		ImGui.PopStyleColor(1)
 	end
